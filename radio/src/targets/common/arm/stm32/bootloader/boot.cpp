@@ -44,12 +44,12 @@
 #if defined(PCBXLITE)
   #define BOOTLOADER_KEYS                 0x0F
 #elif defined(RADIO_MT12)
-  #define BOOTLOADER_KEYS                 0x09
+  #define BOOTLOADER_KEYS                 0x06
 #else
   #define BOOTLOADER_KEYS                 0x42
 #endif
 
-#if defined(RADIO_T20)
+#if defined(RADIO_FAMILY_T20)
   #define SECONDARY_BOOTLOADER_KEYS       0x1200
 #endif
 
@@ -62,7 +62,7 @@
 #endif
 
 #if defined(SPI_FLASH)
-  #include "spi_flash.h"
+  #include "diskio_spi_flash.h"
   #define SEL_CLEAR_FLASH_STORAGE_MENU_LEN 2
 #endif
 
@@ -537,7 +537,9 @@ int  bootloaderMain()
         lcdRefresh();
         if(event != EVT_KEY_BREAK(KEY_ENTER))
           continue;
-        flashSpiEraseAll();
+        sdDone();
+        spiFlashDiskEraseAll();
+        sdInit();
         vpos = 0;
         state = ST_START;
 #endif

@@ -69,11 +69,11 @@ inline int MAX_SWITCHES_SOURCE(Board::Type board, int version)
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
     if (IS_JUMPER_TPRO(board))
-    return Boards::getCapability(board, Board::SwitchPositions);
+    return Boards::getCapability(board, Board::SwitchesPositions);
   else if (IS_HORUS_OR_TARANIS(board))
     return MAX_SWITCHES(board, version) * 3;
   else
-    return Boards::getCapability(board, Board::SwitchPositions);
+    return Boards::getCapability(board, Board::SwitchesPositions);
   }
 
 inline int MAX_FUNCTIONSWITCHES(Board::Type board, int version)
@@ -196,7 +196,7 @@ inline int MAX_GYRO_ANALOGS(Board::Type board, int version)
       return 0;
   }
 
-  return Boards::getCapability(board, Board::GyroAnalogs);
+  return Boards::getCapability(board, Board::GyroAxes);
 }
 
 #define MAX_ROTARY_ENCODERS(board)            0
@@ -2940,7 +2940,7 @@ void OpenTxModelData::afterImport()
     if (version < 220) {  //  re-initialise as no conversion possible
       const char * layoutId = "Layout2P1";  // currently all using same default though might change for NV14
       RadioLayout::init(layoutId, modelData.customScreens);
-      memset(&modelData.topBarData, 0, sizeof(TopBarPersistentData));
+      modelData.topBarData = TopBarPersistentData();
     }
   }
 
@@ -3039,7 +3039,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   internalField.Append(new SpareBitsField<2>(this)); // TODO buzzerMode?
   internalField.Append(new BoolField<1>(this, generalData.fai));
   internalField.Append(new SignedField<2>(this, (int &)generalData.beeperMode));
-  internalField.Append(new BoolField<1>(this, generalData.flashBeep));
+  internalField.Append(new BoolField<1>(this, generalData.alarmsFlash));
   internalField.Append(new BoolField<1>(this, generalData.disableMemoryWarning));
   internalField.Append(new BoolField<1>(this, generalData.disableAlarmWarning));
 
@@ -3173,7 +3173,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     if (IS_FAMILY_HORUS_OR_T16(board)) {
       for (int i=0; i<SWITCHES_CONFIG_SIZE(board, version) / 2; i++) {
         if (i < MAX_SWITCHES(board, version))
-          internalField.Append(new UnsignedField<2>(this, generalData.switchConfig[i]));
+          internalField.Append(new UnsignedField<2>(this, generalData.swtchConfig[i]));
         else
           internalField.Append(new SpareBitsField<2>(this));
       }
@@ -3231,9 +3231,9 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   if (IS_FAMILY_HORUS_OR_T16(board)) {
     for (int i = 0; i < MAX_SWITCHES(board, version); ++i) {
       if (version >= 220)
-        internalField.Append(new CharField<3>(this, generalData.switchName[i], "Switch name"));
+        internalField.Append(new CharField<3>(this, generalData.swtchName[i], "Switch name"));
       else
-        internalField.Append(new ZCharField<3>(this, generalData.switchName[i], "Switch name"));
+        internalField.Append(new ZCharField<3>(this, generalData.swtchName[i], "Switch name"));
     }
     for (int i = 0; i < CPN_MAX_STICKS; ++i) {
       if (version >= 220)
@@ -3261,15 +3261,15 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   else if (IS_TARANIS(board)) {
     for (int i = 0; i < SWITCHES_CONFIG_SIZE(board, version) / 2; i++) {
       if (i < MAX_SWITCHES(board, version))
-        internalField.Append(new UnsignedField<2>(this, generalData.switchConfig[i]));
+        internalField.Append(new UnsignedField<2>(this, generalData.swtchConfig[i]));
       else
         internalField.Append(new SpareBitsField<2>(this));
     }
     for (int i = 0; i < MAX_SWITCHES(board, version); ++i) {
       if (version >= 220)
-        internalField.Append(new CharField<3>(this, generalData.switchName[i], "Switch name"));
+        internalField.Append(new CharField<3>(this, generalData.swtchName[i], "Switch name"));
       else
-        internalField.Append(new ZCharField<3>(this, generalData.switchName[i], "Switch name"));
+        internalField.Append(new ZCharField<3>(this, generalData.swtchName[i], "Switch name"));
     }
     for (int i = 0; i < CPN_MAX_STICKS; ++i) {
       if (version >= 220)
@@ -3315,8 +3315,8 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   }
 
   if (version >= 219 && IS_TARANIS_XLITES(board)) {
-    internalField.Append(new SignedField<8>(this, generalData.gyroMax, "Gyro full scale"));
-    internalField.Append(new SignedField<8>(this, generalData.gyroOffset, "Gyro Offset"));
+    internalField.Append(new SignedField<8>(this, generalData.imuMax, "Gyro full scale"));
+    internalField.Append(new SignedField<8>(this, generalData.imuOffset, "Gyro Offset"));
   }
 
   if (version >= 220) {

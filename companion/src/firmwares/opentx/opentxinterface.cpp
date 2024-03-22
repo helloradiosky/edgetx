@@ -68,12 +68,16 @@ const char * OpenTxEepromInterface::getName()
       return "EdgeTX for Jumper T-Pro";
     case BOARD_JUMPER_TPROV2:
       return "EdgeTX for Jumper T-Pro V2";
+    case BOARD_JUMPER_T14:
+      return "EdgeTX for Jumper T14";
     case BOARD_JUMPER_T16:
       return "EdgeTX for Jumper T16";
     case BOARD_JUMPER_T18:
       return "EdgeTX for Jumper T18";
     case BOARD_JUMPER_T20:
       return "EdgeTX for Jumper T20";
+    case BOARD_JUMPER_T20V2:
+      return "EdgeTX for Jumper T20 V2";
     case BOARD_RADIOMASTER_TX16S:
       return "EdgeTX for Radiomaster TX16S";
     case BOARD_RADIOMASTER_TX12:
@@ -840,11 +844,6 @@ QString OpenTxFirmware::getCapabilityStr(::Capability capability)
   }
 }
 
-QString OpenTxFirmware::getAnalogInputName(unsigned int index)
-{
-  return Boards::getAnalogInputName(board, index);
-}
-
 QTime OpenTxFirmware::getMaxTimerStart()
 {
   if (IS_HORUS_OR_TARANIS(board))
@@ -1387,7 +1386,7 @@ void registerOpenTxFirmwares()
   addOpenTxRfOptions(firmware, FLEX);
 
   /* Jumper T-Pro V2 board */
-  firmware = new OpenTxFirmware(FIRMWAREID("tprov2"), QCoreApplication::translate("Firmware", "Jumper T-Pro v2"), BOARD_JUMPER_TPROV2);
+  firmware = new OpenTxFirmware(FIRMWAREID("tprov2"), QCoreApplication::translate("Firmware", "Jumper T-Pro V2"), BOARD_JUMPER_TPROV2);
   addOpenTxCommonOptions(firmware);
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
@@ -1407,6 +1406,13 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
 
+  /* Jumper T14 board */
+  firmware = new OpenTxFirmware(FIRMWAREID("t14"), Firmware::tr("Jumper T14"), BOARD_JUMPER_T14);
+  addOpenTxFrskyOptions(firmware);
+  firmware->addOption("internalelrs", Firmware::tr("Select if internal ELRS module is installed"));
+  addOpenTxRfOptions(firmware, NONE);
+  registerOpenTxFirmware(firmware);
+
   /* Jumper T16 board */
   firmware = new OpenTxFirmware(FIRMWAREID("t16"), Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);
   addOpenTxFrskyOptions(firmware);
@@ -1424,6 +1430,13 @@ void registerOpenTxFirmwares()
 
   /* Jumper T20 board */
   firmware = new OpenTxFirmware(FIRMWAREID("t20"), Firmware::tr("Jumper T20"), BOARD_JUMPER_T20);
+  addOpenTxFrskyOptions(firmware);
+  firmware->addOption("internalelrs", Firmware::tr("Select if internal ELRS module is installed"));
+  addOpenTxRfOptions(firmware, NONE);
+  registerOpenTxFirmware(firmware);
+
+  /* Jumper T20 V2 board */
+  firmware = new OpenTxFirmware(FIRMWAREID("t20v2"), Firmware::tr("Jumper T20 V2"), BOARD_JUMPER_T20V2);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalelrs", Firmware::tr("Select if internal ELRS module is installed"));
   addOpenTxRfOptions(firmware, NONE);
@@ -1501,22 +1514,22 @@ void registerOpenTxFirmwares()
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX + AFHDS2A + AFHDS3);
 
-  /* 9XR-Pro */
-  firmware = new OpenTxFirmware(FIRMWAREID("9xrpro"), Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
-  addOpenTxArm9xOptions(firmware, false);
-  registerOpenTxFirmware(firmware, true);
-
-  /* ar9x board */
-  firmware = new OpenTxFirmware(FIRMWAREID("ar9x"), Firmware::tr("9X with AR9X board"), BOARD_AR9X);
-  addOpenTxArm9xOptions(firmware, true);
-  //firmware->addOption("rtc", Firmware::tr("Optional RTC added"));
-  //firmware->addOption("volume", Firmware::tr("i2c volume control added"));
-  registerOpenTxFirmware(firmware, true);
-
-  /* Sky9x board */
-  firmware = new OpenTxFirmware(FIRMWAREID("sky9x"), Firmware::tr("9X with Sky9x board"), BOARD_SKY9X);
-  addOpenTxArm9xOptions(firmware);
-  registerOpenTxFirmware(firmware, true);
+//  /* 9XR-Pro */
+//  firmware = new OpenTxFirmware(FIRMWAREID("9xrpro"), Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);
+//  addOpenTxArm9xOptions(firmware, false);
+//  registerOpenTxFirmware(firmware, true);
+//
+//  /* ar9x board */
+//  firmware = new OpenTxFirmware(FIRMWAREID("ar9x"), Firmware::tr("9X with AR9X board"), BOARD_AR9X);
+//  addOpenTxArm9xOptions(firmware, true);
+//  //firmware->addOption("rtc", Firmware::tr("Optional RTC added"));
+//  //firmware->addOption("volume", Firmware::tr("i2c volume control added"));
+//  registerOpenTxFirmware(firmware, true);
+//
+//  /* Sky9x board */
+//  firmware = new OpenTxFirmware(FIRMWAREID("sky9x"), Firmware::tr("9X with Sky9x board"), BOARD_SKY9X);
+//  addOpenTxArm9xOptions(firmware);
+//  registerOpenTxFirmware(firmware, true);
 
   Firmware::sortRegisteredFirmwares();
   Firmware::setDefaultVariant(Firmware::getFirmwareForFlavour("tx16s"));

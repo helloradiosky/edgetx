@@ -115,14 +115,6 @@ const struct YamlIdStr enum_MixSources[] = {
   {  MIXSRC_NONE, "NONE"  },
   {  MIXSRC_MIN, "MIN"  },
   {  MIXSRC_MAX, "MAX"  },
-  {  MIXSRC_TrimRud, "TrimRud"  },
-  {  MIXSRC_TrimEle, "TrimEle"  },
-  {  MIXSRC_TrimThr, "TrimThr"  },
-  {  MIXSRC_TrimAil, "TrimAil"  },
-  {  MIXSRC_TrimT5, "TrimT5"  },
-  {  MIXSRC_TrimT6, "TrimT6"  },
-  {  MIXSRC_TrimT7, "TrimT7"  },
-  {  MIXSRC_TrimT8, "TrimT8"  },
   {  MIXSRC_TX_VOLTAGE, "TX_VOLTAGE"  },
   {  MIXSRC_TX_TIME, "TX_TIME"  },
   {  MIXSRC_TX_GPS, "TX_GPS"  },
@@ -159,10 +151,6 @@ const struct YamlIdStr enum_SwashType[] = {
 };
 const struct YamlIdStr enum_SwitchSources[] = {
   {  SWSRC_NONE, "NONE"  },
-  {  SWSRC_TrimT7Down, "TrimT7Down"  },
-  {  SWSRC_TrimT7Up, "TrimT7Up"  },
-  {  SWSRC_TrimT8Down, "TrimT8Down"  },
-  {  SWSRC_TrimT8Up, "TrimT8Up"  },
   {  SWSRC_ON, "ON"  },
   {  SWSRC_ONE, "ONE"  },
   {  SWSRC_TELEMETRY_STREAMING, "TELEMETRY_STREAMING"  },
@@ -379,6 +367,7 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_SIGNED( "uartSampleMode", 2 ),
   YAML_UNSIGNED( "stickDeadZone", 3 ),
   YAML_STRING("selectedTheme", 26),
+  YAML_UNSIGNED( "modelSelectLayout", 2 ),
   YAML_UNSIGNED( "radioThemesDisabled", 1 ),
   YAML_UNSIGNED( "radioGFDisabled", 1 ),
   YAML_UNSIGNED( "radioTrainerDisabled", 1 ),
@@ -390,6 +379,9 @@ static const struct YamlNode struct_RadioData[] = {
   YAML_UNSIGNED( "modelSFDisabled", 1 ),
   YAML_UNSIGNED( "modelCustomScriptsDisabled", 1 ),
   YAML_UNSIGNED( "modelTelemetryDisabled", 1 ),
+  YAML_UNSIGNED( "labelSingleSelect", 1 ),
+  YAML_UNSIGNED( "labelMultiMode", 1 ),
+  YAML_UNSIGNED( "favMultiMode", 1 ),
   YAML_END
 };
 static const struct YamlNode struct_unsigned_8[] = {
@@ -432,7 +424,7 @@ static const struct YamlNode struct_MixData[] = {
   YAML_UNSIGNED( "carryTrim", 1 ),
   YAML_UNSIGNED( "mixWarn", 2 ),
   YAML_ENUM("mltpx", 2, enum_MixerMultiplex),
-  YAML_PADDING( 1 ),
+  YAML_UNSIGNED( "speedPrec", 1 ),
   YAML_SIGNED_CUST( "offset", 13, in_read_weight, in_write_weight ),
   YAML_SIGNED_CUST( "swtch", 10, r_swtchSrc, w_swtchSrc ),
   YAML_UNSIGNED_CUST( "flightModes", 9, r_flightModes, w_flightModes ),

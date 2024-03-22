@@ -222,8 +222,6 @@
 #define ADC_CHANNEL_STICK_RV
 #define ADC_CHANNEL_STICK_RH
 
-// Each ADC cannot map more than 8 channels, otherwise it will cause problems
-
 #define ADC_CHANNEL_POT1                LL_ADC_CHANNEL_6    // ADC12_IN6   -> ADC1_IN6
 #define ADC_CHANNEL_POT2                LL_ADC_CHANNEL_14   // ADC12_IN14  -> ADC1_IN14
 #define ADC_CHANNEL_POT3                LL_ADC_CHANNEL_6    // ADC3_IN6    -> ADC3_IN6
@@ -249,11 +247,7 @@
 #define ADC_CHANNEL_SWH                 LL_ADC_CHANNEL_8    // ADC3_IN8    -> ADC3_IN8
 
 #define ADC_CHANNEL_BATT                LL_ADC_CHANNEL_15   // ADC12_IN15  -> ADC1_IN15
-
-#if !defined(RADIO_PL18EV)
-// Disabled for PL18EV because 2 ADC 16 channels are fully mapped already
 #define ADC_CHANNEL_RTC_BAT             LL_ADC_CHANNEL_VBAT // ADC1_IN18
-#endif
 
 #define ADC_MAIN                        ADC1
 #define ADC_EXT                         ADC3
@@ -286,6 +280,7 @@
     -1,-1,   /* sliders */    \
     0,0,0,0, /* ext1-4 */     \
     0,	     /* vbat */       \
+    0,       /* rtc_bat */    \
     -1,      /* SWB */        \
     -1,      /* SWD */        \
     0,       /* SWE */        \
@@ -465,14 +460,10 @@
 #define FLASH_SPI_SCK_GPIO_PIN         LL_GPIO_PIN_13 // PG.13
 #define FLASH_SPI_MISO_GPIO_PIN        LL_GPIO_PIN_12 // PG.12
 #define FLASH_SPI_MOSI_GPIO_PIN        LL_GPIO_PIN_14 // PG.14
-// #define FLASH_SPI_DMA                  DMA2
-// #define FLASH_SPI_DMA_CHANNEL          LL_DMA_CHANNEL_1
-// #define FLASH_SPI_DMA_TX_STREAM        LL_DMA_STREAM_5
-// #define FLASH_SPI_DMA_TX_IRQn          DMA2_Stream5_IRQn
-// #define FLASH_SPI_DMA_TX_IRQHandler    DMA2_Stream5_IRQHandler
-// #define FLASH_SPI_DMA_RX_STREAM        LL_DMA_STREAM_6
-// #define FLASH_SPI_DMA_RX_IRQn          DMA2_Stream6_IRQn
-// #define FLASH_SPI_DMA_RX_IRQHandler    DMA2_Stream6_IRQHandler
+#define FLASH_SPI_DMA                  DMA2
+#define FLASH_SPI_DMA_CHANNEL          LL_DMA_CHANNEL_1
+#define FLASH_SPI_DMA_TX_STREAM        LL_DMA_STREAM_5
+#define FLASH_SPI_DMA_RX_STREAM        LL_DMA_STREAM_6
 #define STORAGE_USE_SPI_FLASH
 
 // SDRAM
@@ -671,7 +662,6 @@
 #define ROTARY_ENCODER_NAVIGATION
 
 //BLUETOOTH
-#define BLUETOOTH_ON_RCC_AHB1Periph     RCC_AHB1Periph_GPIOI
 #define BT_EN_GPIO                      GPIOI
 #define BT_EN_GPIO_PIN                  GPIO_Pin_8 // PI.8
 

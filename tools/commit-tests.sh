@@ -85,6 +85,9 @@ do
         t12)
             BUILD_OPTIONS+="-DPCB=X7 -DPCBREV=T12 -DINTERNAL_MODULE_MULTI=ON"
             ;;
+        mt12)
+            BUILD_OPTIONS+="-DPCB=X7 -DPCBREV=MT12 -DINTERNAL_MODULE_MULTI=ON"
+            ;;
         tx12)
             BUILD_OPTIONS+="-DPCB=X7 -DPCBREV=TX12"
             ;;
@@ -108,6 +111,9 @@ do
             ;;
         t14)
             BUILD_OPTIONS+="-DPCB=X7 -DPCBREV=T14"
+            ;;
+        t20v2)
+            BUILD_OPTIONS+="-DPCB=X7 -DPCBREV=T20V2"
             ;;
         xlite)
             BUILD_OPTIONS+="-DPCB=XLITE"

@@ -99,8 +99,8 @@
 #define TR_SF_VOLUME                   "Lydstyrke"
 #define TR_SF_FAILSAFE                 TR("Sæt fejlsik", "Sæt fejlsikring")
 #define TR_SF_RANGE_CHECK              TR("Afst. check", "Afstand kontrol")
-#define TR_SF_MOD_BIND                 "Modul Bind"
-#define TR_SF_RGBLEDS                  "RGB leds"
+#define TR_SF_MOD_BIND                 "Modul tilslut"
+#define TR_SF_RGBLEDS                  "RGB led"
 
 #define TR_SOUND                       "Spil lyd"
 #define TR_PLAY_TRACK                  TR("Ply Trk", "Afspil lydfil")
@@ -168,16 +168,16 @@
 #define TR_HATSOPT                     "Kun trim","Kun knap","Trim / Knap", "Global"
 #define TR_HATSMODE_TRIMS              "Joystik: Trim"
 #define TR_HATSMODE_KEYS               "Joystik: Knap"
-#define TR_HATSMODE_KEYS_HELP          "Left side:\n"\
-                                       "   Right = MDL\n"\
-                                       "   Up = SYS\n"\
+#define TR_HATSMODE_KEYS_HELP          "Venstre side:\n"\
+                                       "   Højre = MDL\n"\
+                                       "   Up    = SYS\n"\
                                        "   Down = TELE\n"\
                                        "\n"\
-                                       "Right side:\n"\
-                                       "   Left = PAGE<\n"\
-                                       "   Right = PAGE>\n"\
-                                       "   Up = PREV/INC\n"\
-                                       "   Down = NEXT/DEC"
+                                       "Højre side:\n"\
+                                       "   Venstre = PAGE<\n"\
+                                       "   Højre   = PAGE>\n"\
+                                       "   Op  = PREV/INC\n"\
+                                       "   Ned = NEXT/DEC"
 #endif
 
 #if defined(COLORLCD)
@@ -199,10 +199,10 @@
 #endif
 
 
-#define TR_SRC_BATT                    "Batt"
+#define TR_SRC_BATT                    "Bat."
 #define TR_SRC_TIME                    "Time"
 #define TR_SRC_GPS                     "GPS"
-#define TR_SRC_TIMER                   "Tmr"
+#define TR_SRC_TIMER                   "Tid"
 
 #define TR_VTMRMODES                   "FRA","TIL","Strt","THs","TH%","THt"
 #define TR_VTRAINER_MASTER_OFF         "FRA"
@@ -233,7 +233,7 @@
 
 #if defined(PCBFRSKY)
   #define TR_ENTER                     "[ENTER]"
-#elif defined(PCBNV14)
+#elif defined(PCBNV14) || defined(PCBPL18)
   #define TR_ENTER                     "[NÆSTE]"
 #else
   #define TR_ENTER                     "[MENU]"
@@ -299,11 +299,11 @@
   #define TR_CHECKTRIMS                CENTER "\006Kontroller\012trim"
 #endif
 #define OFS_CHECKTRIMS                 CENTER_OFS+(9*FW)
-#define TR_SWASHTYPE                   "Swash Type"
+#define TR_SWASHTYPE                   "Swash type"
 #define TR_COLLECTIVE                  TR("Collective", "Coll. pitch kilde")
 #define TR_AILERON                     TR("Lateral cyc.", "Lateral cyc. kilde")
 #define TR_ELEVATOR                    TR("Long. cyc.", "Long. cyc. kilde")
-#define TR_SWASHRING                   "Swash Ring"
+#define TR_SWASHRING                   "Swash ring"
 #define TR_MODE                        TR("Tils.","Tilstand")
 #if LCD_W > LCD_H
   #define TR_LEFT_STICK                "Venstre"
@@ -416,7 +416,7 @@
   #define TR_MOVESTICKSPOTS            "Flyt pinde/drejekontakter/skydere og tryk [Enter]"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART               TR_ENTER " FOR START"
-  #define TR_SETMIDPOINT               "CENTER PINDE/SKYDER"
+  #define TR_SETMIDPOINT               "CENTRER PINDE/SKYDER"
   #define TR_MOVESTICKSPOTS            "FLYT PINDE/DREJEKONTAKT"
 #else
   #define TR_MENUTOSTART               CENTER "\010" TR_ENTER " FOR START"
@@ -528,9 +528,9 @@
 #define TR_RF_POWER                    "RF Strøm"
 #define TR_MULTI_FIXEDID               TR("LåstID", "Låst ID")
 #define TR_MULTI_OPTION                TR("Tilvalg", "Tilvalg værdi")
-#define TR_MULTI_AUTOBIND              TR(INDENT "Bind Ka.", INDENT "Bind til kanal")
-#define TR_DISABLE_CH_MAP              TR("No Ch. map", "Deaktiver Ch. map")
-#define TR_DISABLE_TELEM               TR("No Telem", "Deaktiver telemetri")
+#define TR_MULTI_AUTOBIND              TR(INDENT "Tilslut ka.", INDENT "Tilslut kanal")
+#define TR_DISABLE_CH_MAP              TR("% ka. kort", "Deaktiver kanal kort")
+#define TR_DISABLE_TELEM               TR("% Telem.", "Deaktiver telemetri")
 #define TR_MULTI_DSM_AUTODTECT         TR(INDENT "Automatisk", INDENT "Automatisk format")
 #define TR_MULTI_LOWPOWER              TR(INDENT "Lav strøm", INDENT "Lav strøm tilstand")
 #define TR_MULTI_LNA_DISABLE           INDENT "LNA deaktiver"
@@ -540,13 +540,13 @@
 #define TR_MODULE_NO_SERIAL_MODE       TR("!seriel tilstand", "Ikke i seriel tilstand")
 #define TR_MODULE_NO_INPUT             TR("Ingen indgang", "Ingen seriel indgang")
 #define TR_MODULE_NO_TELEMETRY         TR3("Uden telemetri", "Uden MULTI_TELEMETRI", "Ingen MULTI_TELEMETRI opdaget")
-#define TR_MODULE_WAITFORBIND          "Bind for at indlæse protokol"
-#define TR_MODULE_BINDING              TR("Parko...","Parkobler")
+#define TR_MODULE_WAITFORBIND          "Tilslut for at indlæse protokol"
+#define TR_MODULE_BINDING              TR("Tilslut..","Tilslutter")
 #define TR_MODULE_UPGRADE_ALERT        TR3("Opg. krævet", "Modul opdatering krævet", "Module\nopdatering krævet")
 #define TR_MODULE_UPGRADE              TR("Opg. anbefalet", "Modul opdatering anbefalet")
-#define TR_REBIND                      "Rebinding påkrævet"
+#define TR_REBIND                      "Tilslutning påkrævet"
 #define TR_REG_OK                      "Registration ok"
-#define TR_BIND_OK                     "Bind lykkes"
+#define TR_BIND_OK                     "Tilslut lykkes"
 #define TR_BINDING_CH1_8_TELEM_ON      "KA1-8 Telem TIL"
 #define TR_BINDING_CH1_8_TELEM_OFF     "KA1-8 Telem FRA"
 #define TR_BINDING_CH9_16_TELEM_ON     "KA9-16 Telem TIL"
@@ -633,8 +633,8 @@
 #define TR_POWER                       "Strøm"
 #define TR_NO_TX_OPTIONS               "Ingen TX tilvalg"
 #define TR_RTC_BATT                    "RTC Bat."
-#define TR_POWER_METER_EXT             "Strøm Meter (EXT)"
-#define TR_POWER_METER_INT             "Strøm Meter (INT)"
+#define TR_POWER_METER_EXT             "Strøm meter (EXT)"
+#define TR_POWER_METER_INT             "Strøm meter (INT)"
 #define TR_SPECTRUM_ANALYSER_EXT       "Spectrum (EXT)"
 #define TR_SPECTRUM_ANALYSER_INT       "Spectrum (INT)"
 #define TR_SDCARD_FULL                 "SD kort fuldt"
@@ -674,7 +674,7 @@
 #define TR_COPROC                      "CoProc."
 #define TR_COPROC_TEMP                 "MB Temp."
 #define TR_TEMPWARNING                 INDENT "For varm"
-#define TR_TTL_WARNING                 "Advarsel: brug 3.3V logisk niveau"
+#define TR_TTL_WARNING                 "Advarsel: Spænding på TX/RX poler må ikke overstige 3,3V!"
 #define TR_FUNC                        "Funktion"
 #define TR_V1                          TR("V1", "Værdi 1")
 #define TR_V2                          TR("V2", "Værdi 2")
@@ -717,6 +717,12 @@
 
 #if defined(COLORLCD)
   #define TR_MODEL_QUICK_SELECT        "Hurtigvalg af model"
+  #define TR_LABELS_SELECT             "Label select"
+  #define TR_LABELS_MATCH              "Label matching"
+  #define TR_FAV_MATCH                 "Favorites matching"
+  #define TR_LABELS_SELECT_MODE        "Multi select","Single select"
+  #define TR_LABELS_MATCH_MODE         "Match all","Match any"
+  #define TR_FAV_MATCH_MODE            "Must match","Optional match"
 #endif
 
 #define TR_SELECT_TEMPLATE_FOLDER      "VÆLG EN SKABELON MAPPE:"
@@ -820,7 +826,7 @@
 #define TR_JACK_MODE                   "Jack tilstand"
 #define TR_VOICE_LANGUAGE              "Stemme sprog"
 #define TR_UNITS_SYSTEM                "Enheder"
-#define TR_UNITS_PPM                   "PPM Units"
+#define TR_UNITS_PPM                   "PPM enheder"
 #define TR_EDIT                        "Rediger"
 #define TR_INSERT_BEFORE               "Insæt før"
 #define TR_INSERT_AFTER                "Insæt efter"
@@ -854,7 +860,7 @@
 #define TR_SPEAKER                     INDENT "Højttaler"
 #define TR_BUZZER                      INDENT "Biper"
 #define TR_BYTES                       "bytes"
-#define TR_MODULE_BIND                 BUTTON(TR("Bnd", "Bind"))
+#define TR_MODULE_BIND                 BUTTON(TR("Tils", "Tilslut"))
 #define TR_POWERMETER_ATTN_NEEDED      "Attestering nødvendig"
 #define TR_PXX2_SELECT_RX              "Vælg RX"
 #define TR_PXX2_DEFAULT                "<default>"
@@ -865,7 +871,7 @@
 #define TR_RECEIVER_DELETE             "Slet modtager?"
 #define TR_RECEIVER_RESET              "Nulstil modtager?"
 #define TR_SHARE                       "Del"
-#define TR_BIND                        "Bind"
+#define TR_BIND                        "Tilslut"
 #define TR_REGISTER                    TR("Reg", "Registrer")
 #define TR_MODULE_RANGE                BUTTON(TR("Ræk", "Rækkevidde"))
 #define TR_RANGE_TEST                  "Test af rækkevidde"
@@ -1047,25 +1053,25 @@
 #elif defined(PCBHORUS)
    // Bootloader Horus specific - Ascii only
   #define TR_BL_SELECT_KEY            "[ENT] for at bruge fil"
-  #define TR_BL_FLASH_KEY             "[ENT] lang tid for at starte"
+  #define TR_BL_FLASH_KEY             "[ENT] længe, for at starte"
   #define TR_BL_EXIT_KEY              "[RTN] for at forlade"
 #elif defined(PCBNV14)
    // Bootloader NV14 specific - Ascii only
   #define TR_BL_RF_USB_ACCESS         "RF USB adgang"
   #define TR_BL_CURRENT_FW            "Firmware version:"
   #define TR_BL_SELECT_KEY            "[R TRIM] for at bruge fil"
-  #define TR_BL_FLASH_KEY             "[R TRIM] lang til for at starte"
+  #define TR_BL_FLASH_KEY             "[R TRIM] længe, for at starte"
   #define TR_BL_EXIT_KEY              "[L TRIM] for at forlade"
 #elif defined(PCBPL18)
    // Bootloader PL18 specific - Ascii only
-  #define TR_BL_RF_USB_ACCESS         "RF USB access"
-  #define TR_BL_ERASE_INT_FLASH       "Erase Internal Flash Storage"
-  #define TR_BL_ERASE_FLASH           "Erase Flash Storage"
-  #define TR_BL_ERASE_FLASH_MSG       "This may take up to 200s"
-  #define TR_BL_SELECT_KEY            " [TR4 Dn] to select file"
-  #define TR_BL_FLASH_KEY             " Hold [TR4 Dn] long to flash"
-  #define TR_BL_ERASE_KEY             " Hold [TR4 Dn] long to erase"
-  #define TR_BL_EXIT_KEY              " [TR4 Up] to exit"
+  #define TR_BL_RF_USB_ACCESS         "RF USB adgang"
+  #define TR_BL_ERASE_INT_FLASH       "Slet intern flash lager"
+  #define TR_BL_ERASE_FLASH           "Slet flash lager"
+  #define TR_BL_ERASE_FLASH_MSG       "Dette kan vare op til 200s"
+  #define TR_BL_SELECT_KEY            " [TR4 Dn] for at bruge fil"
+  #define TR_BL_FLASH_KEY             " Hold [TR4 Dn] længe, for brænding"
+  #define TR_BL_ERASE_KEY             " Hold [TR4 Dn] længe, for sletning"
+  #define TR_BL_EXIT_KEY              " [TR4 Up] for at forlade"
 #endif
 
 // About screen
@@ -1245,6 +1251,7 @@
 #define TR_VOICE_TAIWANESE             "Taiwanesisk"
 #define TR_VOICE_JAPANESE              "Japansk"
 #define TR_VOICE_HEBREW                "Hebraisk"
+#define TR_VOICE_UKRAINIAN             "Ukrainisk"
 
 #define TR_USBJOYSTICK_LABEL           "USB joystik"
 #define TR_USBJOYSTICK_EXTMODE         "Tilstand"
@@ -1256,8 +1263,8 @@
 #define TR_VUSBJOYSTICK_CH_MODE        "Ingen","Knap","Akse","Sim"
 #define TR_VUSBJOYSTICK_CH_MODE_S      "-","B","A","S"
 #define TR_USBJOYSTICK_CH_BTNMODE      "Knap tilstand"
-#define TR_VUSBJOYSTICK_CH_BTNMODE     "Normal","Pulse","SWEmu","Delta","Companion"
-#define TR_VUSBJOYSTICK_CH_BTNMODE_S   TR("Norm","Normal"),TR("Puls","Pulse"),TR("SWEm","SWEmul"),TR("Delt","Delta"),TR("CPN","Companion")
+#define TR_VUSBJOYSTICK_CH_BTNMODE     "Normal","Puls","SWEmu","Delta","Companion"
+#define TR_VUSBJOYSTICK_CH_BTNMODE_S   TR("Norm","Normal"),TR("Puls","Puls"),TR("SWEm","SWEmul"),TR("Delt","Delta"),TR("CPN","Companion")
 #define TR_USBJOYSTICK_CH_SWPOS        "Positioner"
 #define TR_VUSBJOYSTICK_CH_SWPOS       "Skub","2POS","3POS","4POS","5POS","6POS","7POS","8POS"
 #define TR_USBJOYSTICK_CH_AXIS         "Akse"
@@ -1289,3 +1296,5 @@
 #define TR_SORT_ORDERS            "Navn A-Z","Navn Z-A","Sidst anvendt","Mest anvendt"
 #define TR_SORT_MODELS_BY         "Sorter modeller"
 #define TR_CREATE_NEW             "Opret"
+
+#define TR_MIX_SLOW_PREC          TR("Træg præc", "Træg op/ned præcision")

@@ -32,6 +32,17 @@
 
 #include <QMessageBox>
 
+void YamlValidateNames(GeneralSettings& gs, Board::Type board)
+{
+  for (int i = 0; i < CPN_MAX_INPUTS; i++) {
+    YamlValidateName(gs.inputConfig[i].name, board);
+  }
+
+  for (int i = 0; i < CPN_MAX_SWITCHES; i++) {
+    YamlValidateName(gs.switchConfig[i].name, board);
+  }
+}
+
 const YamlLookupTable beeperModeLut = {
   {  GeneralSettings::BEEPER_QUIET, "mode_quiet" },
   {  GeneralSettings::BEEPER_ALARMS_ONLY, "mode_alarms" },
@@ -43,7 +54,7 @@ enum BacklightMode {
   e_backlight_mode_off  = 0,
   e_backlight_mode_keys = 1,
   e_backlight_mode_sticks = 2,
-  e_backlight_mode_all = e_backlight_mode_keys+e_backlight_mode_sticks,
+  e_backlight_mode_all = e_backlight_mode_keys + e_backlight_mode_sticks,
   e_backlight_mode_on
 };
 
@@ -165,17 +176,24 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   std::string strboard = fw->getFlavour().toStdString();
   node["board"] = strboard;
 
-  YamlCalibData calib(rhs.calibMid, rhs.calibSpanNeg, rhs.calibSpanPos);
+  if (rhs.manuallyEdited)
+    node["manuallyEdited"] = (int)rhs.manuallyEdited;
+
+  YamlCalibData calib(rhs.inputConfig);
   node["calib"] = calib;
 
-  node["currModel"] = rhs.currModelIndex;
   node["currModelFilename"] = patchFilenameToYaml(rhs.currModelFilename);
-  node["contrast"] = rhs.contrast;
   node["vBatWarn"] = rhs.vBatWarn;
   node["txVoltageCalibration"] = rhs.txVoltageCalibration;
 
   node["vBatMin"] = rhs.vBatMin + 90;
   node["vBatMax"] = rhs.vBatMax + 120;
+
+  if (!Boards::getCapability(board, Board::HasColorLcd)) {
+    node["backlightColor"] = rhs.backlightColor;
+    node["contrast"] = rhs.contrast;
+    node["currModel"] = rhs.currModelIndex;
+  }
 
   node["backlightMode"] = backlightModeLut << std::abs(rhs.backlightMode);
   node["trainer"] = rhs.trainer;
@@ -184,7 +202,7 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   node["fai"] = (int)rhs.fai;
   node["disableMemoryWarning"] = (int)rhs.disableMemoryWarning;
   node["beepMode"] = rhs.beeperMode;
-  node["alarmsFlash"] = (int)rhs.flashBeep;
+  node["alarmsFlash"] = (int)rhs.alarmsFlash;
   node["disableAlarmWarning"] = (int)rhs.disableAlarmWarning;
   node["disableRssiPoweroffAlarm"] = (int)rhs.disableRssiPoweroffAlarm;
   node["USBMode"] = rhs.usbMode;
@@ -235,8 +253,12 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   node["varioRepeat"] = rhs.varioRepeat;
   node["backgroundVolume"] = rhs.backgroundVolume + 2;
   node["dontPlayHello"] = (int)rhs.dontPlayHello;
-  if (Boards::getCapability(fw->getBoard(), Board::HasColorLcd)) {
+  if (hasColorLcd) {
     node["modelQuickSelect"] = (int)rhs.modelQuickSelect;
+    node["modelSelectLayout"] = rhs.modelSelectLayout;
+    node["labelSingleSelect"] = rhs.labelSingleSelect;
+    node["labelMultiMode"] = rhs.labelMultiMode;
+    node["favMultiMode"] = rhs.favMultiMode;
   }
 
   Node serialPort;
@@ -251,7 +273,6 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
     node["serialPort"] = serialPort;
 
   node["antennaMode"] = antennaModeLut << rhs.antennaMode;
-  node["backlightColor"] = rhs.backlightColor;
   node["pwrOnSpeed"] = rhs.pwrOnSpeed;
   node["pwrOffSpeed"] = rhs.pwrOffSpeed;
 
@@ -263,56 +284,35 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   }
 
   Node sticksConfig;
-  sticksConfig = YamlStickConfig(rhs.stickName);
+  sticksConfig = YamlStickConfig(rhs.inputConfig);
   if (sticksConfig && sticksConfig.IsMap()) {
     node["sticksConfig"] = sticksConfig;
   }
 
-  Node switchConfig;
-  switchConfig = YamlSwitchConfig(rhs.switchName, rhs.switchConfig);
-  if (switchConfig && switchConfig.IsMap()) {
-    node["switchConfig"] = switchConfig;
-  }
-
-  //  TODO revisit when Companion refactored for adc
-  //  adc encoding requires pots and sliders to be merged in a prescribed sequence as defined in radio json
-  int maxPots = CPN_MAX_POTS + CPN_MAX_SLIDERS;
-  char potName[maxPots][HARDWARE_NAME_LEN + 1];
-  unsigned int potConfig[maxPots];
-
-  const int sticks = Boards::getCapability(board, Board::Sticks);
-  int adcoffset = sticks;
-  int seq = 0;
-
-  for (int i = 0; i < Boards::getCapability(board, Board::Pots); i++) {
-    seq = getCurrentFirmware()->getAnalogInputSeqADC(adcoffset + i) - sticks;
-    if (seq >= 0 && seq < maxPots) {
-      strcpy(potName[seq], rhs.potName[i]);
-      potConfig[seq] = rhs.potConfig[i];
-    }
-  }
-
-  adcoffset += Boards::getCapability(board, Board::Pots);
-
-  for (int i = 0; i < Boards::getCapability(board, Board::Sliders); i++) {
-    seq = getCurrentFirmware()->getAnalogInputSeqADC(adcoffset + i) - sticks;
-    if (seq >= 0 && seq < maxPots) {
-      strcpy(potName[seq], rhs.sliderName[i]);
-      potConfig[seq] = ((rhs.sliderConfig[i] == Board::SLIDER_WITH_DETENT) ? Board::POT_SLIDER_WITH_DETENT : Board::POT_NONE);
-    }
-  }
-
   Node potsConfig;
-  potsConfig = YamlPotConfig(potName, potConfig);
+  potsConfig = YamlPotConfig(rhs.inputConfig);
   if (potsConfig && potsConfig.IsMap()) {
     node["potsConfig"] = potsConfig;
   }
 
+  Node switchConfig;
+  switchConfig = YamlSwitchConfig(rhs.switchConfig);
+  if (switchConfig && switchConfig.IsMap()) {
+    node["switchConfig"] = switchConfig;
+  }
+
+  Node flexSwitches;
+  flexSwitches = YamlSwitchesFlex(rhs.switchConfig);
+  if (flexSwitches && flexSwitches.IsMap()) {
+    node["flexSwitches"] = flexSwitches;
+  }
+
   node["ownerRegistrationID"] = rhs.registrationId;
 
-  // Gyro (for now only xlites)
-  node["gyroMax"] = rhs.gyroMax;
-  node["gyroOffset"] = rhs.gyroOffset;
+  if (Boards::getCapability(board, Board::HasIMU)) {
+    node["imuMax"] = rhs.imuMax;
+    node["imuOffset"] = rhs.imuOffset;
+  }
 
   // OneBit sampling (X9D only?)
   node["uartSampleMode"] = rhs.uartSampleMode;
@@ -323,6 +323,7 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   // Radio level tabs control (global settings)
   if (hasColorLcd)
     node["radioThemesDisabled"] = (int)rhs.radioThemesDisabled;
+
   node["radioGFDisabled"] = (int)rhs.radioGFDisabled;
   node["radioTrainerDisabled"] = (int)rhs.radioTrainerDisabled;
   // Model level tabs control (global setting)
@@ -389,7 +390,6 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["board"] >> flavour;
 
   auto fw = getCurrentFirmware();
-  auto board = fw->getBoard();
 
   qDebug() << "Settings version:" << rhs.semver << "File flavour:" << flavour.c_str() << "Firmware flavour:" << fw->getFlavour();
 
@@ -419,7 +419,7 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
 
   YamlCalibData calib;
   node["calib"] >> calib;
-  calib.copy(rhs.calibMid, rhs.calibSpanNeg, rhs.calibSpanPos);
+  calib.copy(rhs.inputConfig);
 
   node["currModel"] >> rhs.currModelIndex;
   node["currModelFilename"] >> rhs.currModelFilename;
@@ -437,7 +437,7 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["fai"] >> rhs.fai;
   node["disableMemoryWarning"] >> rhs.disableMemoryWarning;
   node["beepMode"] >> rhs.beeperMode;
-  node["alarmsFlash"] >> rhs.flashBeep;
+  node["alarmsFlash"] >> rhs.alarmsFlash;
   node["disableAlarmWarning"] >> rhs.disableAlarmWarning;
   node["disableRssiPoweroffAlarm"] >> rhs.disableRssiPoweroffAlarm;
   node["USBMode"] >> rhs.usbMode;
@@ -547,46 +547,39 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
 
   YamlStickConfig stickConfig;
   node["sticksConfig"] >> stickConfig;
-  stickConfig.copy(rhs.stickName);
-
-  YamlSwitchConfig switchConfig;
-  node["switchConfig"] >> switchConfig;
-  switchConfig.copy(rhs.switchName, rhs.switchConfig);
-
-  //  TODO: revisit when Companion refactored to support adc
-  //  adc pots and sliders decoded into a single array but Compapanion has separate arrays
-  int maxPots = CPN_MAX_POTS + CPN_MAX_SLIDERS; // must match YamlPotConfig declaration
-  char potName[maxPots][HARDWARE_NAME_LEN + 1];
-  unsigned int potConfig[maxPots];
+  stickConfig.copy(rhs.inputConfig);
 
   YamlPotConfig potsConfig;
   node["potsConfig"] >> potsConfig;
-  potsConfig.copy(potName, potConfig);
+  potsConfig.copy(rhs.inputConfig);
 
-  int numPots = Boards::getCapability(board, Board::Pots);
-
-  for (int i = 0; i < numPots; i++) {
-    strcpy(rhs.potName[i], potName[i]);
-    rhs.potConfig[i] = potConfig[i];
-  }
-
-  if (radioSettingsVersion < SemanticVersion(QString(CPN_ADC_REFACTOR_VERSION))) {
+  // for parsing pre v2.10 config - this is not encoded
+  if (node["slidersConfig"]) {
     YamlSliderConfig slidersConfig;
     node["slidersConfig"] >> slidersConfig;
-    slidersConfig.copy(rhs.sliderName, rhs.sliderConfig);
+    slidersConfig.copy(rhs.inputConfig);
   }
-  else {
-    for (int i = 0; i < Boards::getCapability(board, Board::Sliders); i++) {
-      strcpy(rhs.sliderName[i], potName[numPots + i]);
-      rhs.sliderConfig[i] = ((potConfig[numPots + i] == Board::POT_SLIDER_WITH_DETENT) ? Board::SLIDER_WITH_DETENT : Board::SLIDER_NONE);
-    }
+
+  YamlSwitchConfig switchConfig;
+  node["switchConfig"] >> switchConfig;
+  switchConfig.copy(rhs.switchConfig);
+
+  // MUST be parsed after switchConfig
+  if (node["flexSwitches"]) {
+    YamlSwitchesFlex flexSwitches;
+    node["flexSwitches"] >> flexSwitches;
+    // merge
+    flexSwitches.copy(rhs.switchConfig);
   }
 
   node["ownerRegistrationID"] >> rhs.registrationId;
 
-  // Gyro (for now only xlites)
-  node["gyroMax"] >> rhs.gyroMax;
-  node["gyroOffset"] >> rhs.gyroOffset;
+  // depreciated in 2.11
+  node["gyroMax"] >> rhs.imuMax;
+  node["gyroOffset"] >> rhs.imuOffset;
+
+  node["imuMax"] >> rhs.imuMax;
+  node["imuOffset"] >> rhs.imuOffset;
 
   // OneBit sampling (X9D only?)
   node["uartSampleMode"] >> rhs.uartSampleMode;
@@ -611,6 +604,15 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["modelSFDisabled"] >> rhs.modelSFDisabled;
   node["modelCustomScriptsDisabled"] >> rhs.modelCustomScriptsDisabled;
   node["modelTelemetryDisabled"] >> rhs.modelTelemetryDisabled;
+
+  node["modelSelectLayout"] >> rhs.modelSelectLayout;
+  node["labelSingleSelect"] >> rhs.labelSingleSelect;
+  node["labelMultiMode"] >> rhs.labelMultiMode;
+  node["favMultiMode"] >> rhs.favMultiMode;
+
+  // perform integrity checks and fix-ups
+  YamlValidateNames(rhs, fw->getBoard());
+  rhs.validateFlexSwitches();
 
   return true;
 }

@@ -76,6 +76,9 @@ void onCustomFunctionsFileSelectionMenu(const char * result)
     // The user choosed a file in the list
     memcpy(cfn->play.name, result, sizeof(cfn->play.name));
     storageDirty(eeFlags);
+    if (CFN_ACTIVE(cfn)  && (func == FUNC_PLAY_SCRIPT || func == FUNC_RGB_LED)) {
+      LUA_LOAD_MODEL_SCRIPTS();
+    }
   }
 }
 #endif // SDCARD
@@ -346,7 +349,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           }
           else if (func == FUNC_PLAY_VALUE) {
             val_max = MIXSRC_LAST_TELEM;
-            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN - (val_displayed == 0 ? 0 : 2 * FW), y, val_displayed, attr);
             if (active) {
               INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
               INCDEC_ENABLE_CHECK(functionsContext == &globalFunctionsContext ? isSourceAvailableInGlobalFunctions : isSourceAvailable);
@@ -410,6 +413,8 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
                 break;
             }
 
+#if !defined(NAVIGATION_X7)
+            // For X7 type navigation the ENTER long press is handled below
             if (attr && event==EVT_KEY_LONG(KEY_ENTER)) {
               killEvents(event);
               s_editMode = !s_editMode;
@@ -418,6 +423,7 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               CFN_GVAR_MODE(cfn) &= 0x03;
               val_displayed = 0;
             }
+#endif
           }
 #endif // GVARS
           else if (attr) {
@@ -473,7 +479,12 @@ void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
         
         case 5:
             drawCheckBox(MODEL_SPECIAL_FUNC_5TH_COLUMN_ONOFF, y, CFN_ACTIVE(cfn), attr);
-            if (active) CFN_ACTIVE(cfn) = checkIncDec(event, CFN_ACTIVE(cfn), 0, 1, eeFlags);      
+            if (active) {
+              CFN_ACTIVE(cfn) = checkIncDec(event, CFN_ACTIVE(cfn), 0, 1, eeFlags);
+              if (checkIncDec_Ret && (func == FUNC_PLAY_SCRIPT || func == FUNC_RGB_LED)) {
+                LUA_LOAD_MODEL_SCRIPTS();
+              }
+            }
             break;
       }
     }

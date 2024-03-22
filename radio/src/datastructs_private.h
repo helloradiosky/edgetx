@@ -78,7 +78,7 @@ PACK(struct MixData {
   uint16_t carryTrim:1;
   uint16_t mixWarn:2;       // mixer warning
   uint16_t mltpx:2 ENUM(MixerMultiplex);
-  uint16_t spare:1 SKIP;
+  uint16_t speedPrec:1;
   int32_t  offset:13 CUST(in_read_weight,in_write_weight);
   int32_t  swtch:10 CUST(r_swtchSrc,w_swtchSrc);
   uint32_t flightModes:9 CUST(r_flightModes, w_flightModes);
@@ -824,16 +824,9 @@ PACK(struct TrainerData {
     NOBACKUP(uint8_t blOffBright:7); \
     NOBACKUP(char bluetoothName[LEN_BLUETOOTH_NAME]);
 #else
-  #if defined(STORAGE_BLUETOOTH)
-    #define BLUETOOTH_FIELDS \
-      uint8_t spare6 SKIP; \
-      char bluetoothName[LEN_BLUETOOTH_NAME];
-  #else
-    #define BLUETOOTH_FIELDS
-  #endif
   #define EXTRA_GENERAL_FIELDS \
     uint8_t  backlightColor; \
-    BLUETOOTH_FIELDS
+    char bluetoothName[LEN_BLUETOOTH_NAME];
 #endif
 
 #if defined(BUZZER)
@@ -964,19 +957,26 @@ PACK(struct RadioData {
 
   // Radio level tabs control (global settings)
 #if defined(COLORLCD)
-  uint8_t radioThemesDisabled:1;
+  NOBACKUP(uint8_t modelSelectLayout:2);
+  NOBACKUP(uint8_t radioThemesDisabled:1);
 #endif
-  uint8_t radioGFDisabled:1;
-  uint8_t radioTrainerDisabled:1;
+  NOBACKUP(uint8_t radioGFDisabled:1);
+  NOBACKUP(uint8_t radioTrainerDisabled:1);
   // Model level tabs control (global setting)
-  uint8_t modelHeliDisabled:1;
-  uint8_t modelFMDisabled:1;
-  uint8_t modelCurvesDisabled:1;
-  uint8_t modelGVDisabled:1;
-  uint8_t modelLSDisabled:1;
-  uint8_t modelSFDisabled:1;
-  uint8_t modelCustomScriptsDisabled:1;
-  uint8_t modelTelemetryDisabled:1;
+  NOBACKUP(uint8_t modelHeliDisabled:1);
+  NOBACKUP(uint8_t modelFMDisabled:1);
+  NOBACKUP(uint8_t modelCurvesDisabled:1);
+  NOBACKUP(uint8_t modelGVDisabled:1);
+  NOBACKUP(uint8_t modelLSDisabled:1);
+  NOBACKUP(uint8_t modelSFDisabled:1);
+  NOBACKUP(uint8_t modelCustomScriptsDisabled:1);
+  NOBACKUP(uint8_t modelTelemetryDisabled:1);
+
+#if defined(COLORLCD)
+  uint8_t labelSingleSelect:1;  // 0 = multi-select, 1 = single select labels
+  uint8_t labelMultiMode:1;     // 0 = match all labels (AND), 1 = match any labels (OR)
+  uint8_t favMultiMode:1;       // 0 = match all (AND), 1 = match any (OR)
+#endif
 
   NOBACKUP(uint8_t getBrightness() const
   {

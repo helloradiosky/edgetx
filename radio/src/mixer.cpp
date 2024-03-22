@@ -360,9 +360,13 @@ getvalue_t getValue(mixsrc_t i, bool* valid)
   }
 #endif
 
-#if defined(SPACEMOUSE)
+#if defined(PCBHORUS)
   else if (i >= MIXSRC_FIRST_SPACEMOUSE && i <= MIXSRC_LAST_SPACEMOUSE) {
+#if defined(SPACEMOUSE)
     return get_spacemouse_value(i - MIXSRC_FIRST_SPACEMOUSE);
+#else
+    return 0;
+#endif
   }
 #endif
 
@@ -591,6 +595,12 @@ void evalInputs(uint8_t mode)
   }
 }
 
+#if defined(SURFACE_RADIO)
+  constexpr int IDLE_TRIM_SCALE = 1;
+#else
+  constexpr int IDLE_TRIM_SCALE = 2;
+#endif
+
 int getStickTrimValue(int stick, int stickValue)
 {
   if (stick < 0)
@@ -598,13 +608,26 @@ int getStickTrimValue(int stick, int stickValue)
 
   int trim = trims[stick];
   uint8_t thrTrimSw = g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM;
-  if (stick == thrTrimSw) {
+  if (stick == thrTrimSw) {  // trim for throttle
     if (g_model.throttleReversed) trim = -trim;
-    if (g_model.thrTrim) {
+    if (g_model.thrTrim) {   // throttle idle ON
+      // evalTrims() store 2 * trim value in trims[]
+      // so here, trim values range from -256 to 256
+      // and extended trim values range from -1024 to 1024
       trim = (g_model.extendedTrims) ? 2 * TRIM_EXTENDED_MAX + trim
                                      : 2 * TRIM_MAX + trim;
-      trim = trim * (1024 - stickValue) / (2 * RESX);
+      trim = trim * (1024 - stickValue) / (IDLE_TRIM_SCALE * RESX);
+#if defined(SURFACE_RADIO)
+      // Throttle Idle trim (g_model.thrTrim) should affect only forward stick (0 to 1024)
+      // Return no trim for reverse side when throttle idle trim is enabled
+      if (stickValue < 0) return 0;
+#endif
     }
+#if defined(SURFACE_RADIO)
+    // divide throtle trim by two since since the full extend
+    // of forward/reverse chan is only 1024 instead of 2048
+    trim >>= 1;
+#endif
   }
   return trim;
 }
@@ -911,17 +934,18 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
             // rate equals a full range for one second; if less time is passed rate is accordingly smaller
             // if one second passed, rate would be 2048 (full motion)*256(recalculated weight)*100(100 ticks needed for one second)
             int32_t currentValue = ((int32_t) v<<DEL_MULT_SHIFT);
+            int32_t precMult = md->speedPrec ? 1 : 10;
             if (diff > 0) {
               if (s_mixer_first_run_done && md->speedUp > 0) {
                 // if a speed upwards is defined recalculate the new value according configured speed; the higher the speed the smaller the add value is
-                int32_t newValue = tact+rate/((int16_t)10*md->speedUp);
+                int32_t newValue = tact+rate/((int16_t)precMult*md->speedUp);
                 if (newValue<currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
             else {  // if is <0 because ==0 is not possible
               if (s_mixer_first_run_done && md->speedDown > 0) {
                 // see explanation in speedUp
-                int32_t newValue = tact-rate/((int16_t)10*md->speedDown);
+                int32_t newValue = tact-rate/((int16_t)precMult*md->speedDown);
                 if (newValue>currentValue) currentValue = newValue; // Endposition; prevent toggling around the destination
               }
             }
@@ -1116,6 +1140,13 @@ void evalMixes(uint8_t tick10ms)
     } else {
       modelFunctionsContext.reset();
     }
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
+    if (!radioGFEnabled() && !modelSFEnabled()) {
+      for (uint8_t i = 0; i < MAX_OUTPUT_CHANNELS; i++) {
+        safetyCh[i] = OVERRIDE_CHANNEL_UNDEFINED;
+      }
+    }
+#endif
   }
 
   //========== LIMITS ===============

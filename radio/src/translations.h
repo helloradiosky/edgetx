@@ -75,6 +75,9 @@
 #elif defined(TRANSLATIONS_HE)
 #include "translations/he.h"
 #define LEN_SPECIAL_CHARS 0
+#elif defined(TRANSLATIONS_UA)
+#include "translations/ua.h"
+#define LEN_SPECIAL_CHARS 0
 #else
 #include "translations/en.h"
 #define LEN_SPECIAL_CHARS 0
@@ -810,6 +813,12 @@ extern const char STR_SAVE_THEME[];
 extern const char STR_EDIT_COLOR[];
 extern const char STR_NO_THEME_IMAGE[];
 extern const char STR_BACKLIGHT_TIMER[];
+extern const char STR_LABELS_SELECT[];
+extern const char STR_LABELS_MATCH[];
+extern const char STR_FAV_MATCH[];
+extern const char* const STR_LABELS_SELECT_MODE[];
+extern const char* const STR_LABELS_MATCH_MODE[];
+extern const char* const STR_FAV_MATCH_MODE[];
 #endif
 extern const char STR_EXECUTE_FILE[];
 extern const char STR_DELETE_FILE[];
@@ -913,6 +922,7 @@ extern const LanguagePack cnLanguagePack;
 extern const LanguagePack jpLanguagePack;
 extern const LanguagePack ruLanguagePack;
 extern const LanguagePack heLanguagePack;
+extern const LanguagePack uaLanguagePack;
 extern const LanguagePack * const languagePacks[];
 
 #if defined(LANGUAGE_PACKS_DEFINITION)
@@ -935,6 +945,7 @@ const LanguagePack * const languagePacks[] = {
   &ruLanguagePack,
   &seLanguagePack,
   &skLanguagePack,
+  &uaLanguagePack,
   NULL
 };
 #endif
@@ -1273,6 +1284,8 @@ extern const char* const STR_SORT_ORDERS[];
 extern const char STR_SORT_MODELS_BY[];
 extern const char STR_CREATE_NEW[];
 #endif
+
+extern const char STR_MIX_SLOW_PREC[];
 
 #endif // _TRANSLATIONS_H_
 

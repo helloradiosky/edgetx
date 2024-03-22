@@ -46,10 +46,6 @@ class AbstractStaticItemModel;
 constexpr char AIM_MODELDATA_TRAINERMODE[]  {"modeldata.trainermode"};
 constexpr char AIM_MODELDATA_FUNCSWITCHCONFIG[]  {"modeldata.funcswitchconfig"};
 constexpr char AIM_MODELDATA_FUNCSWITCHSTART[]  {"modeldata.funcswitchstart"};
-constexpr int LABEL_LENGTH=16;
-
-#define CHAR_FOR_NAMES " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789_-."
-#define CHAR_FOR_NAMES_REGEX "[ A-Za-z0-9_.-,\"]*"
 
 class RSSIAlarmData {
   public:
@@ -87,6 +83,7 @@ enum TrainerMode {
   TRAINER_MODE_LAST = TRAINER_MODE_MULTI
 };
 
+#define MODEL_NAME_LEN 15
 #define INPUT_NAME_LEN 4
 #define CPN_MAX_BITMAP_LEN 14
 
@@ -125,7 +122,7 @@ class ModelData {
 
     char      semver[8 + 1];
     bool      used;
-    char      name[15+1];
+    char      name[MODEL_NAME_LEN + 1];
     char      filename[16+1];
     char      labels[100];
     int       modelIndex;      // Companion only, temporary index position managed by data model.
@@ -163,8 +160,8 @@ class ModelData {
     unsigned int switchWarningEnable;
     unsigned int thrTrimSwitch;
     unsigned int potsWarningMode;
-    bool potsWarnEnabled[CPN_MAX_POTS + CPN_MAX_SLIDERS];
-    int potsWarnPosition[CPN_MAX_POTS + CPN_MAX_SLIDERS];
+    bool potsWarnEnabled[CPN_MAX_INPUTS];
+    int potsWarnPosition[CPN_MAX_INPUTS];
     bool displayChecklist;
 
     GVarData gvarData[CPN_MAX_GVARS];
@@ -230,7 +227,7 @@ class ModelData {
     unsigned int functionSwitchGroup;
     unsigned int functionSwitchStartConfig;
     unsigned int functionSwitchLogicalState;
-    char functionSwitchNames[CPN_MAX_FUNCTION_SWITCHES][HARDWARE_NAME_LEN + 1];
+    char functionSwitchNames[CPN_MAX_SWITCHES_FUNCTION][HARDWARE_NAME_LEN + 1];
 
     // Custom USB joytsick mapping
     unsigned int usbJoystickExtMode;
