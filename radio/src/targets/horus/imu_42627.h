@@ -19,59 +19,40 @@
  * GNU General Public License for more details.
  */
 
-#pragma once
+#ifndef _IMUSENSOR_H_
+#define _IMUSENSOR_H_
 
-#include <stdint.h>
-
-enum EnumKeys {
-  KEY_MENU,
-  KEY_EXIT,
-  KEY_ENTER,
-
-  KEY_PAGEUP,
-  KEY_PAGEDN,
-
-  KEY_UP,
-  KEY_DOWN,
-
-  KEY_LEFT,
-  KEY_RIGHT,
-
-  KEY_PLUS,
-  KEY_MINUS,
-
-  KEY_MODEL,
-  KEY_TELE,
-  KEY_SYS,
-
-  KEY_SHIFT,
-  KEY_BIND,
-
- #if defined(RADIO_V16)
-  MAX_KEYS,
-
-  KEY_SENSORVIEW,
-  KEY_TELEVIEW,
-  KEY_CHVIEW,
-  KEY_INTModule,
-  KEY_EXTModule
-#else
-  MAX_KEYS
-#endif
+struct imu_cmdpck_t {
+	int16_t  IMU_TEMP;
+	int16_t  IMU_ACCEL_X;
+	int16_t  IMU_ACCEL_Y;
+	int16_t  IMU_ACCEL_Z;
+	int16_t  IMU_GYRO_X;
+	int16_t  IMU_GYRO_Y;
+	int16_t  IMU_GYRO_Z;
 };
 
-// returns a bit field with each key set as (1 << KEY_xxx)
-uint32_t readKeys();
+extern void IICimu42627init(void);
+extern void imu42627Init(void);
 
-// returns a bit field with each trim key
-uint32_t readTrims();
+extern void GetIMU42627(uint16_t);
+extern uint8_t GetIMUID(void);
 
-// Init GPIO ports
-void keysInit();
+#define MU42627ID	0x20
+#define MU6050ID	0x68
 
-uint32_t keysGetSupported();
+extern float x_angle;
+extern float y_angle;
 
-uint8_t keysGetMaxKeys();
-uint8_t keysGetMaxTrims();
+extern float x_Gyro_angle;
+extern float y_Gyro_angle;
+extern float z_Gyro_angle;
 
-const char* keysGetLabel(EnumKeys key);
+extern bool IMUSTATUS;
+extern bool IMURUNFLAG;
+
+extern bool gyroinitflag;
+
+#endif
+
+

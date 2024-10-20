@@ -607,6 +607,19 @@ void audioTimerCountdown(uint8_t timer, int value);
 #define AUDIO_TRAINER_LOST()     audioEvent(AU_TRAINER_LOST)
 #define AUDIO_TRAINER_BACK()     audioEvent(AU_TRAINER_BACK)
 
+#if defined(VOICE_SENSOR)
+  #define AUDIO_HELLORADIO()      audioPlay(AU_HELLORADIO)
+  #define AUDIO_OKAY()            audioPlay(AU_OKAY)
+  #define AUDIO_OPENGEAR()        audioPlay(AU_OPENGEAR)
+  #define AUDIO_CLOSEGEAR()       audioPlay(AU_CLOSEGEAR)
+  #define AUDIO_OPENFLAP()        audioPlay(AU_OPENFLAP)
+  #define AUDIO_CLOSEFLAP()       audioPlay(AU_CLOSEFLAP)
+  #define AUDIO_OPENED()          audioPlay(AU_OPENED)
+  #define AUDIO_CLOSED()          audioPlay(AU_CLOSED)
+  #define AUDIO_ExtWarn()       audioPlay(AU_EXTWARN)
+  #define AUDIO_ExtWarncut()      audioPlay(AU_EXTWARNCUT)
+#endif
+
 #else // AUDIO
 
 #include "buzzer.h"
