@@ -110,6 +110,10 @@ enum EdgeTxIcon {
   ICON_TOPMENU_GPS,
 #endif
 
+#if defined(RADIO_V16)
+    ICON_RADIO_CURRENTSENSOR,
+#endif
+
   ICON_ERROR,
   ICON_BUSY,
 
