@@ -67,10 +67,6 @@
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
 
-static const lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(2),
-                                     LV_GRID_TEMPLATE_LAST};
-static const lv_coord_t row_dsc[] = {LV_GRID_CONTENT, LV_GRID_CONTENT,
-                                     LV_GRID_TEMPLATE_LAST};
 
 RadioCurrentMenu::RadioCurrentMenu(ModelMenu* parent) :
     TabsGroup(ICON_MONITOR), parentMenu(parent)
@@ -233,16 +229,29 @@ void RadioCurrentPage::checkEvents()
   enableVBatBridge();
 }
 
-void RadioCurrentPage::build(FormWindow * window)
+void RadioCurrentPage::build(Window * window)
 {
-  window->setFlexLayout(LV_FLEX_FLOW_COLUMN, 0);
+#if !PORTRAIT_LCD
+  static const lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1),
+                                       LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+#else
+  static const lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1),
+                                       LV_GRID_TEMPLATE_LAST};
+#endif
+  static const lv_coord_t row_dsc[] = {LV_GRID_CONTENT, LV_GRID_TEMPLATE_LAST};
 
-  FlexGridLayout grid(col_dsc, row_dsc, 2);
+  window->setFlexLayout(LV_FLEX_FLOW_COLUMN, PAD_ZERO);
+
+  FlexGridLayout grid(col_dsc, row_dsc, PAD_TINY);
+
+  FormLine *line = nullptr;
+
+#if defined(__null__)
 
   // TODO: sub-title?
 
   // Bat calibration
-  auto line = window->newLine(&grid);
+  auto line = window->newLine(grid);
   //new StaticText(line, rect_t{}, "All Message:", 0, COLOR_THEME_PRIMARY1);
   auto box = new FormWindow(line, rect_t{});
   box->setFlexLayout(LV_FLEX_FLOW_ROW, lv_dpx(8));
@@ -254,28 +263,28 @@ void RadioCurrentPage::build(FormWindow * window)
   //new Subtitle(window, "System Batter:");
 
   // 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage S1 display
   new StaticText(line, rect_t{}, "Cell1:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return getcsd203BatteryS1Voltage()/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage S2 display
   new StaticText(line, rect_t{}, "Cell2:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return (getcsd203BatteryVoltage()-getcsd203BatteryS1Voltage())/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage total display
   new StaticText(line, rect_t{}, "Total Volt:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return getcsd203BatteryVoltage()/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   if(usbChargerLed()) {
     // Main current display
     new StaticText(line, rect_t{}, "Change Current:", 0, COLOR_THEME_PRIMARY1);
@@ -292,7 +301,7 @@ void RadioCurrentPage::build(FormWindow * window)
     }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "A");
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   if(usbChargerLed()) {
     // Main voltage S2 display
     new StaticText(line, rect_t{}, "Change Power:", 0, COLOR_THEME_PRIMARY1);
@@ -309,7 +318,7 @@ void RadioCurrentPage::build(FormWindow * window)
     }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "W");
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   new Subtitle(window, "Speech recognition Management");
   //new Subtitle(window, "Speech recognition config:");
   //auto serial = new SerialConfigWindow(window, rect_t{});S
@@ -322,7 +331,7 @@ void RadioCurrentPage::build(FormWindow * window)
     if (!port || !port->name) continue;
 
     //line = newLine(&grid);
-    line = window->newLine(&grid);
+    line = window->newLine(grid);
     new StaticText(line, rect_t{}, port->name, 0, COLOR_THEME_PRIMARY1);
 
     box = new FormWindow(line, rect_t{});
@@ -352,35 +361,35 @@ void RadioCurrentPage::build(FormWindow * window)
           });
     }
   }
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //line->padLeft(10);
   new StaticText(line, rect_t{}, "Charge protect", 0, COLOR_THEME_PRIMARY1);
   new ToggleSwitch(line, rect_t{}, GET_SET_DEFAULT(g_eeGeneral.usbchgprotect));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //line->padLeft(10);
   new StaticText(line, rect_t{}, "CH56 Release", 0, COLOR_THEME_PRIMARY1);
   new ToggleSwitch(line, rect_t{}, GET_SET_DEFAULT(g_eeGeneral.voivech56switch));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //line->padLeft(10);
   new StaticText(line, rect_t{}, "Headchasing CH78", 0, COLOR_THEME_PRIMARY1);
   new ToggleSwitch(line, rect_t{}, GET_SET_DEFAULT(g_eeGeneral.gyroHeadCH78switch));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
 
   new Subtitle(window, "GYRO Pitch adjust:");
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Pitch dead", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 40, 200, GET_SET_DEFAULT(g_eeGeneral.imuxdead));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Pitch P", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuxp));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Pitch I", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuxi));
@@ -391,17 +400,17 @@ void RadioCurrentPage::build(FormWindow * window)
   //new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuxd));
 
   new Subtitle(window, "GYRO Roller adjust:");
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate  
   new StaticText(line, rect_t{}, "GYRO Roller dead", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 40, 200, GET_SET_DEFAULT(g_eeGeneral.imuydead));
   
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Roller P", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuyp));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Roller I", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuyi));
@@ -411,17 +420,17 @@ void RadioCurrentPage::build(FormWindow * window)
   //new StaticText(line, rect_t{}, "GYRO Roller D", 0, COLOR_THEME_PRIMARY1);
   //new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuyd));
   new Subtitle(window, "GYRO Rotate adjust:");
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate  
   new StaticText(line, rect_t{}, "GYRO Rotate dead", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 40, 200, GET_SET_DEFAULT(g_eeGeneral.imuzdead));
   
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Rotate P", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuzp));
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "GYRO Rotate I", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuzi));
@@ -430,6 +439,7 @@ void RadioCurrentPage::build(FormWindow * window)
   // Main volume Pitch rate Roller rate
   //new StaticText(line, rect_t{}, "GYRO Rotate D", 0, COLOR_THEME_PRIMARY1);
   //new Slider(line, lv_pct(50), 1, 100, GET_SET_DEFAULT(g_eeGeneral.imuzd));
+#endif
 }
 
 RadioCurrentTotalPage::RadioCurrentTotalPage():
@@ -443,18 +453,30 @@ void RadioCurrentTotalPage::checkEvents()
   enableVBatBridge();
 }
 
-void RadioCurrentTotalPage::build(FormWindow * window)
+void RadioCurrentTotalPage::build(Window * window)
 {
-  window->setFlexLayout(LV_FLEX_FLOW_COLUMN, 0);
+  #if !PORTRAIT_LCD
+  static const lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1),
+                                       LV_GRID_FR(1), LV_GRID_TEMPLATE_LAST};
+#else
+  static const lv_coord_t col_dsc[] = {LV_GRID_FR(1), LV_GRID_FR(1),
+                                       LV_GRID_TEMPLATE_LAST};
+#endif
+  static const lv_coord_t row_dsc[] = {LV_GRID_CONTENT, LV_GRID_TEMPLATE_LAST};
 
-  FlexGridLayout grid(col_dsc, row_dsc, 2);
+   window->setFlexLayout(LV_FLEX_FLOW_COLUMN, PAD_ZERO);
 
+  FlexGridLayout grid(col_dsc, row_dsc, PAD_TINY);
+
+  FormLine *line = nullptr;
+
+#if defined(__null__)
   // TODO: sub-title?
 
   // Bat calibration
-  auto line = window->newLine(&grid);
+  auto line = window->newLine(grid);
   //new StaticText(line, rect_t{}, "All Message:", 0, COLOR_THEME_PRIMARY1);
-  auto box = new FormWindow(line, rect_t{});
+  auto box = new Window(line, rect_t{});
   box->setFlexLayout(LV_FLEX_FLOW_ROW, lv_dpx(8));
   lv_obj_set_style_grid_cell_x_align(box->getLvObj(), LV_GRID_ALIGN_STRETCH, 0);
   lv_obj_set_style_flex_cross_place(box->getLvObj(), LV_FLEX_ALIGN_CENTER, 0);
@@ -464,28 +486,28 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   new Subtitle(window, "System Batter:");
 
   // 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage S1 display
   new StaticText(line, rect_t{}, "Cell1:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return getcsd203BatteryS1Voltage()/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage S2 display
   new StaticText(line, rect_t{}, "Cell2:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return (getcsd203BatteryVoltage()-getcsd203BatteryS1Voltage())/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage total display
   new StaticText(line, rect_t{}, "Total Volt:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return getcsd203BatteryVoltage()/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   if(usbChargerLed()) {
     // Main current display
     new StaticText(line, rect_t{}, "Charge Current:", 0, COLOR_THEME_PRIMARY1);
@@ -502,7 +524,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
     }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "A");
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   if(usbChargerLed()) {
     // Main voltage S2 display
     new StaticText(line, rect_t{}, "Change Power:", 0, COLOR_THEME_PRIMARY1);
@@ -519,12 +541,12 @@ void RadioCurrentTotalPage::build(FormWindow * window)
     }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "W");
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   new Subtitle(window, "EXTERNAL MODULE:");
   // headline "External module"
   //new StaticText(line, rect_t{}, STR_EXTERNAL_MODULE, 0, COLOR_THEME_PRIMARY1);
   // 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   auto name=new StaticText(line, rect_t{}, "Module name:", 0, COLOR_THEME_PRIMARY1);
   name->setText(STR_MODULE_PROTOCOLS[g_model.moduleData[EXTERNAL_MODULE].type]);
   //lv_obj_add_flag(name->getLvObj(), LV_OBJ_FLAG_HIDDEN);
@@ -533,7 +555,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   if (isModuleCrossfire(EXTERNAL_MODULE)) {
     char statusText[64];
 
-    line = window->newLine(&grid);
+    line = window->newLine(grid);
     auto hz = 1000000 / getMixerSchedulerPeriod();
     // snprintf(statusText, 64, "%d Hz %" PRIu32 " Err", hz, telemetryErrors);
     snprintf(statusText, 64, "%d Hz", hz);
@@ -545,14 +567,14 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   if (isModuleMultimodule(EXTERNAL_MODULE)) {
     char statusText[64];
 
-    line = window->newLine(&grid);
+    line = window->newLine(grid);
     getMultiModuleStatus(EXTERNAL_MODULE).getStatusString(statusText);
     //name->setText(statusText);
     //lv_obj_clear_flag(name->getLvObj(), LV_OBJ_FLAG_HIDDEN);
     new StaticText(line, rect_t{}, statusText, 0, COLOR_THEME_PRIMARY1);
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //ext voltage display
   new StaticText(line, rect_t{}, "Module Voltage:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
@@ -560,14 +582,14 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "V");
 
   // 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //ext current display
   new StaticText(line, rect_t{}, "Module Current:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return getcsd203extCurrent()/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "A");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage S2 display
   new StaticText(line, rect_t{}, "Module Power:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
@@ -575,7 +597,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "W");
 
   // Voice check enable
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //new StaticText(line, rect_t{}, STR_RTC_CHECK, 0, COLOR_THEME_PRIMARY1);
   new StaticText(line, rect_t{}, "Ext Module protect", 0, COLOR_THEME_PRIMARY1);
 
@@ -588,14 +610,14 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   //new StaticText(line, rect_t{}, "Protect Current 2A", 0, COLOR_THEME_PRIMARY1);
 
   // 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //ext current display
   new StaticText(line, rect_t{}, "Protect Current:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return g_eeGeneral.extmaxcurrent/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "A");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main volume Pitch rate Roller rate
   new StaticText(line, rect_t{}, "Protect adjust", 0, COLOR_THEME_PRIMARY1);
   new Slider(line, lv_pct(50), 200, 3000, GET_SET_DEFAULT(g_eeGeneral.extmaxcurrent));
@@ -610,13 +632,13 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   ebatMax->setWindowFlags(REFRESH_ALWAYS);*/
 
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   new Subtitle(window, "INTERNAL MODULE:");
     //line = window->newLine(&grid);
   // headline "Internal module"
    // new StaticText(line, rect_t{}, STR_INTERNAL_MODULE, 0, COLOR_THEME_PRIMARY1);
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   name=new StaticText(line, rect_t{}, "Module name:", 0, COLOR_THEME_PRIMARY1);
   name->setText(STR_MODULE_PROTOCOLS[g_model.moduleData[INTERNAL_MODULE].type]);
   //lv_obj_add_flag(module_status_w->getLvObj(), LV_OBJ_FLAG_HIDDEN);
@@ -624,7 +646,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   if (isModuleCrossfire(INTERNAL_MODULE)) {
     char statusText[64];
 
-    line = window->newLine(&grid);
+    line = window->newLine(grid);
     auto hz = 1000000 / getMixerSchedulerPeriod();
     // snprintf(statusText, 64, "%d Hz %" PRIu32 " Err", hz, telemetryErrors);
     snprintf(statusText, 64, "%d Hz", hz);
@@ -636,21 +658,21 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   if (isModuleMultimodule(INTERNAL_MODULE)) {
     char statusText[64];
 
-    line = window->newLine(&grid);
+    line = window->newLine(grid);
     getMultiModuleStatus(INTERNAL_MODULE).getStatusString(statusText);
     //name->setText(statusText);
     //lv_obj_clear_flag(name->getLvObj(), LV_OBJ_FLAG_HIDDEN);
     new StaticText(line, rect_t{}, statusText, 0, COLOR_THEME_PRIMARY1);
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //Int current display
   new StaticText(line, rect_t{}, "Module Current:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
       return getcsd203IntCurrent()/10;
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "A");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   // Main voltage S2 display
   new StaticText(line, rect_t{}, "Module Power:", 0, COLOR_THEME_PRIMARY1);
   new DynamicNumber<uint16_t>(line, rect_t{}, [] {
@@ -658,7 +680,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "W");
 
   // Voice check enable
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //new StaticText(line, rect_t{}, STR_RTC_CHECK, 0, COLOR_THEME_PRIMARY1);
   new StaticText(line, rect_t{}, "Int Module protect", 0, COLOR_THEME_PRIMARY1);
 
@@ -688,27 +710,27 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   }
 #endif
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   new Subtitle(window, "Current sensor:");
 
   if(CSD203MainInitFlag==true) {
-      line = window->newLine(&grid);
+      line = window->newLine(grid);
       new StaticText(line, rect_t{}, "System sensor OK", 0, COLOR_THEME_PRIMARY1);
   }
   if(CSD203ExtInitFlag==true) {
-      line = window->newLine(&grid);
+      line = window->newLine(grid);
       new StaticText(line, rect_t{}, "External sensor OK", 0, COLOR_THEME_PRIMARY1);
   }
   if(CSD203InInitFlag==true) {
-      line = window->newLine(&grid);
+      line = window->newLine(grid);
       new StaticText(line, rect_t{}, "Internal sensor OK", 0, COLOR_THEME_PRIMARY1);
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   //total current display
   new StaticText(line, rect_t{}, "", 0, COLOR_THEME_PRIMARY1);
   // 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   if(usbChargerLed()) {
     //total current display
     new StaticText(line, rect_t{}, "Total Current:", 0, COLOR_THEME_PRIMARY1);
@@ -724,7 +746,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
     }, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "A");
   }
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   if(usbChargerLed()) {
     // Main voltage S2 display
     new StaticText(line, rect_t{}, "Total Power:", 0, COLOR_THEME_PRIMARY1);
@@ -741,14 +763,14 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   }
 
   // 
-  //line = window->newLine(&grid);
+  //line = window->newLine(grid);
   //total current display
   //new StaticText(line, rect_t{}, "Total power:", 0, COLOR_THEME_PRIMARY1);
   //new DynamicNumber<uint16_t>(line, rect_t{}, [] {
   //    return (((getcsd203IntCurrent()+getcsd203extCurrent()+getcsd203MainCurrent())/1)*getcsd203BatteryVoltage()/1)*10;
   //}, COLOR_THEME_PRIMARY1 | PREC2, nullptr, "mW");
 
-  line = window->newLine(&grid);
+  line = window->newLine(grid);
   new Subtitle(window, "Speech recognition Management");
   //new Subtitle(window, "Speech recognition config:");
   //auto serial = new SerialConfigWindow(window, rect_t{});S
@@ -761,7 +783,7 @@ void RadioCurrentTotalPage::build(FormWindow * window)
     if (!port || !port->name) continue;
 
     //line = newLine(&grid);
-    line = window->newLine(&grid);
+    line = window->newLine(grid);
     new StaticText(line, rect_t{}, port->name, 0, COLOR_THEME_PRIMARY1);
 
     box = new FormWindow(line, rect_t{});
@@ -802,12 +824,12 @@ void RadioCurrentTotalPage::build(FormWindow * window)
   lv_obj_set_width(btn->getLvObj(), lv_pct(100));
 
   FlexGridLayout grid2(col_dsc, row_dsc, 4);
-  line = window->newLine(&grid2);
+  line = window->newLine(grid2);
   line->padTop(8);
 
   // Modules
   new MSubScreenButton(line, STR_INTERNALRF, []() { new ModulePage(INTERNAL_MODULE); }, []() { return g_model.moduleData[INTERNAL_MODULE].type > 0; });
   new MSubScreenButton(line, STR_EXTERNALRF, []() { new ModulePage(EXTERNAL_MODULE); }, []() { return g_model.moduleData[EXTERNAL_MODULE].type > 0; });
   //new MSubScreenButton(line, STR_TRAINER, []() { new TrainerPage(); }, []() { return g_model.trainerData.mode > 0; });
-
+#endif
 }

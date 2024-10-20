@@ -30,6 +30,10 @@
 #include "view_channels.h"
 #include "view_main_menu.h"
 
+#if defined(RADIO_V16)
+  #include "radio_CurrentSensor.h"
+#endif
+
 static void tile_view_deleted_cb(lv_event_t* e)
 {
   lv_obj_t* target = lv_event_get_target(e);
@@ -250,7 +254,11 @@ void ViewMain::onLongPressMDL()
 void ViewMain::onPressTELE()
 {
   if (viewMainMenu) viewMainMenu->onCancel();
+#if defined(RADIO_V16)
+  new RadioCurrentMenu(); 
+#else
   new ScreenMenu();
+#endif
 }
 void ViewMain::onLongPressTELE()
 {

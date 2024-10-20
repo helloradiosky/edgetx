@@ -36,7 +36,7 @@ class RadioCurrentPage : public PageTab
  public:
   RadioCurrentPage();
 
-  void build(FormWindow* window) override;
+  void build(Window* window) override;
 };
 class RadioCurrentTotalPage : public PageTab
 {
@@ -45,7 +45,7 @@ class RadioCurrentTotalPage : public PageTab
  public:
   RadioCurrentTotalPage();
 
-  void build(FormWindow* window) override;
+  void build(Window* window) override;
 };
 
 class RadioCurrentMenu: public TabsGroup {

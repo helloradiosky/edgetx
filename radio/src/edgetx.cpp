@@ -367,6 +367,37 @@ void generalDefault()
   if (BATTERY_MAX != 120)
     g_eeGeneral.vBatMax = BATTERY_MAX - 120;
 
+#if defined(IMU_SENSOR) 
+  g_eeGeneral.imuxdead=40;   //1-100
+  g_eeGeneral.imuxp=50;
+  g_eeGeneral.imuxi=20;
+  g_eeGeneral.imuxd=10;
+  g_eeGeneral.imuydead=40;   //1-100
+  g_eeGeneral.imuyp=50;
+  g_eeGeneral.imuyi=20;
+  g_eeGeneral.imuyd=10;
+  g_eeGeneral.imuzdead=40;   //1-100
+  g_eeGeneral.imuzp=1;
+  g_eeGeneral.imuzi=1;
+  g_eeGeneral.imuzd=1;
+#endif
+#if defined(VOICE_SENSOR)
+  g_eeGeneral.aivoiceswitch=0;
+  g_eeGeneral.voivech56switch=1;  //0=enable 1=disable
+#endif
+#if defined(CSD203_SENSOR)
+  g_eeGeneral.extModuleprotect=0; //0=enable 1=disable
+  g_eeGeneral.intModuleprotect=0; //0=enable 1=disable
+  g_eeGeneral.extmaxcurrent=3000;
+  g_eeGeneral.intmaxcurrent=1000;
+#endif
+#if defined(IMU_SENSOR)
+  g_eeGeneral.gyroHeadCH78switch=0; //0=enable 1=disable
+#endif
+#if defined(RADIO_V16)
+  g_eeGeneral.usbchgprotect=1;
+#endif
+
 #if defined(SURFACE_RADIO)
   g_eeGeneral.stickMode = 0;
   g_eeGeneral.templateSetup = 0;
@@ -433,20 +464,28 @@ void generalDefault()
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
+#if defined(RADIO_V12)||defined(RADIO_V14)||defined(RADIO_V16)
+
 uint16_t MaxAbnormalCurrent(void)
 {
-  //if(g_eeGeneral.extmaxcurrent<200)return 200;
+  if(g_eeGeneral.extmaxcurrent<200)return 200;
   
-  return 2000; //g_eeGeneral.extmaxcurrent;
+  return g_eeGeneral.extmaxcurrent;
 }
 uint8_t getvoivech56switch(void)
 {
-  return 0; // g_eeGeneral.voivech56switch; //0=enable 1=disable
+  return g_eeGeneral.voivech56switch; //0=enable 1=disable
 }
 uint8_t getextModuleprotect(void)
 {
-  return 0; // g_eeGeneral.extModuleprotect;
+  return g_eeGeneral.extModuleprotect;
 }
+uint8_t GetstickMode(void)
+{
+  return g_eeGeneral.stickMode;
+}
+
+#endif
 
 uint16_t evalChkSum()
 {
