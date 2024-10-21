@@ -27,6 +27,16 @@
 #include "switches.h"
 #include "hal/usb_driver.h"
 
+#if defined(CSD203_SENSOR) 
+  #include "csd203_sensor.h"
+#endif
+#if defined(IMU_SENSOR) 
+  #include "imu_42627.h"
+#endif
+#if defined(VOICE_SENSOR)
+  #include "CI1302.h"
+#endif
+
 #include "hal/watchdog_driver.h"
 
 RTOS_TASK_HANDLE mixerTaskId;
@@ -124,6 +134,20 @@ void execMixerFrequentActions()
 {
   // SBUS trainer
   processSbusInput();
+
+#if defined(CSD203_SENSOR)
+  //Getcsd203();
+  Getcsdloop();
+#endif
+#if defined(IMU_SENSOR)
+  //static uint8_t imuloop=1;
+  //GetIMU42627(imuloop);
+#endif
+
+#if defined(VOICE_SENSOR)
+  processVoiceInput();
+  processUpdataInput();
+#endif
 
 #if defined(IMU)
   gyro.wakeup();

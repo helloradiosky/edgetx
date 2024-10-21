@@ -24,6 +24,8 @@
 void initCSD203(void);
 void readCSD203(void);
 
+void Getcsdloop(void);
+
 extern uint16_t getcsd203BatteryVoltage(void);      //BAT S2 Voltage
 extern uint16_t getcsd203BatteryS1Voltage(void);    //BAT S1 Voltage
 extern int16_t getcsd203MainCurrent(void);         //MAIN SYS CURRENT

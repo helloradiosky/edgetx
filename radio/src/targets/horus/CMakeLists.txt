@@ -136,6 +136,9 @@ if (PCB STREQUAL X10)
     set(HAS_CI1302_SENSOR ON)
     set(HAS_IMU_SENSOR ON)
     set(FLYSKY_GIMBAL ON)
+
+    set(BLUETOOTH YES)
+    
     if (BLUETOOTH)
       set(AUX_SERIAL ON)
     endif()
