@@ -6,6 +6,10 @@ if(HARWARE_TOUCH)
   add_definitions(-DHARDWARE_TOUCH)
 endif()
 
+if(PCBREV STREQUAL V16)
+  set(SENSORGUI_DRIVER radio/radio_CurrentSensor.cpp)
+endif()
+
 include_directories(
   ${RADIO_SRC_DIR}/gui/colorlcd
   ${RADIO_SRC_DIR}/gui/colorlcd/layouts
@@ -44,6 +48,7 @@ set(GUI_SRC
   ${WIDGETS_SRC}
   ${MAINVIEW_SRC}
   ${CONTROLS_SRC}
+  ${SENSORGUI_DRIVER}
   bitmaps.cpp
   colors.cpp
   fonts.cpp

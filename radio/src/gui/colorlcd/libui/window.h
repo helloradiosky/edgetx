@@ -226,6 +226,13 @@ class NavWindow : public Window
   virtual void onPressPGDN() {}
   virtual void onLongPressPGUP() {}
   virtual void onLongPressPGDN() {}
+#if defined(RADIO_V16)
+  virtual void onLongPressSENSORVIEW() {}
+  virtual void onLongPressTELEVIEW() {}
+  virtual void onLongPressCHVIEW() {}
+  virtual void onLongPressINTModule() {}
+  virtual void onLongPressEXTModule() {}
+#endif
 #endif
   virtual bool bubbleEvents() { return true; }
   void onEvent(event_t event) override;

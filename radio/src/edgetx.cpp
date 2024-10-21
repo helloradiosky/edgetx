@@ -68,6 +68,9 @@
 #if defined(CSD203_SENSOR)
   #include "csd203_sensor.h"
 #endif
+#if defined(IMU_SENSOR) 
+  #include "imu_42627.h"
+#endif
 
 #if !defined(SIMU)
 #include <malloc.h>
@@ -160,30 +163,28 @@ void checkValidMCU(void)
 #endif
 }
 
-#if defined(RADIO_V16)
+#if defined(RADIO_V16)&& !defined(SIMU)
 
 //extern bool VoiceRunStatus;
+static uint16_t per1msloop=1;
 
 void per1ms()
 {
   //if(VoiceRunStatus==false)return;  //cli updata 
 
-#if defined(IMU_SENSOR_)
-  static uint16_t per1msloop=0;
-
-  //GetIMU42627(per1msloop);
-
+#if defined(IMU_SENSOR)
+  GetIMU42627(per1msloop);
   if(++per1msloop>=5)
   {
     per1msloop=0;
   }
-  else
 #endif
+#if defined(CSD203_SENSOR) 
+  if(per1msloop)
   {
-  #if defined(CSD203_SENSOR) && !defined(SIMU)
     readCSD203();
-  #endif
   }
+#endif
 }
 #endif
 

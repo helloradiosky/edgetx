@@ -53,6 +53,9 @@
 #if defined(CSD203_SENSOR)
   #include "csd203_sensor.h"
 #endif
+#if defined(IMU_SENSOR) 
+  #include "imu_42627.h"
+#endif
 
 #if defined(LED_STRIP_GPIO)
 // Common LED driver
@@ -215,6 +218,9 @@ void boardInit()
 
 #if defined(CSD203_SENSOR)
   initCSD203();
+#endif
+#if defined(IMU_SENSOR) 
+  imu42627Init();
 #endif
 
   usbInit();

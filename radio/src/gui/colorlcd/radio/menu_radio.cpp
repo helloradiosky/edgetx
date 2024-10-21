@@ -28,6 +28,11 @@
 #include "edgetx.h"
 #include "radio_calibration.h"
 #include "radio_hardware.h"
+
+#if defined(RADIO_V16)
+  #include "radio_CurrentSensor.h"
+#endif
+
 #include "radio_sdmanager.h"
 #include "radio_setup.h"
 #include "radio_theme.h"
@@ -50,6 +55,10 @@ void RadioMenu::build()
   addTab(new GlobalFunctionsPage());
   addTab(new RadioTrainerPage());
   addTab(new RadioHardwarePage());
+#if defined(CSD203_SENSOR) 
+  addTab(new RadioCurrentPage());
+  addTab(new RadioCurrentTotalPage());
+#endif
   addTab(new RadioVersionPage());
 }
 
