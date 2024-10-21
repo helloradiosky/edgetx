@@ -168,7 +168,7 @@ void per1ms()
 {
   //if(VoiceRunStatus==false)return;  //cli updata 
 
-#if defined(IMU_SENSOR)
+#if defined(IMU_SENSOR_)
   static uint16_t per1msloop=0;
 
   //GetIMU42627(per1msloop);
@@ -433,20 +433,28 @@ void generalDefault()
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
+#if defined(RADIO_V12)||defined(RADIO_V14)||defined(RADIO_V16)
+
 uint16_t MaxAbnormalCurrent(void)
 {
-  //if(g_eeGeneral.extmaxcurrent<200)return 200;
+  if(g_eeGeneral.extmaxcurrent<200)return 200;
   
-  return 2000; //g_eeGeneral.extmaxcurrent;
+  return g_eeGeneral.extmaxcurrent;
 }
 uint8_t getvoivech56switch(void)
 {
-  return 0; // g_eeGeneral.voivech56switch; //0=enable 1=disable
+  return g_eeGeneral.voivech56switch; //0=enable 1=disable
 }
 uint8_t getextModuleprotect(void)
 {
-  return 0; // g_eeGeneral.extModuleprotect;
+  return g_eeGeneral.extModuleprotect;
 }
+uint8_t GetstickMode(void)
+{
+  return g_eeGeneral.stickMode;
+}
+
+#endif
 
 uint16_t evalChkSum()
 {

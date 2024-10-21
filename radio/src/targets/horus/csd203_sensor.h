@@ -23,3 +23,21 @@
 
 void initCSD203(void);
 void readCSD203(void);
+
+extern uint16_t getcsd203BatteryVoltage(void);      //BAT S2 Voltage
+extern uint16_t getcsd203BatteryS1Voltage(void);    //BAT S1 Voltage
+extern int16_t getcsd203MainCurrent(void);         //MAIN SYS CURRENT
+extern int16_t getcsd203OldMainCurrent(void);      //MAIN SYS CURRENT
+extern uint16_t getcsd203extVoltage(void);          //EXTMODEL Voltage
+extern int16_t getcsd203extCurrent(void);          //EXTMODEL CURRENT
+
+extern int16_t getcsd203IntCurrent(void);          //INTMODEL CURRENT
+
+extern uint8_t voiceSwitch;
+
+extern bool ExtModuleprotect;
+
+extern bool CSD203MainInitFlag;
+extern bool CSD203InInitFlag;
+extern bool CSD203ExtInitFlag;
+
