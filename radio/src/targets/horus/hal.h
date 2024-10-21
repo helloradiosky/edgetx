@@ -590,8 +590,21 @@
 
 // USB Charger
 #if defined(USB_CHARGER)
+
+
+#if defined(RADIO_V16)
+  
+  #define USB_CHARGER_CTR_GPIO              GPIO_PIN(GPIOD, 12) // PG.11
+  
+
+  //#define USB_CHARGER_CTR_OFF GPIO_SetBits(USB_CHARGER_CTR_GPIO,USB_CHARGER_CTR_GPIO_PIN)
+  //#define USB_CHARGER_CTR_ON GPIO_ResetBits(USB_CHARGER_CTR_GPIO,USB_CHARGER_CTR_GPIO_PIN)
+#endif
+
+
   #define USB_CHARGER_GPIO              GPIO_PIN(GPIOG, 11) // PG.11
   #define USB_USBDet_GPIO               GPIO_PIN(GPIOG, 13) // PG.13
+
 #endif
 
 // S.Port update connector
@@ -687,16 +700,28 @@
   #define AUX2_SERIAL_DMA_RX_STREAM            LL_DMA_STREAM_2
   #define AUX2_SERIAL_DMA_RX_CHANNEL           LL_DMA_CHANNEL_4
 #else
-  #define AUX2_SERIAL_USART                    USART6
-  #define AUX2_SERIAL_USART_IRQn               USART6_IRQn
-  #define AUX2_SERIAL_GPIO                     GPIOG
-  #define AUX2_SERIAL_TX_GPIO                  GPIO_PIN(GPIOG, 14) // PG.14
-  #define AUX2_SERIAL_RX_GPIO                  GPIO_PIN(GPIOG, 9)  // PG.09
-  #define AUX2_SERIAL_DMA_RX                   DMA2
-  #define AUX2_SERIAL_DMA_RX_STREAM            LL_DMA_STREAM_1 // or stream 2
-  #define AUX2_SERIAL_DMA_RX_CHANNEL           LL_DMA_CHANNEL_5
-  #if !defined(RADIO_T18)
-    #define AUX2_SERIAL_PWR_GPIO                 GPIO_PIN(GPIOB, 0) // PB.00
+  #if defined(RADIO_V16)
+    #define AUX2_SERIAL_USART                    UART7
+    #define AUX2_SERIAL_USART_IRQn               UART7_IRQn
+    #define AUX2_SERIAL_GPIO                     GPIOF
+    #define AUX2_SERIAL_TX_GPIO                  GPIO_PIN(GPIOF, 7) // PF.7
+    #define AUX2_SERIAL_RX_GPIO                  GPIO_PIN(GPIOF, 6)  // PF.6
+    #define AUX2_SERIAL_DMA_RX                   DMA1
+    #define AUX2_SERIAL_DMA_RX_STREAM            LL_DMA_STREAM_3 // or stream 3
+    #define AUX2_SERIAL_DMA_RX_CHANNEL           LL_DMA_CHANNEL_5
+    #define AUX2_SERIAL_PWR_GPIO                 GPIO_PIN(GPIOH, 13) // PH.13
+  #else
+    #define AUX2_SERIAL_USART                    USART6
+    #define AUX2_SERIAL_USART_IRQn               USART6_IRQn
+    #define AUX2_SERIAL_GPIO                     GPIOG
+    #define AUX2_SERIAL_TX_GPIO                  GPIO_PIN(GPIOG, 14) // PG.14
+    #define AUX2_SERIAL_RX_GPIO                  GPIO_PIN(GPIOG, 9)  // PG.09
+    #define AUX2_SERIAL_DMA_RX                   DMA2
+    #define AUX2_SERIAL_DMA_RX_STREAM            LL_DMA_STREAM_1 // or stream 2
+    #define AUX2_SERIAL_DMA_RX_CHANNEL           LL_DMA_CHANNEL_5
+    #if !defined(RADIO_T18)
+      #define AUX2_SERIAL_PWR_GPIO                 GPIO_PIN(GPIOB, 0) // PB.00
+    #endif
   #endif
 #endif
 #endif

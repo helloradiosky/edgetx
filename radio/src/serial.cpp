@@ -42,6 +42,10 @@
   #include "dataconstants.h"
 #endif
 
+#if defined(VOICE_SENSOR)
+  #include "CI1302.h"
+#endif
+
 #if defined(CROSSFIRE)
   #include "telemetry/crossfire.h"
 #endif
@@ -71,6 +75,86 @@ void dbgSerialSetSendCb(void* ctx, void (*cb)(void*, uint8_t))
   dbg_serial_ctx = ctx;
   dbg_serial_putc = cb;
 }
+
+#if defined(VOICE_SENSOR)
+
+#if defined(VOICE_SENSOR)
+static int (*dbg_serial_getc)(void*, uint8_t*) = nullptr;
+static void* dbg_serial_crx = nullptr;
+#endif
+
+void dbgSerialGetSendCb(void* crx, int (*cb)(void*, uint8_t*))
+{
+  dbg_serial_getc = nullptr;
+  dbg_serial_crx = crx;
+  dbg_serial_getc = cb;
+}
+
+static void (*voice_serial_putc)(void*, uint8_t) = nullptr;
+static void* voice_serial_ctx= nullptr;
+
+static int (*voice_serial_getc)(void*, uint8_t*) = nullptr;
+static void* voice_serial_crx = nullptr;
+
+void (*voiceSerialGetSendCb())(void*, uint8_t)
+{
+  return voice_serial_putc;
+}
+
+void* voiceSerialGetSendCbCtx()
+{
+  return voice_serial_ctx;
+}
+
+void voiceSerialSetSendCb(void* ctx, void (*cb)(void*, uint8_t))
+{
+  voice_serial_putc = nullptr;
+  voice_serial_ctx = ctx;
+  voice_serial_putc = cb;
+}
+void voiceSerialGetSendCb(void* crx, int (*cb)(void*, uint8_t*))
+{
+  voice_serial_getc = nullptr;
+  voice_serial_crx = crx;
+  voice_serial_getc = cb;
+}
+
+extern "C" void voiceSerialPutc(char c)
+{
+  auto _putc = voice_serial_putc;
+  auto _ctx = voice_serial_ctx;
+  if (_putc) 
+    _putc(_ctx, c);
+}
+extern "C" void voiceSerialPutstr(uint8_t* buf,uint32_t len)
+{
+  auto _putc = voice_serial_putc;
+  auto _ctx = voice_serial_ctx;
+  if (_putc) 
+  {
+    while (len > 0) {
+      //drv->sendByte(ctx, *(buf++));
+      _putc(_ctx,*(buf++));
+      //dbgSerialPutc(*(buf++));
+      len--;
+      delay_us(96);
+    }
+    //_putc(_ctx, c);
+  }
+}
+
+extern "C" int voiceGetByte(uint8_t* byte)
+{
+  auto _getByte = voice_serial_getc;
+  auto _crx = voice_serial_crx;
+
+  if (_getByte) {
+    return _getByte(_crx, byte);
+  }
+
+  return -1;
+}
+#endif
 
 #if defined(DEBUG_SEGGER_RTT)
 
@@ -102,6 +186,24 @@ extern "C" void dbgSerialPutc(char c)
   auto _ctx = dbg_serial_ctx;
   if (_putc) _putc(_ctx, c);
 }
+#if defined(VOICE_SENSOR)
+
+
+bool VoicePowerStatus=false;
+
+
+extern "C" int dbgGetByte(uint8_t* byte)
+{
+  auto _getByte = dbg_serial_getc;
+  auto _crx = dbg_serial_crx;
+
+  if (_getByte) {
+    return _getByte(_crx, byte);
+  }
+
+  return -1;
+}
+#endif
 
 extern "C" void dbgSerialPrintf(const char * format, ...)
 {
@@ -121,6 +223,28 @@ extern "C" void dbgSerialPrintf(const char * format, ...)
     dbg_serial_putc(dbg_serial_ctx, *t++);
   }
 }
+
+#if defined(RADIO_V16)
+extern "C" void RdbgSerialPrintf(const char * format, ...)
+{
+  va_list arglist;
+  char tmp[PRINTF_BUFFER_SIZE+1];
+
+  // no need to do anything if we don't have an output
+  if (!dbg_serial_putc) return;
+
+  va_start(arglist, format);
+  vsnprintf(tmp, PRINTF_BUFFER_SIZE, format, arglist);
+  tmp[PRINTF_BUFFER_SIZE] = '\0';
+  va_end(arglist);
+
+  const char *t = tmp;
+  while (*t && dbg_serial_putc) {
+    dbg_serial_putc(dbg_serial_ctx, *t++);
+  }
+}
+#endif
+
 #endif
 
 extern "C" void dbgSerialCrlf()
@@ -194,11 +318,23 @@ static void serialSetCallBacks(int mode, void* ctx, const etx_serial_port_t* por
   (void)getByte;
   (void)setRxCb;
 
+#if defined(VOICE_SENSOR)
+  if(port->name==(const char*)"Voice")
+  {
+    voiceSerialSetSendCb(ctx, sendByte);
+    voiceSerialGetSendCb(ctx, getByte);
+    return;
+  }
+#endif
+
   switch(mode) {
 #if defined(DEBUG)
   case UART_MODE_DEBUG:
     // TODO: should we handle 2 outputs?
     dbgSerialSetSendCb(ctx, sendByte);
+  #if defined(VOICE_SENSOR)
+    dbgSerialGetSendCb(ctx, getByte);
+  #endif  
     break;
 #endif
 
@@ -286,6 +422,9 @@ static void serialSetupPort(int mode, etx_serial_init& params)
   case UART_MODE_DEBUG:
   case UART_MODE_CLI:
     params.baudrate = DEBUG_BAUDRATE;
+  #if defined(VOICE_SENSOR)
+    params.direction = ETX_Dir_TX_RX;
+  #endif
     break;
 #endif
 
@@ -361,6 +500,16 @@ static void serialSetPowerState(uint8_t port_nr)
 
     if (port->set_pwr) {
       port->set_pwr(getSerialPower(port_nr));
+      
+    #if defined(VOICE_SENSOR)
+      if(port->name==(const char*)"Voice")
+      {
+        VoicePowerStatus=getSerialPower(port_nr);
+      #if defined(DEBUG)  
+        //RTRACE("%d %d %s",VoicePowerStatus,port_nr,port->name);
+      #endif
+      }
+    #endif  
     }
 }
 

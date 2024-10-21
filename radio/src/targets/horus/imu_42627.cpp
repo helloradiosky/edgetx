@@ -545,7 +545,7 @@ void GetIMU42627(uint16_t loop)
 
 	if(IMU42627ID==0x20)
 	{
-		if(loop==4)
+		if(loop==9)
 		{
 			if(IICReadStatusFlag == true)return;
 			IICReadStatusFlag=true;

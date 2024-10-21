@@ -118,7 +118,11 @@ void set_aux2_pwr(uint8_t on)
 #endif
 
 const etx_serial_port_t aux2SerialPort = {
+#if defined(RADIO_V16)
+  .name = "Voice",
+#else
   .name = "AUX2",
+#endif
   .uart = &STM32SerialDriver,
   .hw_def = REF_STM32_SERIAL_PORT(Aux2),
   AUX2_PWR_FCT

@@ -445,12 +445,12 @@ void IMU4_GetGyroValues(void)  //
 {//ok  
 	float x,y,z;//,ax,ay;
 
-	float dt=0.005; 	//for 200hz
-	//float dt=0.01; 	//for 100hz
+	//float dt=0.005; 	//for 200hz
+	float dt=0.01; 	//for 100hz
 
 	float Scale=16.4;
 	static float x_angleold=0;
-	static int16_t waitct=200*6;	//wait 3s
+	static int16_t waitct=200*3;	//wait 3s
 	static float angle=1;
 
 	x=NewGyro_Gx;
