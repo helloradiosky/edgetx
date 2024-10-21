@@ -66,6 +66,12 @@ MaskBitmap* _decompressed_mask(const uint8_t* lz4_compressed)
   return raw;
 }
 
+#if defined(RADIO_V16)
+static const uint8_t mask_radio_currentsensor[] = {
+#include "mask_model_CurrentSensor.lbm"
+};
+#endif
+
 static const uint8_t mask_menu_model[] = {
 #include "mask_menu_model.lbm"
 };
@@ -452,6 +458,10 @@ static const _BuiltinIcon _builtinIcons[EDGETX_ICONS_COUNT] = {
 #endif
 #if defined(INTERNAL_GPS)
     BI(ICON_TOPMENU_GPS, mask_topmenu_gps),
+#endif
+
+#if defined(RADIO_V16)
+    BI(ICON_RADIO_CURRENTSENSOR, mask_radio_currentsensor),
 #endif
 
     BI(ICON_ERROR, mask_error),

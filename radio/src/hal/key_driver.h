@@ -48,7 +48,17 @@ enum EnumKeys {
   KEY_SHIFT,
   KEY_BIND,
 
+ #if defined(RADIO_V16)
+  MAX_KEYS,
+
+  KEY_SENSORVIEW,
+  KEY_TELEVIEW,
+  KEY_CHVIEW,
+  KEY_INTModule,
+  KEY_EXTModule
+#else
   MAX_KEYS
+#endif
 };
 
 // returns a bit field with each key set as (1 << KEY_xxx)
