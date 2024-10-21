@@ -1009,6 +1009,36 @@ PACK(struct RadioData {
     return backlightBright;
 #endif
   });
+#if defined(IMU_SENSOR) 
+  NOBACKUP(uint8_t  imuxdead);
+  NOBACKUP(uint8_t  imuxp);
+  NOBACKUP(uint8_t  imuxi);
+  NOBACKUP(uint8_t  imuxd);
+  NOBACKUP(uint8_t  imuydead);
+  NOBACKUP(uint8_t  imuyp);
+  NOBACKUP(uint8_t  imuyi);
+  NOBACKUP(uint8_t  imuyd);
+  NOBACKUP(uint8_t  imuzdead);
+  NOBACKUP(uint8_t  imuzp);
+  NOBACKUP(uint8_t  imuzi);
+  NOBACKUP(uint8_t  imuzd);
+#endif
+#if defined(VOICE_SENSOR)
+  NOBACKUP(uint8_t  aivoiceswitch);
+  NOBACKUP(uint8_t  voivech56switch);
+#endif
+#if defined(CSD203_SENSOR)
+  NOBACKUP(uint8_t  extModuleprotect);
+  NOBACKUP(uint8_t  intModuleprotect);
+  NOBACKUP(uint16_t  extmaxcurrent);
+  NOBACKUP(uint16_t  intmaxcurrent);
+#endif
+#if defined(IMU_SENSOR)
+  NOBACKUP(uint8_t  gyroHeadCH78switch);
+#endif
+#if defined(RADIO_V16)
+  NOBACKUP(uint8_t  usbchgprotect);
+#endif  
 });
 
 #undef SWITCHES_WARNING_DATA
