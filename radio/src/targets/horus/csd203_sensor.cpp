@@ -524,6 +524,7 @@ void initCSD203(void)
 	#endif
 	}
 }
+
 uint16_t getCSD203BatteryVoltage(void)
 {//1000=1000mV
 	return csd203mains2vbus;
