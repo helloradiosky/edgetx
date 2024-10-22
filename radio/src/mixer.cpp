@@ -26,6 +26,13 @@
 #include "input_mapping.h"
 #include "mixes.h"
 
+#if defined(VOICE_SENSOR)
+   #include "CI1302.h"
+#endif
+#if defined(IMU_SENSOR) 
+  #include "imu_42627.h"
+#endif
+
 #include "hal/adc_driver.h"
 #include "hal/trainer_driver.h"
 #include "hal/switch_driver.h"
@@ -1224,8 +1231,212 @@ void evalMixes(uint8_t tick10ms)
     // this limits based on v original values and min=-1024, max=1024  RESX=1024
     int32_t q = (flightModesFade ? (sum_chans512[i] / weight) << 4 : chans[i]);
 
-    ex_chans[i] = q / 256;
+    //static int16_t VoicePowerflag=0;
+    //static int16_t VoicePowerValue=0;
 
+  #if defined(VOICE_SENSOR)
+    #define VoiceMotionControlXChannel  1
+    #define VoiceMotionControlYChannel  0
+    #define VoiceMotionControlZChannel  3
+
+    #define VoiceGyroHeadControlXChannel    6
+    #define VoiceGyroHeadControlYChannel    7  
+    #define VoiceGyroHeadControlZChannel    8
+
+    static int16_t MotionControlCount=0;
+   
+    static int32_t qxbase=0;
+    static int32_t qybase=0;
+    static int32_t qzbase=0;
+
+    static float x_angleold;
+    static float y_angleold;
+    static float z_angleold;
+
+    static float x_Gyro_angleold;
+    static float y_Gyro_angleold;
+    static float z_Gyro_angleold;
+
+    #define VoiceGaerChannel  4
+    #define VoiceFlapChannel  5
+
+    static int16_t delayflapvalue=-1024;
+
+    if(VoicePowerStatus)
+    {
+      if(g_eeGeneral.voivech56switch==0){ //0=enable 1=disable
+        if(i==(uint8_t)VoiceGaerChannel&&VoiceGearStatus==1)      q=1024*256;
+        else if(i==(uint8_t)VoiceGaerChannel&&VoiceGearStatus==0) q=-1024*256;
+        if(i==(uint8_t)VoiceFlapChannel&&VoiceFlapStatus==1){ //open flap 
+          if(delayflapvalue<0){
+            delayflapvalue+=4;
+          }
+          //q=1024;
+          q=delayflapvalue*256;
+        }
+        else if(i==(uint8_t)VoiceFlapChannel&&VoiceFlapStatus==2){ //open flap 
+          if(delayflapvalue<1024){
+            delayflapvalue+=4;
+          }
+          //q=1024;
+          q=delayflapvalue*256;
+        }
+        else if(i==(uint8_t)VoiceFlapChannel&&VoiceFlapStatus==0){ //close flap 
+          if(delayflapvalue>-1024){
+            delayflapvalue-=4;
+          }
+          //q=1024;
+          q=delayflapvalue*256;
+        } 
+      }//if(g_eeGeneral.voivech56switch==0){ //0=enable 1=disable
+      if(MotionControlStatus==true)
+      {
+          if(MotionControlCount<2)
+          {
+            x_angleold=x_angle;
+            y_angleold=y_angle;
+
+            x_Gyro_angleold=x_Gyro_angle;
+            y_Gyro_angleold=y_Gyro_angle;
+            z_Gyro_angleold=z_Gyro_angle;
+
+            x_Gyro_angle=0;
+            y_Gyro_angle=0;
+            z_Gyro_angle=0;
+
+            z_angleold=0;
+
+            if(g_eeGeneral.gyroHeadCH78switch==0&&i==(uint8_t)VoiceMotionControlXChannel)
+            {
+              MotionControlCount=1;
+              qxbase=q;
+            }
+            else if(g_eeGeneral.gyroHeadCH78switch==0&&i==(uint8_t)VoiceMotionControlYChannel)
+            {
+              qybase=q;
+              if(MotionControlCount==1)
+                MotionControlCount=2;
+            } 
+            else if(g_eeGeneral.gyroHeadCH78switch==0&&i==(uint8_t)VoiceMotionControlZChannel)
+            {
+              qzbase=q;
+              z_Gyro_angle=0;
+              if(MotionControlCount==2)
+              {
+                MotionControlCount=3;
+              }
+            } 
+            else if(g_eeGeneral.gyroHeadCH78switch&&i==(uint8_t)VoiceGyroHeadControlXChannel)
+            {
+              MotionControlCount=1;
+              qxbase=q;
+            }
+            else if(g_eeGeneral.gyroHeadCH78switch&&i==(uint8_t)VoiceGyroHeadControlYChannel)
+            {
+              qybase=q;
+              if(MotionControlCount==1)
+                MotionControlCount=2;
+            } 
+            else if(g_eeGeneral.gyroHeadCH78switch&&i==(uint8_t)VoiceGyroHeadControlZChannel)
+            {
+              qzbase=q;
+              z_Gyro_angle=0;
+              if(MotionControlCount==2)
+              {
+                MotionControlCount=3;
+              }
+            }
+          }
+          else if((g_eeGeneral.gyroHeadCH78switch==0&&i==(uint8_t)VoiceMotionControlXChannel)||(g_eeGeneral.gyroHeadCH78switch&&i==(uint8_t)VoiceGyroHeadControlXChannel))
+          {//ele  imuxdead  imuxp imuxi imuxd
+            int32_t qm=0,dead=0,mi;
+            qm=(q-qxbase)/256;  
+            dead=g_eeGeneral.imuxdead*2;     //40-200*2 50
+            if(qm>dead||qm<-dead)  
+            {
+                MotionControlStatus=false;
+                MotionControlCount=0;
+            }
+            else{
+              q=x_angle-x_angleold;       //p
+              
+              mi=(x_Gyro_angle-x_Gyro_angleold)*100;
+              x_Gyro_angleold=x_Gyro_angle;
+
+              q=q*g_eeGeneral.imuxp;        //10-100 40
+              q+=mi*(g_eeGeneral.imuxi/10);    //10-100
+
+              q=q*256;
+              q=q+qxbase;
+
+              if(q>(1024*256))q=1024*256;
+              else if(q<(-1024*256))q=-1024*256;
+            }
+          }
+          else if((g_eeGeneral.gyroHeadCH78switch==0&&i==(uint8_t)VoiceMotionControlYChannel)||(g_eeGeneral.gyroHeadCH78switch&&i==(uint8_t)VoiceGyroHeadControlYChannel))
+          {//ail imuydead  imuyp imuyi imuyd
+            int32_t qm=0,dead=0,mi;
+            qm=(q-qybase)/256;
+            dead=g_eeGeneral.imuydead*2;     //40-200*2 80-400
+            if(qm>dead||qm<-dead)  
+            {
+                MotionControlStatus=false;
+                MotionControlCount=0;
+            }
+            else{
+              q=y_angle-y_angleold;
+              
+              mi=(y_Gyro_angle-y_Gyro_angleold)*100;
+              y_Gyro_angleold=y_Gyro_angle;
+
+              q=q*g_eeGeneral.imuyp;        //10-100 40
+              q+=mi*(g_eeGeneral.imuyi/10);    //10-100
+
+              q=q*256;
+              q=q+qybase;
+
+              if(q>(1024*256))q=1024*256;
+              else if(q<(-1024*256))q=-1024*256;
+            }
+          }
+          else if((g_eeGeneral.gyroHeadCH78switch==0&&i==(uint8_t)VoiceMotionControlZChannel)||(g_eeGeneral.gyroHeadCH78switch&&i==(uint8_t)VoiceGyroHeadControlZChannel))
+          {//rud imuzdead  imuzp imuzi imuzd
+            if(MotionControlCount==2)
+            {
+              MotionControlCount=3;
+              qzbase=q;
+              z_Gyro_angle=0; 
+            }
+
+            int32_t qm=0,dead=0,mi;
+            qm=(q-qzbase)/256;
+            dead=g_eeGeneral.imuzdead*2;     //40-200*2 80-400
+            if(qm>dead||qm<-dead)  
+            {
+                MotionControlStatus=false;
+                MotionControlCount=0;
+            }
+            else{
+              q=-z_Gyro_angle;
+              mi=(-z_Gyro_angle-z_Gyro_angleold)*10;//i
+              z_Gyro_angleold=-z_Gyro_angle;
+
+              q=q*g_eeGeneral.imuzp;        //10-100 40
+              q+=mi*g_eeGeneral.imuzi;      //10-100
+
+              q=q*256;
+              q=q+qzbase;
+
+              if(q>(1024*256))q=1024*256;
+              else if(q<(-1024*256))q=-1024*256;
+            }
+          }
+      }
+    }//if(VoicePowerStatus)
+
+  #endif
+    ex_chans[i] = q / 256;
+    
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
 
     channelOutputs[i] = value;  // copy consistent word to int-level

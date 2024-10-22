@@ -126,19 +126,20 @@ if (PCB STREQUAL X10)
     add_definitions(-DRADIO_V16)
     add_definitions(-DRADIO_FAMILY_T16)
     set(DEFAULT_INTERNAL_MODULE CROSSFIRE CACHE STRING "Default internal module")
-    option(BLUETOOTH "Support for bluetooth module" ON)
+    option(BLUETOOTH "Support for bluetooth module" OFF)
     option(INTERNAL_GPS "Support for internal NMEA GPS" OFF)
     add_definitions(-DMANUFACTURER_HELLORADIOSKY)
     set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
     set(FLEXSW "2" CACHE STRING "Max flex inputs usable as switches")
+    
     set(AUX2_SERIAL ON)
     set(HAS_CSD203_SENSOR ON)
     set(HAS_CI1302_SENSOR ON)
     set(HAS_IMU_SENSOR ON)
     set(FLYSKY_GIMBAL ON)
 
-    set(BLUETOOTH YES)
-    
+    set(BLUETOOTH ON)
+
     if (BLUETOOTH)
       set(AUX_SERIAL ON)
     endif()
