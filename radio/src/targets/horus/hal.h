@@ -1065,6 +1065,11 @@
   #define LED_STRIP_REFRESH_PERIOD          50 //ms
 #endif
 
+// voice
+#if defined(RADIO_V16)
+  #define VoiceAI_PWR_GPIO  GPIO_PIN(GPIOH, 13)
+#endif
+
 // Internal PXX1 Module:
 //  -> let's assume all internal XJT modules used are either X10 or X12S type
 #define EXTERNAL_ANTENNA

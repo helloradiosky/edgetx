@@ -50,6 +50,8 @@
 #include "hw_serial.h"
 #include "hw_inputs.h"
 
+#include "board.h"
+
 #if defined(BLUETOOTH)
 #include "hw_bluetooth.h"
 #endif
@@ -67,6 +69,10 @@
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
 
+bool usbChargerLed()
+{
+  return true;
+}
 
 RadioCurrentMenu::RadioCurrentMenu(ModelMenu* parent) :
     TabsGroup(ICON_MONITOR), parentMenu(parent)
@@ -286,8 +292,8 @@ void RadioCurrentPage::build(Window * window)
 
 
   line = window->newLine(grid);
-  //if(usbChargerLed()) {
-  if(0){
+  if(usbChargerLed()) {
+  //if(0){
     // Main current display
     new StaticText(line, rect_t{}, "Change Current:");
     new DynamicNumber<uint16_t>(
@@ -306,8 +312,8 @@ void RadioCurrentPage::build(Window * window)
   }
 
   line = window->newLine(grid);
-  //if(usbChargerLed()) {
-  if(0){  
+  if(usbChargerLed()) {
+  //if(0){  
     // Main voltage S2 display
     new StaticText(line, rect_t{}, "Change Power:");
     new DynamicNumber<uint16_t>(
@@ -513,8 +519,8 @@ void RadioCurrentTotalPage::build(Window * window)
 
 
   line = window->newLine(grid);
-  //if(usbChargerLed()) {
-  if(0){
+  if(usbChargerLed()) {
+  //if(0){
     // Main current display
     new StaticText(line, rect_t{}, "Change Current:");
     new DynamicNumber<uint16_t>(
@@ -533,8 +539,8 @@ void RadioCurrentTotalPage::build(Window * window)
   }
 
   line = window->newLine(grid);
-  //if(usbChargerLed()) {
-  if(0){  
+  if(usbChargerLed()) {
+  //if(0){  
     // Main voltage S2 display
     new StaticText(line, rect_t{}, "Change Power:");
     new DynamicNumber<uint16_t>(
@@ -746,8 +752,8 @@ void RadioCurrentTotalPage::build(Window * window)
   new StaticText(line, rect_t{}, "");
   // 
   line = window->newLine(grid);
-  //if(usbChargerLed()) {
-  if(1){
+  if(usbChargerLed()) {
+  //if(1){
     //total current display
     new StaticText(line, rect_t{}, "Total Current:");
     new DynamicNumber<uint16_t>(
@@ -765,8 +771,8 @@ void RadioCurrentTotalPage::build(Window * window)
   }
 
   line = window->newLine(grid);
-  //if(usbChargerLed()) {
-  if(1){
+  if(usbChargerLed()) {
+  //if(1){
     // Main voltage S2 display
     new StaticText(line, rect_t{}, "Total Power:");
     new DynamicNumber<uint16_t>(

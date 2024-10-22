@@ -39,6 +39,9 @@
 #include "tasks.h"
 #include "tasks/mixer_task.h"
 
+#include "hal/gpio.h"
+#include "stm32_gpio.h"
+
 #include "cli.h"
 
 #include <ctype.h>
@@ -1616,6 +1619,130 @@ int cliResetGT911(const char** argv)
 }
 #endif
 
+#if defined(RADIO_V12)||defined(RADIO_V14)||defined(RADIO_V16)
+
+extern bool CSD203MainInitFlag;
+extern bool CSD203InInitFlag;
+extern bool CSD203ExtInitFlag;
+
+uint16_t getCSD203BatteryVoltage(void);
+
+int HelloRadioGetParam(const char** argv)
+{
+    cliSerialPrintf("HelloRadio: \n\
+    CSD203Main %d\n\
+    CSD203In %d\n\
+    CSD203Ext %d\n\
+    BatteryVoltage %d mV\n\
+    ", CSD203MainInitFlag,CSD203InInitFlag,CSD203ExtInitFlag,getCSD203BatteryVoltage());
+
+    return 0;
+}
+#endif
+#if defined(VOICE_SENSOR)
+
+#include "CI1302.h"
+
+int VoicePowerON(const char** argv)
+{
+  cliSerialPrint("VoicePowerON command");
+  //GPIO_SetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  gpio_set(VoiceAI_PWR_GPIO);
+
+  return 0;
+}
+int VoicePowerOFF(const char** argv)
+{
+  cliSerialPrint("VoicePowerOFF command");
+  //GPIO_ResetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  gpio_clear(VoiceAI_PWR_GPIO);
+
+  return 0;
+}
+
+static void VoiceDataTx(uint8_t* buf, uint32_t len)
+{
+  //dbgSerialPutc(0xab);
+  //dbgSerialPutc(len>>8);
+  //dbgSerialPutc(len&0xff);
+
+  //voiceSerialPutstr(buf,len);
+
+  while (len > 0) {
+    //drv->sendByte(ctx, *(buf++));
+    voiceSerialPutc(*(buf++));
+    //dbgSerialPutc(*(buf++));
+    len--;
+    delay_us(86);
+  }
+}
+int VoiceUpload(const char** argv)
+{
+  //A50F0000A1830067C4FF  upload call
+  //  stop pulses
+  watchdogSuspend(200/*2s*/);
+
+  VoiceRunStatus=false;
+
+  // backup and swap CLI input
+  auto backupCB = cliReceiveCallBack;
+  cliReceiveCallBack = VoiceDataTx;
+
+  gpio_clear(VoiceAI_PWR_GPIO);
+  //GPIO_ResetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  delay_ms(600); //wait open tools
+  //GPIO_SetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  gpio_set(VoiceAI_PWR_GPIO);
+
+  //stop pulses & suspend RTOS scheduler
+  //watchdogSuspend(200/*2s*/);
+  //pulsesStop();
+  //vTaskSuspendAll();
+
+  #define wait_delayms  6000   //6S
+
+  uint32_t wait_delay=timersGetMsTick();
+  uint8_t c;
+
+  // loop until cable disconnected
+  while (usbPlugged()){
+    if(voiceGetByte(&c)>0)
+    //if(dbgGetByte(&c)>0)
+    {
+      uint8_t timeout =10; // 10 ms
+      while(!usbSerialFreeSpace() && (timeout > 0)) {
+        delay_ms(1);
+        timeout--;
+      }
+      cliSerialPutc(c);
+      wait_delay=timersGetMsTick();  //updata timer
+    }//if(GetVoiceInput(&c)==0)
+    if ((uint32_t)(timersGetMsTick() - wait_delay)>wait_delayms){//timer over
+      break;
+    }
+    // keep us up & running
+    WDG_RESET();
+  }//while (usbPlugged()) {
+
+  gpio_clear(VoiceAI_PWR_GPIO);
+  //GPIO_ResetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  delay_ms(600); //wait open tools
+  //GPIO_SetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  gpio_set(VoiceAI_PWR_GPIO);
+
+  VoiceRunStatus=true;
+
+  // restore callsbacks
+  cliReceiveCallBack = backupCB;
+
+  //restart pulses & RTOS scheduler
+  //pulsesStart();
+  //xTaskResumeAll();
+
+  return 0;
+}
+#endif
+
 const CliCommand cliCommands[] = {
   { "beep", cliBeep, "[<frequency>] [<duration>]" },
   { "ls", cliLs, "<directory>" },
@@ -1656,6 +1783,14 @@ const CliCommand cliCommands[] = {
 #endif
 #if defined(TP_GT911)
   { "reset_gt911", cliResetGT911, ""},
+#endif
+#if defined(VOICE_SENSOR)
+  { "voicepoweron", VoicePowerON, "<voice power on>"},
+  { "voicepoweroff", VoicePowerOFF, "<voice power off>"},
+  { "voiceupload", VoiceUpload, "<voice software upload>"},
+#endif
+#if defined(RADIO_V12)||defined(RADIO_V14)||defined(RADIO_V16)
+  { "getradio", HelloRadioGetParam, "<Get radio param>"},
 #endif
   { nullptr, nullptr, nullptr }  /* sentinel */
 };
@@ -1718,6 +1853,14 @@ void cliTask(void * pdata)
   char line[CLI_COMMAND_MAX_LEN+1];
   int pos = 0;
 
+#if defined(VOICE_SENSOR)
+
+  //uint8_t voiceflag=0;
+  uint8_t voicestep=0;
+  const uint8_t vbootcmd[10]={0xA5,0x0F,0,0,0xA1,0x83,0,0x67,0xC4,0xFF};
+
+#endif  
+
   cliPrompt();
 
   for (;;) {
@@ -1777,6 +1920,19 @@ void cliTask(void * pdata)
       break;
 
     default:
+    #if defined(VOICE_SENSOR)
+    //A5 0F 00 00 A1 83 00 67 C4 FF  upload call
+      if(vbootcmd[voicestep]==c)
+      {
+          if(++voicestep>=10)
+          {
+            const char * argv[CLI_COMMAND_MAX_ARGS];
+              VoiceUpload(argv);
+              pos=0;
+          }
+      }
+      else voicestep=0;
+    #endif
       if (isascii(c) && pos < CLI_COMMAND_MAX_LEN) {
         line[pos++] = c;
         cliSerialPutc(c);
