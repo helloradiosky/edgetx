@@ -48,11 +48,9 @@ void pwrInit()
   EXTERNAL_MODULE_PWR_OFF();
 #endif
 
-#if defined(RADIO_V16)
+#if defined(VoiceAI_PWR_GPIO)
   gpio_init(VoiceAI_PWR_GPIO, GPIO_OUT, GPIO_PIN_SPEED_LOW);
   gpio_clear(VoiceAI_PWR_GPIO);
-
-  
 #endif
 
   // PWR switch

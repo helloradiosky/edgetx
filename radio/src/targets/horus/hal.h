@@ -591,16 +591,9 @@
 // USB Charger
 #if defined(USB_CHARGER)
 
-
-#if defined(RADIO_V16)
-  
-  #define USB_CHARGER_CTR_GPIO              GPIO_PIN(GPIOD, 12) // PG.11
-  
-
-  //#define USB_CHARGER_CTR_OFF GPIO_SetBits(USB_CHARGER_CTR_GPIO,USB_CHARGER_CTR_GPIO_PIN)
-  //#define USB_CHARGER_CTR_ON GPIO_ResetBits(USB_CHARGER_CTR_GPIO,USB_CHARGER_CTR_GPIO_PIN)
-#endif
-
+  #if defined(RADIO_V16)
+    #define USB_CHARGER_CTR_GPIO              GPIO_PIN(GPIOD, 12) // PG.11
+  #endif
 
   #define USB_CHARGER_GPIO              GPIO_PIN(GPIOG, 11) // PG.11
   #define USB_USBDet_GPIO               GPIO_PIN(GPIOG, 13) // PG.13
@@ -1068,6 +1061,9 @@
 // voice
 #if defined(RADIO_V16)
   #define VoiceAI_PWR_GPIO  GPIO_PIN(GPIOH, 13)
+
+  #define VoiceAiPWRON  gpio_set(VoiceAI_PWR_GPIO)
+  #define VoiceAiPWROFF  gpio_clear(VoiceAI_PWR_GPIO)
 #endif
 
 // Internal PXX1 Module:

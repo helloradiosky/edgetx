@@ -69,11 +69,6 @@
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
 
-bool usbChargerLed()
-{
-  return true;
-}
-
 RadioCurrentMenu::RadioCurrentMenu(ModelMenu* parent) :
     TabsGroup(ICON_MONITOR), parentMenu(parent)
 {

@@ -174,7 +174,7 @@ void per1ms()
 
 #if defined(IMU_SENSOR)
   GetIMU42627(per1msloop);
-  if(++per1msloop>=10)
+  if(++per1msloop>=5)
   {
     per1msloop=0;
   }
@@ -182,10 +182,10 @@ void per1ms()
 #if defined(CSD203_SENSOR) 
   if(per1msloop)
   {
-    if(per1msloop%2)
-    {
+    //if(per1msloop%2)
+    //{
       readCSD203();
-    }
+   // }
   }
 #endif
 }

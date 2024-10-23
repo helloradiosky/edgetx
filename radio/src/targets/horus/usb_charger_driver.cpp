@@ -28,6 +28,11 @@ void usbChargerInit()
 {
   gpio_init(USB_CHARGER_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW);
   gpio_init(USB_USBDet_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW);
+
+  #if defined(RADIO_V16)
+    gpio_init(USB_CHARGER_CTR_GPIO, GPIO_OUT, GPIO_PIN_SPEED_LOW);
+    gpio_clear(USB_CHARGER_CTR_GPIO);
+  #endif
 }
 
 bool usbChargerLed()

@@ -1646,16 +1646,14 @@ int HelloRadioGetParam(const char** argv)
 int VoicePowerON(const char** argv)
 {
   cliSerialPrint("VoicePowerON command");
-  //GPIO_SetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
-  gpio_set(VoiceAI_PWR_GPIO);
+  VoiceAiPWRON;
 
   return 0;
 }
 int VoicePowerOFF(const char** argv)
 {
   cliSerialPrint("VoicePowerOFF command");
-  //GPIO_ResetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
-  gpio_clear(VoiceAI_PWR_GPIO);
+  VoiceAiPWROFF;
 
   return 0;
 }
@@ -1688,11 +1686,9 @@ int VoiceUpload(const char** argv)
   auto backupCB = cliReceiveCallBack;
   cliReceiveCallBack = VoiceDataTx;
 
-  gpio_clear(VoiceAI_PWR_GPIO);
-  //GPIO_ResetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  VoiceAiPWROFF;
   delay_ms(600); //wait open tools
-  //GPIO_SetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
-  gpio_set(VoiceAI_PWR_GPIO);
+  VoiceAiPWRON;
 
   //stop pulses & suspend RTOS scheduler
   //watchdogSuspend(200/*2s*/);
@@ -1724,11 +1720,9 @@ int VoiceUpload(const char** argv)
     WDG_RESET();
   }//while (usbPlugged()) {
 
-  gpio_clear(VoiceAI_PWR_GPIO);
-  //GPIO_ResetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
+  VoiceAiPWROFF;
   delay_ms(600); //wait open tools
-  //GPIO_SetBits(VoiceAI_PWR_GPIO, VoiceAI_PWR_GPIO_PIN);
-  gpio_set(VoiceAI_PWR_GPIO);
+  VoiceAiPWRON;
 
   VoiceRunStatus=true;
 
