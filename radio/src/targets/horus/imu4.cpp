@@ -450,7 +450,7 @@ void IMU4_GetGyroValues(void)  //
 
 	float Scale=16.4;
 	static float x_angleold=0;
-	static int16_t waitct=200*6;	//wait 3s
+	static int16_t waitct=200*3;	//wait 3s
 	static float angle=1;
 
 	x=NewGyro_Gx;
