@@ -32,6 +32,23 @@
 #include "edgetx.h"
 #endif
 
+#if defined(RADIO_V16)&& !defined(SIMU)
+
+// long key press minimum duration (x10ms),
+// must be less than KEY_REPEAT_DELAY
+#define KEY_LONG_DELAY              22
+
+// press longer than this enables repeat (but does not fire it yet)
+#define KEY_REPEAT_DELAY            30
+
+// repeat trigger, used in combination with m_state
+// to produce decreasing times between repeat events
+#define KEY_REPEAT_TRIGGER          38
+
+#define KEY_REPEAT_PAUSE_DELAY      44
+
+#else
+
 // long key press minimum duration (x10ms),
 // must be less than KEY_REPEAT_DELAY
 #define KEY_LONG_DELAY              32
@@ -44,6 +61,8 @@
 #define KEY_REPEAT_TRIGGER          48
 
 #define KEY_REPEAT_PAUSE_DELAY      64
+
+#endif
 
 // defines how many bits are used for debounce
 #if defined(SIMU)
@@ -263,7 +282,6 @@ bool waitKeysReleased()
 
   while (keyDown()) {
     WDG_RESET();
-
 #if !defined(BOOT)
     if ((get_tmr10ms() - start) >= 300) {  // wait no more than 3 seconds
       //timeout expired, at least one key stuck

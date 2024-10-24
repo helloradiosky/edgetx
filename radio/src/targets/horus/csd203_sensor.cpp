@@ -527,7 +527,11 @@ void initCSD203(void)
 
 uint16_t getCSD203BatteryVoltage(void)
 {//1000=1000mV
-	return csd203mains2vbus;
+	#define _MOS_RS_MR_		0.02	//20mR
+	#define _EXT_RS_MR_		0.1		//100mR
+
+	//return csd203mains2vbus;
+	return (csd203mains2vbus+_MOS_RS_MR_*(csd203mainCurrent+csd203extCurrent+csd203intCurrent)+_EXT_RS_MR_*csd203extCurrent+_EXT_RS_MR_*csd203intCurrent);
 }
 uint16_t getcsd203BatteryS1Voltage(void)
 {//1000=1000mV
