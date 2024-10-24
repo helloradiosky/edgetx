@@ -359,7 +359,7 @@ void RadioCurrentPage::build(Window * window)
         [=](int value) { return isSerialModeAvailable(port_nr, value); });
 
     if (port->set_pwr != nullptr) {
-      new StaticText(box, rect_t{}, " ");
+      new StaticText(box, rect_t{}, "");
       new ToggleSwitch(
           box, rect_t{}, [=] { return serialGetPower(port_nr); },
           [=](int8_t newValue) {
@@ -706,6 +706,7 @@ void RadioCurrentTotalPage::build(Window * window)
   lv_obj_set_style_flex_cross_place(box->getLvObj(), LV_FLEX_ALIGN_CENTER, 0);
   new ToggleSwitch(box, rect_t{}, GET_SET_INVERTED(g_eeGeneral.intModuleprotect));
 
+  line = window->newLine(grid);
   new StaticText(line, rect_t{}, "Protect Current 1A");
 
 #if defined(IMU_SENSOR) 
@@ -825,7 +826,7 @@ void RadioCurrentTotalPage::build(Window * window)
         [=](int value) { return isSerialModeAvailable(port_nr, value); });
 
     if (port->set_pwr != nullptr) {
-      new StaticText(box, rect_t{}, " ");
+      new StaticText(box, rect_t{}, "");
       new ToggleSwitch(
           box, rect_t{}, [=] { return serialGetPower(port_nr); },
           [=](int8_t newValue) {

@@ -974,8 +974,8 @@
   #define I2C_B1_GPIO_AF              LL_GPIO_AF_4   // I2C1
 
   #if defined(RADIO_V16)
-    #define I2C_B1_CLK_RATE             800000
-  #elif
+    #define I2C_B1_CLK_RATE             1000000
+  #else
     #define I2C_B1_CLK_RATE             400000
   #endif
 #else
