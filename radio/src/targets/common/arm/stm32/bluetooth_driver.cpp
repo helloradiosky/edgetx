@@ -87,7 +87,7 @@ void bluetoothInit(uint32_t baudrate, bool enable)
   gpio_write(BT_EN_GPIO, !enable);
 #endif
 #if defined(BT_PWR_GPIO)
-  gpio_set(BT_PWR_GPIO);
+  gpio_write(BT_PWR_GPIO, !enable);
 #endif
 }
 
@@ -99,7 +99,7 @@ void bluetoothDisable()
   gpio_set(BT_EN_GPIO);
 #endif
 #if defined(BT_PWR_GPIO)
-  gpio_clear(BT_PWR_GPIO);
+  gpio_set(BT_PWR_GPIO);
 #endif
   if (_bt_usart_ctx) {
     STM32SerialDriver.deinit(_bt_usart_ctx);

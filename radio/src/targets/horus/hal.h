@@ -615,6 +615,8 @@
 #if defined(RADIO_T15)
   #define PCBREV_GPIO                   GPIO_PIN(GPIOH, 8) // PH.08
   #define PCBREV_VALUE()                (gpio_read(PCBREV_GPIO) >> 8)
+#elif defined(RADIO_V16)
+  #define PCBREV_VALUE()                0
 #elif defined(PCBX10)
   #define PCBREV_GPIO_1                 GPIO_PIN(GPIOH, 7) // PH.07
   #define PCBREV_GPIO_2                 GPIO_PIN(GPIOH, 8) // PH.08
@@ -1254,6 +1256,9 @@
     #define BT_RX_GPIO                    GPIO_PIN(GPIOG, 9)  // PG.09
     #if defined(RADIO_TX16S)
       #define BT_PWR_GPIO                 GPIO_PIN(GPIOB, 0) // PB.00
+    #endif
+    #if defined(RADIO_V16)
+      #define BT_PWR_GPIO                 GPIO_PIN(GPIOH, 8) // PH.08
     #endif
   #endif
 #endif
