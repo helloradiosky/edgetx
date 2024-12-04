@@ -1159,13 +1159,10 @@
 #endif
 
 // Heartbeat
-#define INTMODULE_HEARTBEAT
 #if defined(RADIO_V16)
-  #define INTMODULE_HEARTBEAT_GPIO                GPIO_PIN(GPIOB, 11) // PB.11 / TIM2_CH4
-  #define INTMODULE_HEARTBEAT_EXTI_PORT           LL_SYSCFG_EXTI_PORTB
-  #define INTMODULE_HEARTBEAT_EXTI_SYS_LINE       LL_SYSCFG_EXTI_LINE11
-  #define INTMODULE_HEARTBEAT_EXTI_LINE           LL_EXTI_LINE_11
+  
 #else
+  #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_GPIO                GPIO_PIN(GPIOD, 12) // PD.12 / TIM4_CH1
   #define INTMODULE_HEARTBEAT_EXTI_PORT           LL_SYSCFG_EXTI_PORTH
   #define INTMODULE_HEARTBEAT_EXTI_SYS_LINE       LL_SYSCFG_EXTI_LINE12
@@ -1219,6 +1216,7 @@
 #define TRAINER_GPIO_AF                 GPIO_AF2
 #define TRAINER_TIMER_FREQ              (PERI1_FREQUENCY * TIMER_MULT_APB1)
 
+#if !defined(RADIO_V16)
 // Trainer CPPM input on heartbeat pin
 #define TRAINER_MODULE_CPPM_TIMER            TIM4
 #define TRAINER_MODULE_CPPM_FREQ             (PERI1_FREQUENCY * TIMER_MULT_APB1)
@@ -1227,6 +1225,7 @@
 #define TRAINER_MODULE_CPPM_TIMER_IRQn       TIM4_IRQn
 #define TRAINER_MODULE_CPPM_TIMER_IRQHandler TIM4_IRQHandler
 #define TRAINER_MODULE_CPPM_GPIO_AF          LL_GPIO_AF_2
+#endif
 
 // Millisecond timer
 #define MS_TIMER                        TIM14
