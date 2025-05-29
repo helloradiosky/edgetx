@@ -1313,9 +1313,9 @@
 // 6POS SW
 #if defined(RADIO_V14) || defined(RADIO_V12)
   #define SIXPOS_SWITCH_INDEX             6
-  #define SIXPOS_LED_RED                255
-  #define SIXPOS_LED_GREEN              255
-  #define SIXPOS_LED_BLUE               255
+  #define SIXPOS_LED_RED                200
+  #define SIXPOS_LED_GREEN              0
+  #define SIXPOS_LED_BLUE               0
 #endif
 
 // ADC
@@ -1689,7 +1689,7 @@
   #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_SLIDER1)
   #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_BATT)
   #define ADC_VREF_PREC2                330
-#elif defined(RADIO_V14) || defined(RADIO_V12)
+#elif defined(RADIO_V12) || defined(RADIO_V14)
   #define ADC_GPIO_PIN_STICK_RV         LL_GPIO_PIN_0     // PA.00
   #define ADC_GPIO_PIN_STICK_RH         LL_GPIO_PIN_1     // PA.01
   #define ADC_GPIO_PIN_STICK_LH         LL_GPIO_PIN_2     // PA.02
@@ -1715,7 +1715,7 @@
   #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SWE | ADC_GPIO_PIN_SWB)
   #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_POT1)
   #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_SWC | ADC_GPIO_PIN_SWF)
-  #define ADC_VREF_PREC2                330
+  #define ADC_VREF_PREC2                1024
 #elif defined(PCBX7)
   #define HARDWARE_POT1
   #define HARDWARE_POT2
@@ -1732,7 +1732,7 @@
   #define ADC_GPIO_PIN_POT2             LL_GPIO_PIN_6  // PA.06
 #endif
   #define ADC_GPIO_PIN_BATT             LL_GPIO_PIN_0  // PC.00
-#if defined(RADIO_BOXER) || defined(RADIO_V14) || defined(RADIO_V12)
+#if defined(RADIO_BOXER)
   #define HARDWARE_POT3                 // 6 POS
   #define ADC_GPIO_PIN_POT3             LL_GPIO_PIN_5  // PA.05
   #define ADC_CHANNEL_POT3              LL_ADC_CHANNEL_5
