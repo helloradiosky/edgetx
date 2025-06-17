@@ -2563,10 +2563,10 @@
 #endif
 #if defined(RADIO_LR3PRO) || defined(RADIO_TPROV2) || defined(RADIO_TPROS) || defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_BUMBLEBEE) || defined(RADIO_GX12) || defined(RADIO_V14)
   #define LCD_HORIZONTAL_INVERT
-  #define OLED_SCREEN
+  //#define OLED_SCREEN
 #endif
 #if defined(RADIO_T14) || defined(RADIO_GX12) || defined(RADIO_V14)
-  #define SSD1309_LCD
+  //#define SSD1309_LCD
 #endif
 #if defined(PCBX9E)
   #define LCD_MOSI_GPIO                 GPIO_PIN(GPIOC, 12) // PC.12
