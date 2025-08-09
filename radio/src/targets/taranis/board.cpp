@@ -75,11 +75,18 @@ HardwareOptions hardwareOptions;
 #if defined(SIXPOS_SWITCH_INDEX)
 uint8_t lastADCState = 0;
 uint8_t sixPosState = 0;
+
+uint8_t uploadPosState = 0;
+
 bool dirty = true;
 uint16_t getSixPosAnalogValue(uint16_t adcValue)
 {
   uint8_t currentADCState = 0;
-  if (adcValue > 3800)
+  if(uploadPosState){
+    uploadPosState--;
+    goto __retposadc__;
+  }
+  else if (adcValue > 3800)
     currentADCState = 6;
   else if (adcValue > 3100)
     currentADCState = 5;
@@ -93,20 +100,39 @@ uint16_t getSixPosAnalogValue(uint16_t adcValue)
     currentADCState = 1;
   if (lastADCState != currentADCState) {
     lastADCState = currentADCState;
+    uploadPosState=10;
   } else if (lastADCState != 0 && lastADCState - 1 != sixPosState) {
     sixPosState = lastADCState - 1;
     dirty = true;
   }
   if (dirty) {
     for (uint8_t i = 0; i < 6; i++) {
-      if (i == sixPosState)
-        ws2812_set_color(i, SIXPOS_LED_RED, SIXPOS_LED_GREEN, SIXPOS_LED_BLUE);
-      else
         ws2812_set_color(i, 0, 0, 0);
+    }
+    for (uint8_t i = 0; i < 6; i++) {
+      if (i == sixPosState){
+        i=i/2;  //0 1 2
+        ws2812_set_color(i*2, SIXPOS_LED_RED, SIXPOS_LED_GREEN, SIXPOS_LED_BLUE);
+        ws2812_set_color(i*2+1, SIXPOS_LED_RED, SIXPOS_LED_GREEN, SIXPOS_LED_BLUE);
+        break;
+      }
     }
     rgbLedColorApply();
   }
-  return (4096/5)*(sixPosState);
+__retposadc__:  
+/*
+  if(sixPosState<2)
+    currentADCState=0;
+  else if(sixPosState<4)
+    currentADCState=2;
+  else currentADCState=4;
+  return (4096/5)*(currentADCState);*/
+  if(sixPosState<2)
+    return 0;
+  else if(sixPosState<4)
+    return 2024;
+  else 
+    return 4096;
 }
 #endif
 

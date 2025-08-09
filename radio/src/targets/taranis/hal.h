@@ -1313,8 +1313,8 @@
 // 6POS SW
 #if defined(RADIO_V14) || defined(RADIO_V12)
   #define SIXPOS_SWITCH_INDEX             6
-  #define SIXPOS_LED_RED                200
-  #define SIXPOS_LED_GREEN              0
+  #define SIXPOS_LED_RED                0
+  #define SIXPOS_LED_GREEN              220
   #define SIXPOS_LED_BLUE               0
 #endif
 
