@@ -2750,7 +2750,7 @@
   #define AUDIO_MUTE_GPIO               GPIO_PIN(GPIOB, 1)
   #define AUDIO_MUTE_DELAY              500  // ms
   #define INVERTED_MUTE_PIN
-#elif defined(MANUFACTURER_RADIOMASTER) || defined(MANUFACTURER_JUMPER) || defined(RADIO_LR3PRO)
+#elif defined(MANUFACTURER_RADIOMASTER) || defined(MANUFACTURER_JUMPER) || defined(RADIO_LR3PRO)|| defined(MANUFACTURER_HELLORADIOSKY)
   #define AUDIO_MUTE_GPIO               GPIO_PIN(GPIOE, 12)
   #define AUDIO_MUTE_DELAY              500  // ms
   #if defined(MANUFACTURER_JUMPER) || defined(RADIO_LR3PRO)
