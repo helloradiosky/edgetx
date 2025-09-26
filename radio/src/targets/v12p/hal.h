@@ -231,10 +231,11 @@ USART6: EXTMODULE_USART
 0        	/* SWF */        \
 }
 
-
 // Power
-#define PWR_SWITCH_GPIO             GPIO_PIN(GPIOI, 3)
-#define PWR_ON_GPIO                 GPIO_PIN(GPIOD, 3)
+#define PWR_SWITCH_GPIO             GPIO_PIN(GPIOJ, 3) // SYS
+//#define PWR_EXTRA_SWITCH_GPIO       GPIO_PIN(GPIOE, 5) // MDL
+#define PWR_SWITCH_GPIO1             GPIO_PIN(GPIOE, 5) // MDL
+#define PWR_ON_GPIO                 GPIO_PIN(GPIOE, 2) //
 
 // S.Port update connector
 #define HAS_SPORT_UPDATE_CONNECTOR()    (false)
@@ -267,30 +268,46 @@ USART6: EXTMODULE_USART
 
 // USB
 #define USB_GPIO                        GPIOA
-#define USB_GPIO_VBUS                   GPIO_PIN(GPIOA, 9)
-#define USB_GPIO_DM                     GPIO_PIN(GPIOA, 11)
-#define USB_GPIO_DP                     GPIO_PIN(GPIOA, 12)
+#define USB_GPIO_VBUS                   GPIO_PIN(GPIOD, 13)  // PB.00
+#define USB_GPIO_DM                     GPIO_PIN(GPIOA, 11) // PA.11
+#define USB_GPIO_DP                     GPIO_PIN(GPIOA, 12) // PA.12
 #define USB_GPIO_AF                     GPIO_AF10
 
-// LCD SPI1
-#define LCD_SPI_CS_GPIO                 GPIOG
-#define LCD_SPI_CS_GPIO_PIN             LL_GPIO_PIN_10
-#define LCD_SPI_GPIO                    GPIOB
-#define LCD_SPI_SCK_GPIO_PIN            LL_GPIO_PIN_3
-#define LCD_SPI_MISO_GPIO_PIN           LL_GPIO_PIN_4
-#define LCD_SPI_MOSI_GPIO_PIN           LL_GPIO_PIN_5
-#define LTDC_IRQ_PRIO                   4
-#define DMA_SCREEN_IRQ_PRIO             6
-
-#define LCD_NRST_GPIO                   GPIOI
-#define LCD_NRST_GPIO_PIN               LL_GPIO_PIN_15
+// LCD
+#define LCD_SPI                         SPI1
+#define LCD_SPI_DMA                     DMA1
+#define LCD_SPI_TX_DMA                  LL_DMAMUX1_REQ_SPI1_TX
+#define LCD_SPI_RX_DMA                  LL_DMAMUX1_REQ_SPI1_RX
+#define LCD_SPI_TX_DMA_STREAM           LL_DMA_STREAM_4
+#define LCD_SPI_RX_DMA_STREAM           LL_DMA_STREAM_5
+#define LCD_FMARK                       GPIO_PIN(GPIOH,  15)
+#define LCD_NRST                        GPIO_PIN(GPIOI,  0)
+#define LCD_SPI_RS                      GPIO_PIN(GPIOI, 1)
+#define LCD_SPI_CS                      GPIO_PIN(GPIOG, 10)
+#define LCD_SPI_CLK                     GPIO_PIN(GPIOG, 11)
+#define LCD_SPI_MOSI                    GPIO_PIN(GPIOB,  5)
+#define LCD_SPI_MISO                    GPIO_PIN(GPIOG,  9)
+#define LCD_SPI_BAUD                    100000000     //100000000
 
 // Backlight
-#define BACKLIGHT_GPIO                  GPIO_PIN(GPIOA, 5) // TIM2_CH1
+//#define BACKLIGHT_GPIO                  GPIO_PIN(GPIOC, 06) // TIM3_CH1
+//#define BACKLIGHT_TIMER                 TIM3
+//#define BACKLIGHT_GPIO_AF               GPIO_AF2
+//#define BACKLIGHT_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
+
+// Backlight
+#define BACKLIGHT_GPIO                  GPIO_PIN(GPIOJ, 9) // TIM2_CH1
 #define BACKLIGHT_TIMER                 TIM2
-#define BACKLIGHT_TIMER_CHANNEL		LL_TIM_CHANNEL_CH1
+#define BACKLIGHT_TIMER_CHANNEL		      LL_TIM_CHANNEL_CH1
 #define BACKLIGHT_GPIO_AF               GPIO_AF1
 #define BACKLIGHT_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
+
+
+#define LED1_TEST                        GPIO_PIN(GPIOI,  12)
+#define LED2_TEST                        GPIO_PIN(GPIOI,  13)
+#define LED3_TEST                        GPIO_PIN(GPIOI,  14)
+
+#define BACKLIGHT_TEST                   GPIO_PIN(GPIOI,  2)
 
 // QSPI Flash
 #define QSPI_CLK_GPIO                   GPIO_PIN(GPIOF, 10)
@@ -313,10 +330,12 @@ USART6: EXTMODULE_USART
 #define STORAGE_USE_SDIO
 
 // Chargers (USB and wireless)
-#define UCHARGER_GPIO                  GPIO_PIN(GPIOD, 6)
+// USB Chargers
+#define UCHARGER_GPIO               GPIO_PIN(GPIOJ, 5)  //
+#define UCHARGER_CHARGE_END_GPIO    GPIO_PIN(GPIOJ, 15) //
 
 // Audio
-#define AUDIO_MUTE_GPIO                GPIO_PIN(GPIOH, 4)
+#define AUDIO_MUTE_GPIO               GPIO_PIN(GPIOB, 1) //
 #define AUDIO_OUTPUT_GPIO              GPIO_PIN(GPIOA, 4)
 #define AUDIO_DAC                      DAC1
 #define AUDIO_DMA_Stream               LL_DMA_STREAM_1
@@ -330,21 +349,15 @@ USART6: EXTMODULE_USART
 
 // I2C Bus
 #define I2C_B1                          I2C1
-#define I2C_B1_SDA_GPIO                 GPIO_PIN(GPIOB, 9)
-#define I2C_B1_SCL_GPIO                 GPIO_PIN(GPIOB, 8)
+#define I2C_B1_SDA_GPIO                 GPIO_PIN(GPIOI, 12)  // PB.09
+#define I2C_B1_SCL_GPIO                 GPIO_PIN(GPIOI, 11)  // PB.08
 #define I2C_B1_GPIO_AF                  LL_GPIO_AF_4
 #define I2C_B1_CLK_RATE                 400000
 
-#define I2C_B2                          I2C4
-#define I2C_B2_SDA_GPIO                 GPIO_PIN(GPIOD, 13)
-#define I2C_B2_SCL_GPIO                 GPIO_PIN(GPIOD, 12)
-#define I2C_B2_GPIO_AF                  LL_GPIO_AF_4
-#define I2C_B2_CLK_RATE                 400000
-
 // Haptic
 #define HAPTIC_PWM
-#define HAPTIC_GPIO                     GPIO_PIN(GPIOE, 6) // TIM15_CH2
-#define HAPTIC_GPIO_TIMER               TIM15
+#define HAPTIC_GPIO                     GPIO_PIN(GPIOD, 12) // PA.15
+#define HAPTIC_GPIO_TIMER               TIM4
 #define HAPTIC_GPIO_AF                  GPIO_AF4
 #define HAPTIC_TIMER_OUTPUT_ENABLE      TIM_CCER_CC2E | TIM_CCER_CC2NE;
 #define HAPTIC_TIMER_MODE               TIM_CCMR1_OC2M_1 | TIM_CCMR1_OC2M_2 | TIM_CCMR1_OC2PE
