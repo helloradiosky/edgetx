@@ -496,8 +496,8 @@ USART6: EXTMODULE_USART
 #define LANDSCAPE_LCD_STD true
 #define LANDSCAPE_LCD_LRG false
 
-#define LCD_W                           480
-#define LCD_H                           320
+#define LCD_W                           320
+#define LCD_H                           240
 
 #define LCD_PHYS_W                      LCD_W
 #define LCD_PHYS_H                      LCD_H
