@@ -77,6 +77,8 @@ static inline void check_struct()
     CHKTYPE(TopBarPersistentData, 736);
   #elif defined(PCBPA01)
     CHKTYPE(TopBarPersistentData, 916);
+  #elif defined(RADIO_V12P)
+    CHKTYPE(TopBarPersistentData, 916);
   #elif defined(RADIO_H7RS)
     // TODO
   #else
@@ -129,7 +131,7 @@ static inline void check_struct()
 #elif defined(RADIO_T15PRO)
   CHKSIZE(ModelData, 27761);
 #elif defined(RADIO_V12P)
-  CHKSIZE(ModelData, 27761);
+  CHKSIZE(ModelData, 27761-181);
 #elif defined(RADIO_TX15)
   CHKSIZE(ModelData, 27761);
 #elif defined(RADIO_H7RS)
