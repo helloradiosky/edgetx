@@ -107,7 +107,7 @@ set(AFHDS3 ON)
 set(ENABLE_SERIAL_PASSTHROUGH ON CACHE BOOL "Enable serial passthrough")
 set(CLI ON CACHE BOOL "Enable CLI")
 
-set(BOARD jumper-h750)
+set(BOARD helloradio-h750)
 set(BOARD_SRC_DIR boards/${BOARD})
 include_directories(boards/${BOARD})
 

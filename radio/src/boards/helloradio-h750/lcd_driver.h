@@ -49,11 +49,11 @@ extern lcdSpiInitFucPtr lcdOnFunction;
 #define SET_IO_INPUT( PORT, PIN )            LL_GPIO_SetPinMode( PORT, PIN, LL_GPIO_MODE_INPUT )
 #define SET_IO_OUTPUT( PORT, PIN )           LL_GPIO_SetPinMode( PORT, PIN, LL_GPIO_MODE_OUTPUT )
 
-#define LCD_NRST_HIGH()                      LL_GPIO_SetOutputPin(LCD_NRST_GPIO, LCD_NRST_GPIO_PIN)
-#define LCD_NRST_LOW()                       LL_GPIO_ResetOutputPin(LCD_NRST_GPIO, LCD_NRST_GPIO_PIN)
+//#define LCD_NRST_HIGH()                      LL_GPIO_SetOutputPin(LCD_NRST_GPIO, LCD_NRST_GPIO_PIN)
+//#define LCD_NRST_LOW()                       LL_GPIO_ResetOutputPin(LCD_NRST_GPIO, LCD_NRST_GPIO_PIN)
 
-#define LCD_CS_HIGH()                        LL_GPIO_SetOutputPin(LCD_SPI_CS_GPIO, LCD_SPI_CS_GPIO_PIN)
-#define LCD_CS_LOW()                         LL_GPIO_ResetOutputPin(LCD_SPI_CS_GPIO, LCD_SPI_CS_GPIO_PIN)
+//#define LCD_CS_HIGH()                        LL_GPIO_SetOutputPin(LCD_SPI_CS_GPIO, LCD_SPI_CS_GPIO_PIN)
+//#define LCD_CS_LOW()                         LL_GPIO_ResetOutputPin(LCD_SPI_CS_GPIO, LCD_SPI_CS_GPIO_PIN)
 
 #define LCD_SCK_HIGH()                LL_GPIO_SetOutputPin(LCD_SPI_GPIO, LCD_SPI_SCK_GPIO_PIN)
 #define LCD_SCK_LOW()                 LL_GPIO_ResetOutputPin(LCD_SPI_GPIO, LCD_SPI_SCK_GPIO_PIN)
