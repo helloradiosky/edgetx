@@ -41,6 +41,12 @@ void pwrInit()
   gpio_write(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_DEFAULT);
 #endif
 
+#if defined(INTMODULE_ANTSEL_GPIO)
+  gpio_init(INTMODULE_ANTSEL_GPIO, GPIO_OUT, GPIO_PIN_SPEED_LOW);
+  //gpio_set(INTMODULE_ANTSEL_GPIO);
+  gpio_clear(INTMODULE_ANTSEL_GPIO);
+#endif
+
   // Internal module power
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(INTMODULE_PWR_GPIO)
   gpio_init(INTMODULE_PWR_GPIO, GPIO_OUT, GPIO_PIN_SPEED_LOW);
