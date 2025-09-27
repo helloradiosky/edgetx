@@ -205,29 +205,29 @@ USART6: EXTMODULE_USART
 }
 
 // Power
-#define PWR_SWITCH_GPIO             GPIO_PIN(GPIOJ, 3) // SYS
-//#define PWR_EXTRA_SWITCH_GPIO       GPIO_PIN(GPIOE, 5) // MDL
-#define PWR_SWITCH_GPIO1             GPIO_PIN(GPIOE, 5) // MDL
-#define PWR_ON_GPIO                 GPIO_PIN(GPIOE, 2) //
+#define PWR_SWITCH_GPIO               GPIO_PIN(GPIOJ, 3) // SYS
+#define PWR_EXTRA_SWITCH_GPIO         GPIO_PIN(GPIOE, 5) // MDL
+#define PWR_SWITCH_GPIO1              GPIO_PIN(GPIOE, 5) // MDL
+#define PWR_ON_GPIO                   GPIO_PIN(GPIOE, 2) //
 
 // S.Port update connector
 #define HAS_SPORT_UPDATE_CONNECTOR()    (false)
 
 
-// Telemetry
+// Telemetry SPORT
 #define TELEMETRY_SET_INPUT             0
-#define TELEMETRY_TX_GPIO               GPIO_PIN(GPIOD, 5)
+#define TELEMETRY_TX_GPIO               GPIO_PIN(GPIOA, 9)
 #define TELEMETRY_RX_GPIO               GPIO_UNDEF
-#define TELEMETRY_USART                 USART2
-#define TELEMETRY_USART_IRQn            USART2_IRQn
+#define TELEMETRY_USART                 USART1
+#define TELEMETRY_USART_IRQn            USART1_IRQn
 #define TELEMETRY_DMA                   DMA1
 #define TELEMETRY_DMA_Stream_TX         LL_DMA_STREAM_7
 #define TELEMETRY_DMA_Channel_TX        LL_DMAMUX1_REQ_USART2_TX
 #define TELEMETRY_DMA_TX_Stream_IRQ     DMA1_Stream7_IRQn
 #define TELEMETRY_DMA_TX_IRQHandler     DMA1_Stream7_IRQHandler
 #define TELEMETRY_DMA_Stream_RX         LL_DMA_STREAM_3
-#define TELEMETRY_DMA_Channel_RX        LL_DMAMUX1_REQ_USART2_RX
-#define TELEMETRY_USART_IRQHandler      USART2_IRQHandler
+#define TELEMETRY_DMA_Channel_RX        LL_DMAMUX1_REQ_USART1_RX
+#define TELEMETRY_USART_IRQHandler      USART1_IRQHandler
 
 // Software IRQ (Prio 5 -> FreeRTOS compatible)
 //#define USE_CUSTOM_EXTI_IRQ
@@ -242,10 +242,16 @@ USART6: EXTMODULE_USART
 // USB
 #define USB_GPIO                        GPIOA
 #define USB_GPIO_VBUS                   GPIO_PIN(GPIOD, 13) // 
-#define USB_GPIO_SEL                    GPIO_PIN(GPIOH, 6)  // 
 #define USB_GPIO_DM                     GPIO_PIN(GPIOA, 11) // PA.11
 #define USB_GPIO_DP                     GPIO_PIN(GPIOA, 12) // PA.12
 #define USB_GPIO_AF                     GPIO_AF10
+
+// Chargers (USB and wireless)
+// USB Chargers
+#define UCHARGER_PW                     GPIO_PIN(GPIOJ, 5)  //cherge power sw
+#define UCHARGER_EN                     GPIO_PIN(GPIOK, 6)  //cherge EN  0=ENANLE 1=DISABLE
+#define USB_GPIO_SEL                    GPIO_PIN(GPIOH, 6)  // USB HUB SELECT 0->H7 MCU  1->CHARGE MCU
+#define UCHARGER_GPIO                   GPIO_PIN(GPIOJ, 15) //charge status
 
 // LCD
 #define LCD_SPI                         SPI1
@@ -264,23 +270,11 @@ USART6: EXTMODULE_USART
 #define LCD_SPI_BAUD                    100000000     //100000000
 
 // Backlight
-//#define BACKLIGHT_GPIO                  GPIO_PIN(GPIOC, 06) // TIM3_CH1
-//#define BACKLIGHT_TIMER                 TIM3
-//#define BACKLIGHT_GPIO_AF               GPIO_AF2
-//#define BACKLIGHT_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
-
-// Backlight
 #define BACKLIGHT_GPIO                  GPIO_PIN(GPIOI, 2) // TIM8_CH4
 #define BACKLIGHT_TIMER                 TIM8
 #define BACKLIGHT_TIMER_CHANNEL		      LL_TIM_CHANNEL_CH4
 #define BACKLIGHT_GPIO_AF               GPIO_AF3
 #define BACKLIGHT_TIMER_FREQ            (PERI1_FREQUENCY * TIMER_MULT_APB1)
-
-//#define LED1_TEST                        GPIO_PIN(GPIOI,  12)
-//#define LED2_TEST                        GPIO_PIN(GPIOI,  13)
-//#define LED3_TEST                        GPIO_PIN(GPIOI,  14)
-
-//#define BACKLIGHT_TEST                   GPIO_PIN(GPIOI,  2)
 
 // QSPI Flash
 #define QSPI_MAX_FREQ                   80000000U // 80 MHz
@@ -305,15 +299,9 @@ USART6: EXTMODULE_USART
 #define SD_SDIO_TRANSFER_CLK_DIV       SD_SDIO_CLK_DIV(24000000)
 #define STORAGE_USE_SDIO
 
-// Chargers (USB and wireless)
-// USB Chargers
-#define UCHARGER_PW               GPIO_PIN(GPIOJ, 5)  //
-#define UCHARGER_GPIO               GPIO_PIN(GPIOJ, 15)  //
-//#define UCHARGER_CHARGE_END_GPIO    GPIO_PIN(GPIOJ, 15) //
-
 // Audio
 #define INVERTED_MUTE_PIN
-#define AUDIO_MUTE_GPIO               GPIO_PIN(GPIOB, 1) //
+#define AUDIO_MUTE_GPIO                GPIO_PIN(GPIOB, 1) //
 #define AUDIO_OUTPUT_GPIO              GPIO_PIN(GPIOA, 4)
 #define AUDIO_DAC                      DAC1
 #define AUDIO_DMA_Stream               LL_DMA_STREAM_1
@@ -368,30 +356,31 @@ USART6: EXTMODULE_USART
 #define LED_BLUE_GPIO                 GPIO_PIN(GPIOI, 13)
 
 // Internal Module
-#define INTMODULE_PWR_GPIO              GPIO_PIN(GPIOI, 1)
-#define INTMODULE_BOOTCMD_GPIO          GPIO_PIN(GPIOD, 7)
+#define INTMODULE_PWR_GPIO              GPIO_PIN(GPIOG, 13)
+#define INTMODULE_ANTSEL_GPIO           GPIO_PIN(GPIOA, 8)  //ANE SELECT 0=Int 1=Ext
+#define INTMODULE_BOOTCMD_GPIO          GPIO_PIN(GPIOG, 9)
 #define INTMODULE_BOOTCMD_DEFAULT       0
-#define INTMODULE_TX_GPIO               GPIO_PIN(GPIOB, 6)
-#define INTMODULE_RX_GPIO               GPIO_PIN(GPIOB, 7)
-#define INTMODULE_USART                 USART1
+#define INTMODULE_TX_GPIO               GPIO_PIN(GPIOD, 6)
+#define INTMODULE_RX_GPIO               GPIO_PIN(GPIOD, 5)
+#define INTMODULE_USART                 USART2
 #define INTMODULE_GPIO_AF               LL_GPIO_AF_7
-#define INTMODULE_USART_IRQn            USART1_IRQn
-#define INTMODULE_USART_IRQHandler      USART1_IRQHandler
+#define INTMODULE_USART_IRQn            USART2_IRQn
+#define INTMODULE_USART_IRQHandler      USART2_IRQHandler
 #define INTMODULE_DMA                   DMA1
 #define INTMODULE_DMA_STREAM            LL_DMA_STREAM_1
 #define INTMODULE_DMA_STREAM_IRQ        DMA1_Stream1_IRQn
 #define INTMODULE_DMA_FLAG_TC           DMA_FLAG_TCIF1
-#define INTMODULE_DMA_CHANNEL           LL_DMAMUX1_REQ_USART1_TX
+#define INTMODULE_DMA_CHANNEL           LL_DMAMUX1_REQ_USART2_TX
 #define INTMODULE_RX_DMA                DMA1
 #define INTMODULE_RX_DMA_STREAM         LL_DMA_STREAM_5
-#define INTMODULE_RX_DMA_CHANNEL        LL_DMAMUX1_REQ_USART1_RX
+#define INTMODULE_RX_DMA_CHANNEL        LL_DMAMUX1_REQ_USART2_RX
 #define INTMODULE_RX_DMA_Stream_IRQn    DMA1_Stream5_IRQn
 #define INTMODULE_RX_DMA_Stream_IRQHandler DMA1_Stream5_IRQHandler
 
 // External Module
 #define EXTMODULE
 #define EXTMODULE_PULSES
-#define EXTMODULE_PWR_GPIO              GPIO_PIN(GPIOI, 0)
+#define EXTMODULE_PWR_GPIO              GPIO_PIN(GPIOI, 4)
 #define EXTMODULE_TX_GPIO               GPIO_PIN(GPIOC, 6) // TIM3_CH1
 #define EXTMODULE_RX_GPIO               GPIO_PIN(GPIOC, 7)
 
