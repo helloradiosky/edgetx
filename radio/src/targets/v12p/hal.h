@@ -77,9 +77,9 @@ USART6: EXTMODULE_USART
 #define KEYS_GPIO_REG_ENTER           GPIOI
 #define KEYS_GPIO_PIN_ENTER           LL_GPIO_PIN_8
 #define KEYS_GPIO_REG_PAGEUP          GPIOI
-#define KEYS_GPIO_PIN_PAGEUP          LL_GPIO_PIN_11
+#define KEYS_GPIO_PIN_PAGEUP          LL_GPIO_PIN_10
 #define KEYS_GPIO_REG_PAGEDN          GPIOI
-#define KEYS_GPIO_PIN_PAGEDN          LL_GPIO_PIN_10
+#define KEYS_GPIO_PIN_PAGEDN          LL_GPIO_PIN_11
 #define KEYS_GPIO_REG_MDL             GPIOE
 #define KEYS_GPIO_PIN_MDL             LL_GPIO_PIN_5 
 #define KEYS_GPIO_REG_EXIT            GPIOK
@@ -312,6 +312,7 @@ USART6: EXTMODULE_USART
 //#define UCHARGER_CHARGE_END_GPIO    GPIO_PIN(GPIOJ, 15) //
 
 // Audio
+#define INVERTED_MUTE_PIN
 #define AUDIO_MUTE_GPIO               GPIO_PIN(GPIOB, 1) //
 #define AUDIO_OUTPUT_GPIO              GPIO_PIN(GPIOA, 4)
 #define AUDIO_DAC                      DAC1
@@ -447,6 +448,7 @@ USART6: EXTMODULE_USART
 #define EXTI15_10_IRQ_Priority 9
 #endif
 
+
 //ROTARY emulation for trims as buttons
 #define ROTARY_ENCODER_NAVIGATION
 // Rotary Encoder
@@ -468,6 +470,29 @@ USART6: EXTMODULE_USART
 #define ROTARY_ENCODER_TIMER            TIM17
 #define ROTARY_ENCODER_TIMER_IRQn       TIM17_IRQn
 #define ROTARY_ENCODER_TIMER_IRQHandler TIM17_IRQHandler
+
+
+// Rotary Encoder
+/*
+#define ROTARY_ENCODER_NAVIGATION
+#define ROTARY_ENCODER_GPIO             GPIOE
+#define ROTARY_ENCODER_GPIO_PIN_A       LL_GPIO_PIN_3 // PA.06
+#define ROTARY_ENCODER_GPIO_PIN_B       LL_GPIO_PIN_4 // PA.07
+#define ROTARY_ENCODER_POSITION()       ((ROTARY_ENCODER_GPIO->IDR >> 3) & 0x03)
+#define ROTARY_ENCODER_EXTI_LINE1       LL_EXTI_LINE_3
+#define ROTARY_ENCODER_EXTI_LINE2       LL_EXTI_LINE_4
+// port extender interrupt
+#if !defined(USE_EXTI9_5_IRQ)
+  #define USE_EXTI9_5_IRQ
+  #define EXTI9_5_IRQ_Priority 5
+#endif
+#define ROTARY_ENCODER_EXTI_PORT        LL_SYSCFG_EXTI_PORTE
+#define ROTARY_ENCODER_EXTI_SYS_LINE1   LL_SYSCFG_EXTI_LINE3
+#define ROTARY_ENCODER_EXTI_SYS_LINE2   LL_SYSCFG_EXTI_LINE4
+#define ROTARY_ENCODER_TIMER            TIM17
+#define ROTARY_ENCODER_TIMER_IRQn       TIM17_IRQn
+#define ROTARY_ENCODER_TIMER_IRQHandler TIM17_IRQHandler
+*/
 
 // Millisecond timer
 #define MS_TIMER                        TIM14
