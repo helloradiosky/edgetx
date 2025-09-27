@@ -241,7 +241,8 @@ USART6: EXTMODULE_USART
 
 // USB
 #define USB_GPIO                        GPIOA
-#define USB_GPIO_VBUS                   GPIO_PIN(GPIOD, 13)  // PB.00
+#define USB_GPIO_VBUS                   GPIO_PIN(GPIOD, 13) // 
+#define USB_GPIO_SEL                    GPIO_PIN(GPIOH, 6)  // 
 #define USB_GPIO_DM                     GPIO_PIN(GPIOA, 11) // PA.11
 #define USB_GPIO_DP                     GPIO_PIN(GPIOA, 12) // PA.12
 #define USB_GPIO_AF                     GPIO_AF10
