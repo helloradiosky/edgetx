@@ -240,7 +240,6 @@ USART6: EXTMODULE_USART
 #define TELEMETRY_RX_FRAME_EXTI_LINE    CUSTOM_EXTI_IRQ_LINE
 
 // USB
-#define USB_GPIO_VBUS_OPEN_DRAIN
 #define USB_GPIO                        GPIOA
 #define USB_GPIO_VBUS                   GPIO_PIN(GPIOD, 13) // 
 #define USB_GPIO_SEL                    GPIO_PIN(GPIOH, 6)  // 
