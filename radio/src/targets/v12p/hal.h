@@ -248,7 +248,7 @@ USART6: EXTMODULE_USART
 
 // Chargers (USB and wireless)
 // USB Chargers
-#define UCHARGER_PW                     GPIO_PIN(GPIOJ, 5)  //cherge power sw
+#define UCHARGER_PW                     GPIO_PIN(GPIOJ, 5)  //cherge power sw 0=DISABLE 1=ENABLE
 #define UCHARGER_EN                     GPIO_PIN(GPIOK, 6)  //cherge EN  0=ENANLE 1=DISABLE
 #define USB_GPIO_SEL                    GPIO_PIN(GPIOH, 6)  // USB HUB SELECT 0->H7 MCU  1->CHARGE MCU
 #define UCHARGER_GPIO                   GPIO_PIN(GPIOJ, 15) //charge status
@@ -352,8 +352,8 @@ USART6: EXTMODULE_USART
 #define GPIO_LED_GPIO_ON              gpio_set
 #define GPIO_LED_GPIO_OFF             gpio_clear
 #define LED_RED_GPIO                  GPIO_PIN(GPIOI, 12)
-#define LED_GREEN_GPIO                GPIO_PIN(GPIOI, 14)
-#define LED_BLUE_GPIO                 GPIO_PIN(GPIOI, 13)
+#define LED_GREEN_GPIO                GPIO_PIN(GPIOI, 13)
+#define LED_BLUE_GPIO                 GPIO_PIN(GPIOI, 14)
 
 // Internal Module
 #define INTMODULE_PWR_GPIO              GPIO_PIN(GPIOG, 13)

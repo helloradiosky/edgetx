@@ -30,8 +30,8 @@ void usbChargerInit()
   gpio_init(UCHARGER_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW);
 #if defined(UCHARGER_PW)
   gpio_init(UCHARGER_PW, GPIO_OUT, GPIO_PIN_SPEED_LOW);
-  //gpio_set(UCHARGER_PW);
-  gpio_clear(UCHARGER_PW);
+  gpio_set(UCHARGER_PW);
+  //gpio_clear(UCHARGER_PW);  0=DISABLE 1=ENABLE
 #endif
 #if defined(UCHARGER_EN)
   gpio_init(UCHARGER_EN, GPIO_OUT, GPIO_PIN_SPEED_LOW);
