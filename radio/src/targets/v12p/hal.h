@@ -210,9 +210,9 @@ USART6: EXTMODULE_USART
 #define PWR_SWITCH_GPIO1              GPIO_PIN(GPIOE, 5) // MDL
 #define PWR_ON_GPIO                   GPIO_PIN(GPIOE, 2) //
 
+
 // S.Port update connector
 #define HAS_SPORT_UPDATE_CONNECTOR()    (false)
-
 
 // Telemetry SPORT
 #define TELEMETRY_SET_INPUT             0
@@ -222,7 +222,7 @@ USART6: EXTMODULE_USART
 #define TELEMETRY_USART_IRQn            USART1_IRQn
 #define TELEMETRY_DMA                   DMA1
 #define TELEMETRY_DMA_Stream_TX         LL_DMA_STREAM_7
-#define TELEMETRY_DMA_Channel_TX        LL_DMAMUX1_REQ_USART2_TX
+#define TELEMETRY_DMA_Channel_TX        LL_DMAMUX1_REQ_USART1_TX
 #define TELEMETRY_DMA_TX_Stream_IRQ     DMA1_Stream7_IRQn
 #define TELEMETRY_DMA_TX_IRQHandler     DMA1_Stream7_IRQHandler
 #define TELEMETRY_DMA_Stream_RX         LL_DMA_STREAM_3
@@ -360,8 +360,8 @@ USART6: EXTMODULE_USART
 #define INTMODULE_ANTSEL_GPIO           GPIO_PIN(GPIOA, 8)  //ANE SELECT 0=Int 1=Ext
 #define INTMODULE_BOOTCMD_GPIO          GPIO_PIN(GPIOG, 9)
 #define INTMODULE_BOOTCMD_DEFAULT       0
-#define INTMODULE_TX_GPIO               GPIO_PIN(GPIOD, 6)
-#define INTMODULE_RX_GPIO               GPIO_PIN(GPIOD, 5)
+#define INTMODULE_TX_GPIO               GPIO_PIN(GPIOD, 5)
+#define INTMODULE_RX_GPIO               GPIO_PIN(GPIOD, 6)
 #define INTMODULE_USART                 USART2
 #define INTMODULE_GPIO_AF               LL_GPIO_AF_7
 #define INTMODULE_USART_IRQn            USART2_IRQn
@@ -441,39 +441,20 @@ USART6: EXTMODULE_USART
 //ROTARY emulation for trims as buttons
 #define ROTARY_ENCODER_NAVIGATION
 // Rotary Encoder
-#define ROTARY_ENCODER_GPIO_A           GPIOE
-#define ROTARY_ENCODER_GPIO_PIN_A       LL_GPIO_PIN_3
-#define ROTARY_ENCODER_GPIO_B           GPIOE
-#define ROTARY_ENCODER_GPIO_PIN_B       LL_GPIO_PIN_4
-#define ROTARY_ENCODER_POSITION()       (((ROTARY_ENCODER_GPIO_A->IDR >> 3) & 0x01)|((ROTARY_ENCODER_GPIO_B->IDR >> 3) & 0x02))
-#define ROTARY_ENCODER_EXTI_LINE1       LL_EXTI_LINE_3
-#define ROTARY_ENCODER_EXTI_LINE2       LL_EXTI_LINE_4
-#if !defined(USE_EXTI9_5_IRQ)
-  #define USE_EXTI9_5_IRQ
-  #define EXTI9_5_IRQ_Priority  9
-#endif
-#define ROTARY_ENCODER_EXTI_PORT_A      LL_SYSCFG_EXTI_PORTE
-#define ROTARY_ENCODER_EXTI_PORT_B      LL_SYSCFG_EXTI_PORTE
-#define ROTARY_ENCODER_EXTI_SYS_LINE1   LL_SYSCFG_EXTI_LINE3
-#define ROTARY_ENCODER_EXTI_SYS_LINE2   LL_SYSCFG_EXTI_LINE4
-#define ROTARY_ENCODER_TIMER            TIM17
-#define ROTARY_ENCODER_TIMER_IRQn       TIM17_IRQn
-#define ROTARY_ENCODER_TIMER_IRQHandler TIM17_IRQHandler
-
-
-// Rotary Encoder
-/*
-#define ROTARY_ENCODER_NAVIGATION
+#define ROTARY_ENCODER_INVERTED
 #define ROTARY_ENCODER_GPIO             GPIOE
-#define ROTARY_ENCODER_GPIO_PIN_A       LL_GPIO_PIN_3 // PA.06
-#define ROTARY_ENCODER_GPIO_PIN_B       LL_GPIO_PIN_4 // PA.07
+#define ROTARY_ENCODER_GPIO_PIN_A       LL_GPIO_PIN_3 // PE.03
+#define ROTARY_ENCODER_GPIO_PIN_B       LL_GPIO_PIN_4 // PE.04
 #define ROTARY_ENCODER_POSITION()       ((ROTARY_ENCODER_GPIO->IDR >> 3) & 0x03)
 #define ROTARY_ENCODER_EXTI_LINE1       LL_EXTI_LINE_3
 #define ROTARY_ENCODER_EXTI_LINE2       LL_EXTI_LINE_4
-// port extender interrupt
-#if !defined(USE_EXTI9_5_IRQ)
-  #define USE_EXTI9_5_IRQ
-  #define EXTI9_5_IRQ_Priority 5
+#if !defined(USE_EXTI3_IRQ)
+  #define USE_EXTI3_IRQ
+  #define EXTI3_IRQ_Priority 5
+#endif
+#if !defined(USE_EXTI4_IRQ)
+  #define USE_EXTI4_IRQ
+  #define EXTI4_IRQ_Priority 5
 #endif
 #define ROTARY_ENCODER_EXTI_PORT        LL_SYSCFG_EXTI_PORTE
 #define ROTARY_ENCODER_EXTI_SYS_LINE1   LL_SYSCFG_EXTI_LINE3
@@ -481,7 +462,6 @@ USART6: EXTMODULE_USART
 #define ROTARY_ENCODER_TIMER            TIM17
 #define ROTARY_ENCODER_TIMER_IRQn       TIM17_IRQn
 #define ROTARY_ENCODER_TIMER_IRQHandler TIM17_IRQHandler
-*/
 
 // Millisecond timer
 #define MS_TIMER                        TIM14
