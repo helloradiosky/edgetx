@@ -1,7 +1,11 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
+<<<<<<< HEAD
 set(PCB_TYPES X9LITE X9LITES X7 XLITE XLITES X9D X9D+ X9E X10 X12S PL18 T15PRO ST16 PA01 TX15)
+=======
+set(PCB_TYPES X9LITE X9LITES X7 XLITE XLITES X9D X9D+ X9E X10 X12S NV14 PL18 T15PRO ST16 PA01 TX15 V12P)
+>>>>>>> 5a5720d20a401d8a5f8a6c73a87432b0192316e8
 set(RADIO_LANGUAGES CN CZ DA DE EN ES FI FR HE HU IT JP KO NL PL PT RU SE SK TW UA)
 set(TTS_LANGUAGES CN CZ DA DE EN ES FR HE HU IT JP KO NL PL PT RU SE SK UA)
 
@@ -86,6 +90,8 @@ elseif(PCB STREQUAL PL18)
   include(targets/pl18/CMakeLists.txt)
 elseif(PCB STREQUAL T15PRO)
   include(targets/t15pro/CMakeLists.txt)
+elseif(PCB STREQUAL V12P)
+  include(targets/v12p/CMakeLists.txt)
 elseif(PCB STREQUAL ST16)
   include(targets/st16/CMakeLists.txt)
 elseif(PCB STREQUAL PA01)
