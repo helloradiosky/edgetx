@@ -266,7 +266,7 @@ USART6: EXTMODULE_USART
 #define LCD_SPI_CS                      GPIO_PIN(GPIOG, 10)
 #define LCD_SPI_CLK                     GPIO_PIN(GPIOG, 11)
 #define LCD_SPI_MOSI                    GPIO_PIN(GPIOB,  5)
-#define LCD_SPI_MISO                    GPIO_PIN(GPIOG,  9)
+#define LCD_SPI_MISO                    GPIO_PIN(GPIOK,  0)
 #define LCD_SPI_BAUD                    100000000     //100000000
 
 // Backlight
@@ -410,11 +410,11 @@ USART6: EXTMODULE_USART
 #define EXTMODULE_TIMER_DMA_IRQHandler     DMA2_Stream3_IRQHandler
 
 // Trainer Port
-#define TRAINER_IN_GPIO                 GPIO_PIN(GPIOI, 6)  // TIM8_CH2
-#define TRAINER_IN_TIMER_Channel        LL_TIM_CHANNEL_CH2
+#define TRAINER_IN_GPIO                 GPIO_PIN(GPIOB, 11)  // TIM2_CH4
+#define TRAINER_IN_TIMER_Channel        LL_TIM_CHANNEL_CH4
 
-#define TRAINER_OUT_GPIO                GPIO_PIN(GPIOI, 7)  // TIM8_CH3
-#define TRAINER_OUT_TIMER_Channel       LL_TIM_CHANNEL_CH3
+#define TRAINER_OUT_GPIO                GPIO_PIN(GPIOB, 13)  // TIM1_CH1N
+#define TRAINER_OUT_TIMER_Channel       LL_TIM_CHANNEL_CH1
 
 #define TRAINER_TIMER                   TIM8
 #define TRAINER_TIMER_IRQn              TIM8_CC_IRQn
@@ -425,7 +425,7 @@ USART6: EXTMODULE_USART
 // Touch
 #define TOUCH_I2C_BUS                 I2C_Bus_2
 #define TOUCH_RST_GPIO                GPIO_PIN(GPIOJ, 1)  // PJ.01
-#define TOUCH_INT_GPIO                GPIO_PIN(GPIOD, 11)  // PD.11
+#define TOUCH_INT_GPIO                GPIO_PIN(GPIOJ, 9)  // PD.11
 
 #define TOUCH_INT_EXTI_Line           LL_EXTI_LINE_11
 #define TOUCH_INT_EXTI_Port           LL_SYSCFG_EXTI_PORTD
