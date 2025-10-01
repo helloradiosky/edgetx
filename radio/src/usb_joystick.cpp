@@ -574,11 +574,28 @@ void usbClassicStateUpdate()
 
   // analog values
   // uint8_t * p = HID_Buffer + 1;
+   // analog values
+  // uint8_t * p = HID_Buffer + 1;
+  int16_t value1;
   for (int i = 0; i < 8; ++i) {
-    int16_t value = limit<int16_t>(0, channelOutputs[i] + 1024, 2048);
+    //int16_t value = limit<int16_t>(0, channelOutputs[i] + 1024, 2048);
+    if(i==4){
+      value1 = limit<int16_t>(0, channelOutputs[10] + 1024, 2048);
+    }
+    else if(i==6){
+      value1 = limit<int16_t>(0, channelOutputs[11] + 1024, 2048);
+    }
+    else if(i==8){
+      value1 = limit<int16_t>(0, channelOutputs[4] + 1024, 2048);
+    }
+    else if(i==9){
+      value1 = limit<int16_t>(0, channelOutputs[7] + 1024, 2048);
+    }
+    else
+      value1 = limit<int16_t>(0, channelOutputs[i] + 1024, 2048);
 
-    _hidReport[i * 2 + 3] = static_cast<uint8_t>(value & 0xFF);
-    _hidReport[i * 2 + 4] = static_cast<uint8_t>(value >> 8);
+    _hidReport[i * 2 + 3] = static_cast<uint8_t>(value1 & 0xFF);
+    _hidReport[i * 2 + 4] = static_cast<uint8_t>(value1 >> 8);
   }
 
   // battery values
