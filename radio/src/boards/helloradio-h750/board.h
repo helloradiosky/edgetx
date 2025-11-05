@@ -30,7 +30,8 @@
 #include "hal/serial_port.h"
 #include "hal/watchdog_driver.h"
 
-#define FLASHSIZE                       0x1000000
+#define FLASHSIZE                       0x800000
+#define FLASH_PAGESIZE                  256
 #define BOOTLOADER_SIZE                 0x10000
 #define BOOTLOADER_ADDRESS              0x08000000
 #define FIRMWARE_ADDRESS                0x90000000
@@ -124,8 +125,8 @@ void EXTERNAL_MODULE_OFF();
 // --- MOSFET ---- R1 --- MCU
 //                     |__ R2 --- GND
 //
-#define VBAT_DIV_R1       680  // kOhms
-#define VBAT_DIV_R2       158  // kOhms
+#define VBAT_DIV_R1       100  // kOhms
+#define VBAT_DIV_R2       56  // kOhms
 #define VBAT_MOSFET_DROP    0  // * 10mV
 
 // #define BATTERY_DIVIDER 1211 // = 2047 * 165k / (165k + 680k) * 10 / 3.3V

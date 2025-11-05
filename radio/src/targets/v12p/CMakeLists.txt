@@ -56,7 +56,7 @@ set(DEFAULT_INTERNAL_MODULE CROSSFIRE CACHE STRING "Default internal module")
 set(BITMAPS_TARGET bm320_bitmaps)
 set(FONTS_TARGET x12_fonts)
 set(LCD_DRIVER lcd_driver.cpp)
-set(HARDWARE_TOUCH YES)
+set(HARDWARE_TOUCH OFF)
 set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} ${BITMAPS_TARGET})
 set(FIRMWARE_DEPENDENCIES datacopy)
 set(SOFTWARE_KEYBOARD ON)
@@ -66,11 +66,13 @@ set(FUNCTION_SWITCHES_WITH_RGB YES)
 add_definitions(
   -DSTM32H750XBTx -DSTM32H750xx
   -DSDRAM -DCCMRAM
+  -DCOLORLCD -DLIBOPENUI
   -DHARDWARE_TOUCH -DHARDWARE_KEYS -DSOFTWARE_KEYBOARD
 )
 
 set(SDRAM ON)
 
+add_definitions(-DAUDIO -DVOICE)
 add_definitions(-DSOFTWARE_VOLUME)
 add_definitions(-DRTCLOCK)
 add_definitions(-DGPS_USART_BAUDRATE=${INTERNAL_GPS_BAUDRATE})
@@ -127,7 +129,6 @@ set(BOARD_COMMON_SRC
   targets/common/arm/stm32/rotary_encoder_driver.cpp
   targets/common/arm/stm32/rtc_driver.cpp
   targets/common/arm/stm32/watchdog_driver.cpp
-  drivers/pca95xx.cpp
 )
 
 # Bootloader board library
