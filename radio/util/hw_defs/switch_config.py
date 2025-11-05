@@ -144,6 +144,14 @@ SWITCH_CONFIG = {
         "SD": {"default": "3POS",   "display": [1, 1]},
         "SF": {"default": "TOGGLE", "display": [1, 2]},
     },
+    "v12p": {
+        # left side
+        "SA": {"default": "2POS",   "display": [0, 0]},
+        "SB": {"default": "3POS",   "display": [0, 1]},
+        # right side
+        "SC": {"default": "3POS",   "display": [1, 0]},
+        "SD": {"default": "TOGGLE",  "display": [1, 1]},
+    },
     "v14": {
         # left side
         "SA": {"default": "TOGGLE", "display": [0, 0]},

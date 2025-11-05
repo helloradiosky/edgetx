@@ -111,6 +111,9 @@ case $RADIO_TYPE in
    t15pro)
         BUILD_OPTIONS+=" -DPCB=T15PRO -DINTERNAL_MODULE_CRSF=ON"
         ;;
+    v12p)
+        BUILD_OPTIONS+=" -DPCB=V12P -DINTERNAL_MODULE_CRSF=ON"
+        ;;
     t16)
         BUILD_OPTIONS+=" -DPCB=X10 -DPCBREV=T16 -DINTERNAL_MODULE_MULTI=ON"
         ;;

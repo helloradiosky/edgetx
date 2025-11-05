@@ -119,6 +119,9 @@ get_target_build_options() {
         t15pro)
             BUILD_OPTIONS+="-DPCB=T15PRO"
             ;;
+        v12p)
+            BUILD_OPTIONS+="-DPCB=V12P"
+            ;;
         tx15)
             BUILD_OPTIONS+="-DPCB=TX15"
             ;;
