@@ -116,10 +116,8 @@ USART6: EXTMODULE_USART
 
 // Switches
 // SWA
-#define STORAGE_SWITCH_A
-#define SWITCHES_GPIO_REG_A_H           GPIOH
-#define SWITCHES_GPIO_PIN_A_H           LL_GPIO_PIN_8
-#define SWITCHES_A_INVERTED
+#define SWITCHES_GPIO_REG_A             GPIOH
+#define SWITCHES_GPIO_PIN_A             LL_GPIO_PIN_8  // PE.05
 
 // SWB
 #define STORAGE_SWITCH_B
@@ -138,10 +136,8 @@ USART6: EXTMODULE_USART
 #define SWITCHES_C_INVERTED
 
 // SWD
-#define STORAGE_SWITCH_D
-#define SWITCHES_GPIO_REG_D_H           GPIOI
-#define SWITCHES_GPIO_PIN_D_H           LL_GPIO_PIN_3
-#define SWITCHES_D_INVERTED
+#define SWITCHES_GPIO_REG_D             GPIOI
+#define SWITCHES_GPIO_PIN_D             LL_GPIO_PIN_3  // PI.03
 
 // function switches
 //SW1
