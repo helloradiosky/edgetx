@@ -66,10 +66,10 @@ USART6: EXTMODULE_USART
 #ifndef _HAL_H_
 #define _HAL_H_
 
-#define CPU_FREQ                80000000
+#define CPU_FREQ                480000000
 
-#define PERI1_FREQUENCY         100000000
-#define PERI2_FREQUENCY         100000000
+#define PERI1_FREQUENCY         120000000
+#define PERI2_FREQUENCY         120000000
 #define TIMER_MULT_APB1         2
 #define TIMER_MULT_APB2         2
 

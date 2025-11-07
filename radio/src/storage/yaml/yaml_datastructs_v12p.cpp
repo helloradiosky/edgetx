@@ -562,7 +562,7 @@ static const struct YamlNode struct_trim_t[] = {
 };
 static const struct YamlNode struct_FlightModeData[] = {
   YAML_IDX,
-  YAML_ARRAY("trim", 16, 8, struct_trim_t, NULL),
+  YAML_ARRAY("trim", 16, 6, struct_trim_t, NULL),
   YAML_STRING("name", 10),
   YAML_SIGNED_CUST( "swtch", 10, r_swtchSrc, w_swtchSrc ),
   YAML_PADDING( 6 ),
@@ -846,7 +846,7 @@ static const struct YamlNode struct_CustomScreenData[] = {
   YAML_END
 };
 static const struct YamlNode struct_TopBarPersistentData[] = {
-  YAML_ARRAY("zones", 1440, 6, struct_ZonePersistentData, NULL),
+  YAML_ARRAY("zones", 1440, 5, struct_ZonePersistentData, NULL),
   YAML_ARRAY("options", 128, 1, struct_ZoneOptionValueTyped, NULL),
   YAML_END
 };
@@ -903,7 +903,7 @@ static const struct YamlNode struct_ModelData[] = {
   YAML_ARRAY("logicalSw", 72, 64, struct_LogicalSwitchData, NULL),
   YAML_ARRAY("customFn", 88, 64, struct_CustomFunctionData, cfn_is_active),
   YAML_STRUCT("swashR", 64, struct_SwashRingData, swash_is_active),
-  YAML_ARRAY("flightModeData", 480, 9, struct_FlightModeData, fmd_is_active),
+  YAML_ARRAY("flightModeData", 448, 9, struct_FlightModeData, fmd_is_active),
   YAML_UNSIGNED_CUST( "thrTraceSrc", 8, r_thrSrc, w_thrSrc ),
   YAML_CUSTOM("switchWarningState",r_swtchWarn,nullptr),
   YAML_ARRAY("switchWarning", 2, 32, struct_swtchWarn, nullptr),
@@ -925,8 +925,8 @@ static const struct YamlNode struct_ModelData[] = {
   YAML_ARRAY("potsWarnPosition", 8, 16, struct_signed_8, NULL),
   YAML_ARRAY("telemetrySensors", 112, 99, struct_TelemetrySensor, NULL),
   YAML_ARRAY("screenData", 15776, 10, struct_CustomScreenData, NULL),
-  YAML_STRUCT("topbarData", 8768, struct_TopBarPersistentData, NULL),
-  YAML_ARRAY("topbarWidgetWidth", 8, 6, struct_unsigned_8, NULL),
+  YAML_STRUCT("topbarData", 7328, struct_TopBarPersistentData, NULL),
+  YAML_ARRAY("topbarWidgetWidth", 8, 5, struct_unsigned_8, NULL),
   YAML_UNSIGNED( "view", 8 ),
   YAML_STRING("modelRegistrationID", 8),
   YAML_CUSTOM("functionSwitchConfig",r_functionSwitchConfig,nullptr),
@@ -936,7 +936,7 @@ static const struct YamlNode struct_ModelData[] = {
   YAML_ARRAY("switchNames", 0, NUM_FUNCTIONS_SWITCHES, struct_cfsNameConfig, nullptr),
   YAML_ARRAY("functionSwitchLedONColor", 0, NUM_FUNCTIONS_SWITCHES, struct_cfsOnColorConfig, nullptr),
   YAML_ARRAY("functionSwitchLedOFFColor", 0, NUM_FUNCTIONS_SWITCHES, struct_cfsOffColorConfig, nullptr),
-  YAML_ARRAY("customSwitches", 88, 6, struct_customSwitch, isAlwaysActive),
+  YAML_ARRAY("customSwitches", 88, 4, struct_customSwitch, isAlwaysActive),
   YAML_ARRAY("cfsGroupOn", 1, 8, struct_cfsGroupOn, cfsGroupIsActive),
   YAML_PADDING( 8 ),
   YAML_UNSIGNED( "usbJoystickExtMode", 1 ),
