@@ -121,18 +121,18 @@ USART6: EXTMODULE_USART
 
 // SWB
 #define STORAGE_SWITCH_B
-#define SWITCHES_GPIO_REG_B_H           GPIOH
-#define SWITCHES_GPIO_PIN_B_H           LL_GPIO_PIN_7
-#define SWITCHES_GPIO_REG_B_L           GPIOD
-#define SWITCHES_GPIO_PIN_B_L           LL_GPIO_PIN_11
+#define SWITCHES_GPIO_REG_B_H           GPIOD
+#define SWITCHES_GPIO_PIN_B_H           LL_GPIO_PIN_11
+#define SWITCHES_GPIO_REG_B_L           GPIOH
+#define SWITCHES_GPIO_PIN_B_L           LL_GPIO_PIN_7
 #define SWITCHES_B_INVERTED
 
 // SWC
 #define STORAGE_SWITCH_C
-#define SWITCHES_GPIO_REG_C_H           GPIOD
-#define SWITCHES_GPIO_PIN_C_H           LL_GPIO_PIN_4
-#define SWITCHES_GPIO_REG_C_L           GPIOG
-#define SWITCHES_GPIO_PIN_C_L           LL_GPIO_PIN_3
+#define SWITCHES_GPIO_REG_C_H           GPIOG
+#define SWITCHES_GPIO_PIN_C_H           LL_GPIO_PIN_3
+#define SWITCHES_GPIO_REG_C_L           GPIOD
+#define SWITCHES_GPIO_PIN_C_L           LL_GPIO_PIN_4
 #define SWITCHES_C_INVERTED
 
 // SWD
@@ -143,26 +143,26 @@ USART6: EXTMODULE_USART
 //SW1
 
 // ADC
-#define ADC_GPIO_PIN_STICK_LH           LL_GPIO_PIN_0      // PA.00 ADC1_INP16
+#define ADC_GPIO_PIN_STICK_LH           LL_GPIO_PIN_2      // PA.00 ADC1_INP16
 #define ADC_GPIO_PIN_STICK_LV           LL_GPIO_PIN_3      // PA.03 ADC12_INP15
-#define ADC_GPIO_PIN_STICK_RV           LL_GPIO_PIN_1      // PA.01 ADC1_INP17
-#define ADC_GPIO_PIN_STICK_RH           LL_GPIO_PIN_2      // PA.02 ADC12_INP14
+#define ADC_GPIO_PIN_STICK_RV           LL_GPIO_PIN_0      // PA.01 ADC1_INP17
+#define ADC_GPIO_PIN_STICK_RH           LL_GPIO_PIN_1      // PA.02 ADC12_INP14
 
-#define ADC_GPIO_PIN_POT1               LL_GPIO_PIN_0      // PC.03 POT2 ADC12_INP10
-#define ADC_GPIO_PIN_POT2               LL_GPIO_PIN_1      // PC.02 POT1 ADC123_INP11
+#define ADC_GPIO_PIN_POT1               LL_GPIO_PIN_1      // PC.03 POT2 ADC12_INP10
+#define ADC_GPIO_PIN_POT2               LL_GPIO_PIN_0      // PC.02 POT1 ADC123_INP11
 #define ADC_GPIO_PIN_POT3               LL_GPIO_PIN_5      // PC.02 POT1 ADC123_INP8
 #define ADC_GPIO_PIN_BATT               LL_GPIO_PIN_3      // PC.05 ADC12_INP13
 
 #define ADC_GPIOA_PINS                  (ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV, ADC_GPIO_PIN_STICK_RH, ADC_GPIO_PIN_STICK_RV)
 #define ADC_GPIOC_PINS                  (ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_POT2 |ADC_GPIO_PIN_POT3| ADC_GPIO_PIN_BATT )
 
-#define ADC_CHANNEL_STICK_LH            LL_ADC_CHANNEL_16
+#define ADC_CHANNEL_STICK_LH            LL_ADC_CHANNEL_14
 #define ADC_CHANNEL_STICK_LV            LL_ADC_CHANNEL_15
 #define ADC_CHANNEL_STICK_RV            LL_ADC_CHANNEL_17
-#define ADC_CHANNEL_STICK_RH            LL_ADC_CHANNEL_14
+#define ADC_CHANNEL_STICK_RH            LL_ADC_CHANNEL_16
 
-#define ADC_CHANNEL_POT1                LL_ADC_CHANNEL_10
-#define ADC_CHANNEL_POT2                LL_ADC_CHANNEL_11
+#define ADC_CHANNEL_POT1                LL_ADC_CHANNEL_11
+#define ADC_CHANNEL_POT2                LL_ADC_CHANNEL_10
 #define ADC_CHANNEL_POT3                LL_ADC_CHANNEL_8
 #define ADC_CHANNEL_BATT                LL_ADC_CHANNEL_13
 #define ADC_CHANNEL_RTC_BAT             LL_ADC_CHANNEL_VBAT  // ADC3 IMP17
@@ -187,7 +187,7 @@ USART6: EXTMODULE_USART
 #define ADC_VREF_PREC2                  330
 
 #define ADC_DIRECTION {       	 \
-0,-1,0,-1, 	/* gimbals */    \
+0,0,-1,-1, 	/* gimbals */    \
 1,1,       	/* pots */       \
 0,0,     	/* sliders */    \
 0,	     	/* vbat */       \
