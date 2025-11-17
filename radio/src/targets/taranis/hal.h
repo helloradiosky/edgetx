@@ -2558,7 +2558,7 @@
   #define OLED_SCREEN
 #endif
 #if defined(RADIO_T14) || defined(RADIO_GX12) || defined(RADIO_V14)
-  #define SSD1309_LCD
+  //#define SSD1309_LCD
 #endif
 #if defined(PCBX9E)
   #define LCD_MOSI_GPIO                 GPIO_PIN(GPIOC, 12) // PC.12
