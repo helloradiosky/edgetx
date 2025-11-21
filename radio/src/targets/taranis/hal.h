@@ -1715,6 +1715,14 @@
   #define ADC_GPIOA_PINS                (ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_STICK_RH | ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SWE | ADC_GPIO_PIN_SWB)
   #define ADC_GPIOB_PINS                (ADC_GPIO_PIN_POT1)
   #define ADC_GPIOC_PINS                (ADC_GPIO_PIN_POT3 | ADC_GPIO_PIN_SWC | ADC_GPIO_PIN_SWF)
+  #define ADC_EXT                       ADC3
+  #define ADC_EXT_DMA                   DMA2
+  #define ADC_EXT_DMA_CHANNEL           LL_DMA_CHANNEL_2
+  #define ADC_EXT_DMA_STREAM            LL_DMA_STREAM_0
+  #define ADC_EXT_DMA_STREAM_IRQ        DMA2_Stream0_IRQn
+  #define ADC_EXT_DMA_STREAM_IRQHandler DMA2_Stream0_IRQHandler
+  #define ADC_EXT_CHANNELS              { ADC_CHANNEL_POT3 }
+  #define ADC_EXT_SAMPTIME              LL_ADC_SAMPLINGTIME_56CYCLES
   #define ADC_VREF_PREC2                330
 #elif defined(PCBX7)
   #define HARDWARE_POT1
@@ -2555,7 +2563,7 @@
 #endif
 #if defined(RADIO_LR3PRO) || defined(RADIO_TPROV2) || defined(RADIO_TPROS) || defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_BUMBLEBEE) || defined(RADIO_GX12) || defined(RADIO_V14)
   #define LCD_HORIZONTAL_INVERT
-  #define OLED_SCREEN
+  //#define OLED_SCREEN
 #endif
 #if defined(RADIO_T14) || defined(RADIO_GX12) || defined(RADIO_V14)
   //#define SSD1309_LCD
