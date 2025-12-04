@@ -162,6 +162,7 @@ SWITCH_CONFIG = {
         "SD": {"default": "TOGGLE", "display": [1, 1]},
         "SF": {"default": "TOGGLE", "display": [1, 2]},
     },
+<<<<<<< HEAD
     "v14lcd": {
         # left side
         "SA": {"default": "TOGGLE", "display": [0, 0]},
@@ -171,6 +172,22 @@ SWITCH_CONFIG = {
         "SC": {"default": "3POS",   "display": [1, 0]},
         "SD": {"default": "TOGGLE", "display": [1, 1]},
         "SF": {"default": "TOGGLE", "display": [1, 2]},
+=======
+    "v15": { 
+        "SA": {"default": "3POS"},
+        "SB": {"default": "3POS"},
+        "SC": {"default": "3POS"},
+        "SD": {"default": "3POS"},
+        "SE": {"default": "2POS"},
+        "SF": {"default": "TOGGLE"},
+        # custom switches
+        "SG": {"default": "2POS"},
+        "SH": {"default": "2POS"},
+        "SI": {"default": "2POS"},
+        "SJ": {"default": "2POS"},
+        "SK": {"default": "2POS"},
+        "SL": {"default": "2POS"},
+>>>>>>> 4d8d9b19c7 (V15 6S UI OK)
     },
     "v16": {
         "SA": {"default": "3POS"},

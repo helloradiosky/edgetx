@@ -19,26 +19,28 @@
  * GNU General Public License for more details.
  */
 
-#pragma once
+#ifndef __LCD_DRIVER_H__
+#define __LCD_DRIVER_H__
 
-#include <stdint.h>
+#define HBP  42
+  #define VBP  12
 
-#define ROTENC_LOWSPEED   1
-#define ROTENC_MIDSPEED   5
-#define ROTENC_HIGHSPEED 50
+  #define HSW  2
+  #define VSW  10
 
-#if defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_T15) || defined(RADIO_T15PRO) || defined(RADIO_T22) || defined(RADIO_BUMBLEBEE) || defined(RADIO_V15)
-#define ROTARY_ENCODER_GRANULARITY 4
-#else
-#define ROTARY_ENCODER_GRANULARITY 2
+  #define HFP  3
+  #define VFP  2
+
+#define LCD_DELAY()         LCD_Delay()
+
+typedef void (*lcdSpiInitFucPtr)(void);
+typedef unsigned int  LcdReadIDFucPtr( void );
+
+extern lcdSpiInitFucPtr lcdInitFunction;
+extern lcdSpiInitFucPtr lcdOffFunction;
+extern lcdSpiInitFucPtr lcdOnFunction;
+
+#define LCD_NRST_HIGH()                      LL_GPIO_SetOutputPin(LCD_NRST_GPIO, LCD_NRST_GPIO_PIN)
+#define LCD_NRST_LOW()                       LL_GPIO_ResetOutputPin(LCD_NRST_GPIO, LCD_NRST_GPIO_PIN)
+
 #endif
-
-typedef int32_t rotenc_t;
-
-void rotaryEncoderInit();
-
-// return impulses / granularity
-rotenc_t rotaryEncoderGetValue();
-
-int8_t rotaryEncoderGetAccel();
-void rotaryEncoderResetAccel();

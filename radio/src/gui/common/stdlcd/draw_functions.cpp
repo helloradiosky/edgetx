@@ -450,6 +450,18 @@ void drawSourceCustomValue(coord_t x, coord_t y, mixsrc_t source, int32_t value,
   else if (source == MIXSRC_TX_VOLTAGE) {
     lcdDrawNumber(x, y, value, flags|PREC1);
   }
+#if defined(MODULE_BATTERY_SENSOR)
+  else if (source == MIXSRC_TX_BAT_DIG_VOT) {
+    drawValueWithUnit(x, y, value, UNIT_VOLTS, flags | PREC2);
+  }
+  else if (source == MIXSRC_TX_BAT_CURRENT) {
+    drawValueWithUnit(x, y, value, UNIT_AMPS, flags | PREC2);
+  }
+  else if (source == MIXSRC_TX_BAT_POWER) {
+    int32_t wattsDeci = (value >= 0) ? (value + 5) / 10 : (value - 5) / 10;
+    drawValueWithUnit(x, y, wattsDeci, UNIT_WATTS, flags | PREC1);
+  }
+#endif
 #if defined(LUMINOSITY_SENSOR)
   else if (source == MIXSRC_LIGHT) {
     lcdDrawNumber(x, y, value, flags);
