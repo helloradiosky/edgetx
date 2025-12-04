@@ -80,6 +80,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 945);
 #elif defined(RADIO_ST16) || defined(PCBPA01) || defined(RADIO_TX15) || defined(RADIO_T15PRO)
   CHKSIZE(RadioData, 1177);
+#elif defined(RADIO_V15)
+  CHKSIZE(RadioData, 1177);
 #elif defined(COLORLCD)
   CHKSIZE(RadioData, 1057);
 #elif defined(RADIO_GX12)
@@ -107,6 +109,8 @@ static inline void check_struct()
     CHKSIZE(ModelData, 6877);
   #endif
 #elif defined(PCBST16) || defined(RADIO_T15PRO) || defined(RADIO_TX15)
+  CHKSIZE(ModelData, 7641);
+#elif defined(RADIO_V15)
   CHKSIZE(ModelData, 7641);
 #elif defined(PCBPA01)
   CHKSIZE(ModelData, 7582);
