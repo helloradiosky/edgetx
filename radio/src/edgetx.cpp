@@ -41,6 +41,10 @@
 
 #include "timers_driver.h"
 
+#if defined(MODULE_XIAOZHI_CHAT) && !defined(BOOT)
+#include "aux3_chat.h"
+#endif
+
 #include "switches.h"
 #include "inactivity_timer.h"
 #include "input_mapping.h"
@@ -250,6 +254,13 @@ void per10ms()
 #endif
 
   outputTelemetryBuffer.per10ms();
+
+#if defined(MODULE_XIAOZHI_CHAT) && !defined(BOOT)
+  // AI boot mode uses AUX3 for raw USB passthrough; do not consume bytes here.
+  if (v15AiModeGet() != 3) {
+    v15ChatUartPollLine();
+  }
+#endif
 
   heartbeat |= HEART_TIMER_10MS;
 
@@ -1463,6 +1474,14 @@ void edgeTxInit()
 #endif
 #endif
 
+#if defined(PWR_BUTTON_PRESS)
+  // Ignore the startup hold used to power on until the power keys are released once.
+  while (pwrPressed()) {
+    WDG_RESET();
+    sleep_ms(10);
+  }
+#endif
+
   // SDCARD related stuff, only enable if normal boot
   if (!UNEXPECTED_SHUTDOWN()) {
 
@@ -1688,8 +1707,9 @@ int pwrDelayToYaml(int delay)
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
   // Instant off when both power button are pressed
-  if (pwrForcePressed())
-    return 0;
+  if (pwrForcePressed()) {
+    //return 0;
+  }
 
   return pwrDelayTime(g_eeGeneral.pwrOffSpeed);
 }
@@ -1747,6 +1767,15 @@ uint32_t pwrCheck()
   else if (pwrPressed() || inactivityShutdown) {
     if (!inactivityShutdown)
       inactivityTimerReset(ActivitySource::Keys);
+
+#if defined(RADIO_V15)
+    if (!inactivityShutdown) {
+      // SYS+MDL are also used as power combo on V15. Prevent their menu BREAK
+      // events from being emitted while shutdown key sequence is in progress.
+      killEvents(KEY_SYS);
+      killEvents(KEY_MODEL);
+    }
+#endif
 
     if (TELEMETRY_STREAMING()) {
       message = STR_MODEL_STILL_POWERED;
@@ -2019,6 +2048,26 @@ void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax, LcdFla
     if (flags)
       *flags |= PREC1;
   }
+#if defined(MODULE_BATTERY_SENSOR)
+  else if (asrc == MIXSRC_TX_BAT_DIG_VOT) {
+    valMax = 3000;
+    valMin = 0;
+    if (flags)
+      *flags |= PREC2;
+  }
+  else if (asrc == MIXSRC_TX_BAT_CURRENT) {
+    valMax = 30000;
+    valMin = -valMax;
+    if (flags)
+      *flags |= PREC2;
+  }
+  else if (asrc == MIXSRC_TX_BAT_POWER) {
+    valMax = 30000;
+    valMin = -valMax;
+    if (flags)
+      *flags |= PREC2;
+  }
+#endif
 #if defined(LUMINOSITY_SENSOR)
   else if (asrc == MIXSRC_LIGHT) {
     valMax = 100;
