@@ -51,7 +51,7 @@ void backlightLowInit()
 
 void backlightInit()
 {
-  stm32_pulse_init(&_bl_timer, 10000);
+  stm32_pulse_init(&_bl_timer, 1000000);
   stm32_pulse_config_output(&_bl_timer, true, LL_TIM_OCMODE_PWM1, 100);
   LL_TIM_SetAutoReload(_bl_timer.TIMx, 100);
   LL_TIM_EnableCounter(_bl_timer.TIMx);
@@ -62,18 +62,7 @@ uint8_t lastDutyCycle = 0;
 void backlightEnable(uint8_t dutyCycle)
 {
   stm32_pulse_set_cmp_val(&_bl_timer, dutyCycle);
-
-  // TODO: removed until QSPI & LCD SPI are split
-  // if(!dutyCycle) {
-  //   //experimental to turn off LCD when no backlight
-  //   // if(lcdOffFunction) lcdOffFunction();
-  // }
-  // else if(!lastDutyCycle) {
-  //   // if(lcdOnFunction) lcdOnFunction();
-  //   // else lcdInit();
-  // }
-
-  // lastDutyCycle = dutyCycle;
+  lastDutyCycle = dutyCycle;
 }
 
 void lcdOff() {
@@ -81,8 +70,6 @@ void lcdOff() {
 }
 
 void lcdOn(){
-  // if(lcdOnFunction) lcdOnFunction();
-  // else lcdInit();
   backlightEnable(BACKLIGHT_LEVEL_MAX);
 }
 

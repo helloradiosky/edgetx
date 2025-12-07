@@ -68,17 +68,22 @@ void ledInit()
 #if defined(FUNCTION_SWITCHES_RGB_LEDS)
 void fsLedRGB(uint8_t index, uint32_t color)
 {
-   ws2812_set_color(index, GET_RED(color), \
-   GET_GREEN(color),GET_BLUE(color));
+  ws2812_set_color(index + CFS_LED_STRIP_START, GET_RED(color), GET_GREEN(color),
+                   GET_BLUE(color));
+}
+
+uint32_t fsGetLedRGB(uint8_t index)
+{
+  return rgbGetLedColor(index + CFS_LED_STRIP_START);
 }
 
 uint8_t getRGBColorIndex(uint32_t color)
 {
-  for (uint8_t i = 0; i < (sizeof(colorTable) / sizeof(colorTable[0])); i++) {
+  for (uint8_t i = 0; i < DIM(colorTable); i++) {
     if (color == colorTable[i])
-      return(i);
+      return(i + 1);
   }
-  return 5; // Custom value set with Companion
+  return 0; // Custom value set with Companion
 }
 #elif defined(FUNCTION_SWITCHES)
 void fsLedOff(uint8_t index)
@@ -112,29 +117,24 @@ void ledOff()
 
 void ledRed()
 {
-  ledOff();
 #if defined(LED_RED_GPIO)
+  ledOff();
   GPIO_LED_GPIO_ON(LED_RED_GPIO);
 #endif
 }
 
 void ledGreen()
 {
-  ledOff();
 #if defined(LED_GREEN_GPIO)
+  ledOff();
   GPIO_LED_GPIO_ON(LED_GREEN_GPIO);
 #endif
 }
 
 void ledBlue()
 {
-  ledOff();
 #if defined(LED_BLUE_GPIO)
+  ledOff();
   GPIO_LED_GPIO_ON(LED_BLUE_GPIO);
 #endif
-}
-
-uint32_t fsGetLedRGB(uint8_t index)
-{
-  return rgbGetLedColor(index + CFS_LED_STRIP_START);
 }

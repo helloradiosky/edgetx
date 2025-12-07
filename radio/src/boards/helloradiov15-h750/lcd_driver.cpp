@@ -147,7 +147,7 @@ static void lcdReset(void)
   delay_ms(30);
 
   LCD_NRST_HIGH();
-  delay_ms(40);
+  delay_ms(50);
 }
 
 void LCD_Init_LTDC() {

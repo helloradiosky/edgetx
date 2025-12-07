@@ -133,17 +133,19 @@ void INTERNAL_MODULE_OFF()
 
 void EXTERNAL_MODULE_ON()
 {
-  //gpio_set(EXTMODULE_PWR_GPIO);
+  gpio_set(EXTMODULE_PWR_GPIO);
 }
 
 void EXTERNAL_MODULE_OFF()
 {
-  //gpio_clear(EXTMODULE_PWR_GPIO);
+  gpio_clear(EXTMODULE_PWR_GPIO);
 }
 
 void boardBLEarlyInit()
 {
   timersInit();
+  delaysInit();
+  //bsp_io_init();
   usbChargerInit();
 }
 
@@ -181,6 +183,7 @@ void boardInit()
   delaysInit();
   timersInit();
 
+  usbChargerInit();
   gpio_set(LED_BLUE_GPIO);
 
   ExtFLASH_InitRuntime();
@@ -199,35 +202,19 @@ void boardInit()
 
   usbInit();
 
-#if !defined(DEBUG_SEGGER_RTT)
-  // This is needed to prevent radio from starting when usb is plugged to charge
-  if (!UNEXPECTED_SHUTDOWN() && usbPlugged()) {
-    while (usbPlugged() && !pwrPressed()) {
-      delay_ms(1000);
-    }
-    if (!pwrPressed()) {
-      pwrOff();
-      // Wait power to drain
-      while (true) {
-      }
-    }
-  }
-#endif
-
   rgbLedInit();
   led_strip_off();
 
   keysInit();
   switchInit();
   rotaryEncoderInit();
-#if defined(HARDWARE_TOUCH) && !defined(SIMU)
   touchPanelInit();
-#endif
   audioInit();
   adcInit(&_adc_driver);
   hapticInit();
 
-  rtcInit(); // RTC must be initialized before rambackupRestore() is called
+  // RTC must be initialized before rambackupRestore() is called
+  rtcInit();
 }
 
 extern void rtcDisableBackupReg();
@@ -247,7 +234,6 @@ void boardOff()
 
   rtcDisableBackupReg();
 
-//    RTC->BKP0R = SHUTDOWN_REQUEST;
   pwrOff();
 
   // We reach here only in forced power situations, such as hw-debugging with external power  
