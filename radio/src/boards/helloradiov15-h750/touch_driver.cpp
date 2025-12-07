@@ -242,7 +242,7 @@ const uint8_t TOUCH_GT911_Cfg[] =
     0x01,
     GT911_MAX_TP,        // 0x804C Touch number
 #if defined(TOUCH_PANEL_INVERTED)
-    0x3C | 0xC0,         // 0x804D Module switch 1 : 180° rotation
+    0x3C | 0xC0,        // 0x804D Module switch 1 : 180° rotation
 #else
     0x3C,                // 0x804D Module switch 1 : bit4= xy change Int mode
 #endif

@@ -179,7 +179,7 @@ USART6: EXTMODULE_USART
 #define SWITCHES_L_CFS_IDX            5
 
 // 6POS SW
-//#define SIXPOS_SWITCH_INDEX           6
+#define SIXPOS_SWITCH_INDEX           6
 #define SIXPOS_LED_RED                200
 #define SIXPOS_LED_GREEN              0
 #define SIXPOS_LED_BLUE               0
@@ -495,11 +495,11 @@ USART6: EXTMODULE_USART
 #define I2C_B1_GPIO_AF                  LL_GPIO_AF_4
 #define I2C_B1_CLK_RATE                 400000
 
-#define I2C_B2                          I2C4
-#define I2C_B2_SDA_GPIO                 GPIO_PIN(GPIOD, 13) //TP
-#define I2C_B2_SCL_GPIO                 GPIO_PIN(GPIOD, 12)
-#define I2C_B2_GPIO_AF                  LL_GPIO_AF_4
-#define I2C_B2_CLK_RATE                 400000
+#define I2C_B4                          I2C4
+#define I2C_B4_SDA_GPIO                 GPIO_PIN(GPIOD, 13) //TP
+#define I2C_B4_SCL_GPIO                 GPIO_PIN(GPIOD, 12)
+#define I2C_B4_GPIO_AF                  LL_GPIO_AF_4
+#define I2C_B4_CLK_RATE                 400000
 
 // Touch
 #define TOUCH_I2C_BUS                 I2C_Bus_1
