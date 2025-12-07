@@ -648,7 +648,7 @@ struct TouchState touchPanelRead()
 {
   uint8_t state = 0;
 
-  if (!touchEventOccured||1) return internalTouchState;
+  if (!touchEventOccured) return internalTouchState;
   touchEventOccured = false;
 
   uint32_t startReadStatus = timersGetMsTick();

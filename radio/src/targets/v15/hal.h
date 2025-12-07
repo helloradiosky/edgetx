@@ -145,8 +145,41 @@ USART6: EXTMODULE_USART
 #define SWITCHES_GPIO_REG_F             GPIOJ
 #define SWITCHES_GPIO_PIN_F             LL_GPIO_PIN_12 // PJ.12
 
+
+// function switches
+//SW1
+#define FUNCTION_SWITCH_1             SG
+#define SWITCHES_GPIO_REG_G           GPIOA
+#define SWITCHES_GPIO_PIN_G           LL_GPIO_PIN_5  // PH.11
+#define SWITCHES_G_CFS_IDX            0
+//SW2
+#define FUNCTION_SWITCH_2             SH
+#define SWITCHES_GPIO_REG_H           GPIOA
+#define SWITCHES_GPIO_PIN_H           LL_GPIO_PIN_6  // PH.09
+#define SWITCHES_H_CFS_IDX            1
+//SW3
+#define FUNCTION_SWITCH_3             SI
+#define SWITCHES_GPIO_REG_I           GPIOA
+#define SWITCHES_GPIO_PIN_I           LL_GPIO_PIN_7  // PH.10
+#define SWITCHES_I_CFS_IDX            2
+//SW4
+#define FUNCTION_SWITCH_4             SJ
+#define SWITCHES_GPIO_REG_J           GPIOG
+#define SWITCHES_GPIO_PIN_J           LL_GPIO_PIN_3  // PH.123
+#define SWITCHES_J_CFS_IDX            3
+//SW5
+#define FUNCTION_SWITCH_5             SK
+#define SWITCHES_GPIO_REG_K           GPIOG
+#define SWITCHES_GPIO_PIN_K           LL_GPIO_PIN_11  // PH.14
+#define SWITCHES_K_CFS_IDX            4
+//SW6
+#define FUNCTION_SWITCH_6             SL
+#define SWITCHES_GPIO_REG_L           GPIOG
+#define SWITCHES_GPIO_PIN_L           LL_GPIO_PIN_11  // PH.12
+#define SWITCHES_L_CFS_IDX            5
+
 // 6POS SW
-#define SIXPOS_SWITCH_INDEX           6
+//#define SIXPOS_SWITCH_INDEX           6
 #define SIXPOS_LED_RED                200
 #define SIXPOS_LED_GREEN              0
 #define SIXPOS_LED_BLUE               0
