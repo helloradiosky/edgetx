@@ -470,7 +470,7 @@ USART6: EXTMODULE_USART
 
 // Touch
 #define TOUCH_PANEL_INVERTED
-#define TOUCH_I2C_BUS                 I2C_Bus_1
+#define TOUCH_I2C_BUS                 I2C_Bus_4
 #define TOUCH_RST_GPIO                GPIO_PIN(GPIOB, 13)  // PB.13
 #define TOUCH_INT_GPIO                GPIO_PIN(GPIOB, 12)  // PB.12
 
