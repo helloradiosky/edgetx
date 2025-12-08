@@ -42,7 +42,7 @@ struct TouchState getInternalTouchState();
 
 #define GT911_MAX_TP            5
 
-#define GT911_CFG_NUMBER        0x6E
+#define GT911_CFG_NUMBER        0x6F
 
 //I2C
 #define GT911_I2C_ADDR          0x14
