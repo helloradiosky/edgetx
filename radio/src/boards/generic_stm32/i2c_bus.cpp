@@ -110,7 +110,6 @@ int i2c_deinit(etx_i2c_bus_t bus)
     return stm32_i2c_deinit(I2C_Bus_4);
   }
 #endif
-
   return -1;
 }
 

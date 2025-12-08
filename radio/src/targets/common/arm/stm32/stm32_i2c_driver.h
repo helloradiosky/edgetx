@@ -28,7 +28,7 @@
 #include <stdint.h>
 
 // Maxmimum 2 I2C bus instances
-enum { I2C_Bus_1 = 0, I2C_Bus_2=1 ,I2C_Bus_3=2,I2C_Bus_4=3};
+enum { I2C_Bus_1 = 0, I2C_Bus_2 , I2C_Bus_3 , I2C_Bus_4};
 
 typedef struct {
   I2C_TypeDef* I2Cx;
