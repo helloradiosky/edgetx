@@ -64,6 +64,54 @@ extern const etx_hal_adc_driver_t _adc_driver;
 // RGB LED timer
 extern const stm32_pulse_timer_t _led_timer;
 
+#if defined(SIXPOS_SWITCH_INDEX)
+uint8_t lastADCState = 0;
+uint8_t sixPosState = 5;
+
+uint8_t uploadPosState = 0;
+
+bool dirty = true;
+uint16_t getSixPosAnalogValue(uint16_t adcValue)
+{
+  uint8_t currentADCState = 0;
+  if(uploadPosState){
+    uploadPosState--;
+    goto __retposadc__;
+  }
+  else if (adcValue > 3800)
+    currentADCState = 6;
+  else if (adcValue > 3100)
+    currentADCState = 5;
+  else if (adcValue > 2300)
+    currentADCState = 4;
+  else if (adcValue > 1500)
+    currentADCState = 3;
+  else if (adcValue > 1000)
+    currentADCState = 2;
+  else if (adcValue > 400)
+    currentADCState = 1;
+  if (lastADCState != currentADCState) {
+    lastADCState = currentADCState;
+    uploadPosState=10;
+  } else if (lastADCState != 0 && lastADCState - 1 != sixPosState) {
+    sixPosState = lastADCState - 1;
+    dirty = true;
+  }
+  if (dirty) {
+    for (uint8_t i = 0; i < 6; i++) {
+      if (i == sixPosState) {
+        ws2812_set_color(5-i, SIXPOS_LED_RED, SIXPOS_LED_GREEN, SIXPOS_LED_BLUE);
+      } else {
+        ws2812_set_color(5-i, 0, 0, 160);
+      }
+    }
+    rgbLedColorApply();
+  }
+__retposadc__:  
+
+  return (4096/5)*(sixPosState);
+}
+#endif
 
 static void led_strip_off()
 {

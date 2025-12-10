@@ -142,6 +142,12 @@ USART6: EXTMODULE_USART
 // function switches
 //SW1
 
+// 6POS SW
+#define SIXPOS_SWITCH_INDEX           6
+#define SIXPOS_LED_RED                0
+#define SIXPOS_LED_GREEN              200
+#define SIXPOS_LED_BLUE               0
+
 // ADC
 #define ADC_GPIO_PIN_STICK_LH           LL_GPIO_PIN_2      // PA.00 ADC1_INP16
 #define ADC_GPIO_PIN_STICK_LV           LL_GPIO_PIN_3      // PA.03 ADC12_INP15
@@ -188,7 +194,7 @@ USART6: EXTMODULE_USART
 
 #define ADC_DIRECTION {       	 \
 0,0,-1,-1, 	/* gimbals */    \
-1,1,       	/* pots */       \
+1,1,0,       	/* pots */       \
 0,0,     	/* sliders */    \
 0,	     	/* vbat */       \
 0,       	/* rtc_bat */    \
@@ -307,13 +313,6 @@ USART6: EXTMODULE_USART
 #define AUDIO_TIMER                    TIM6
 #define AUDIO_DMA                      DMA2
 
-// I2C Bus
-#define I2C_B1                          I2C1
-#define I2C_B1_SDA_GPIO                 GPIO_PIN(GPIOI, 12)  // PB.09
-#define I2C_B1_SCL_GPIO                 GPIO_PIN(GPIOI, 11)  // PB.08
-#define I2C_B1_GPIO_AF                  LL_GPIO_AF_4
-#define I2C_B1_CLK_RATE                 400000
-
 // Haptic
 #define HAPTIC_PWM
 #define HAPTIC_GPIO                     GPIO_PIN(GPIOE, 6) // TIM15_CH2
@@ -416,10 +415,17 @@ USART6: EXTMODULE_USART
 #define TRAINER_GPIO_AF                 LL_GPIO_AF_2
 #define TRAINER_TIMER_FREQ              (PERI2_FREQUENCY * TIMER_MULT_APB2)
 
+// I2C Bus
+#define I2C_B4                          I2C4
+#define I2C_B4_SDA_GPIO                 GPIO_PIN(GPIOH, 12)  // PB.09
+#define I2C_B4_SCL_GPIO                 GPIO_PIN(GPIOH, 11)  // PB.08
+#define I2C_B4_GPIO_AF                  LL_GPIO_AF_4
+#define I2C_B4_CLK_RATE                 400000
+
 // Touch
-#define TOUCH_I2C_BUS                 I2C_Bus_2
-#define TOUCH_RST_GPIO                GPIO_PIN(GPIOJ, 1)  // PJ.01
-#define TOUCH_INT_GPIO                GPIO_PIN(GPIOJ, 9)  // PD.11
+#define TOUCH_I2C_BUS                 I2C_Bus_4
+#define TOUCH_RST_GPIO                GPIO_PIN(GPIOJ, 14)  // PJ.14
+#define TOUCH_INT_GPIO                GPIO_PIN(GPIOD, 11)  // PD.11
 
 #define TOUCH_INT_EXTI_Line           LL_EXTI_LINE_11
 #define TOUCH_INT_EXTI_Port           LL_SYSCFG_EXTI_PORTD
@@ -429,6 +435,16 @@ USART6: EXTMODULE_USART
 #if !defined(USE_EXTI15_10_IRQ)
 #define USE_EXTI15_10_IRQ
 #define EXTI15_10_IRQ_Priority 9
+#endif
+
+// IMU
+#define IMU_I2C_BUS                     I2C_Bus_4
+#define IMU_I2C_ADDRESS                 0x69
+//#define IMU_INT_GPIO	                GPIO_PIN(GPIOJ, 10) // PG.13
+// IMU_INT_EXTI IRQ
+#if !defined(USE_EXTI15_10_IRQ)
+  #define USE_EXTI15_10_IRQ
+  #define EXTI15_10_IRQ_Priority       6
 #endif
 
 

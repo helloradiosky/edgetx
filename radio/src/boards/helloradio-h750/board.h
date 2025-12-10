@@ -167,6 +167,8 @@ void ledRed();
 void ledBlue();
 void ledGreen();
 
+uint16_t getSixPosAnalogValue(uint16_t adcValue);
+
 // LCD driver
 void lcdSetInitalFrameBuffer(void* fbAddress);
 void lcdInit();
