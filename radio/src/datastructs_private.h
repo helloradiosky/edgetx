@@ -1149,6 +1149,9 @@ PACK(struct RadioData {
   void cfsSetOffColorLuaOverride(uint8_t n, bool v);
 #endif
 #endif
+#if defined(INTERNAL_EXTERNAL_ANT)
+  NOBACKUP(uint8_t  RFANTSELECT);
+#endif
 });
 
 #undef SWITCHES_WARNING_DATA

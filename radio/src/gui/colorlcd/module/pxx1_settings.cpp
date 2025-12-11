@@ -57,7 +57,7 @@ PXX1AntennaSettings::PXX1AntennaSettings(Window* parent,
           checkExternalAntenna();
         }
       });
-
+      
   antennaChoice->setAvailableHandler(
       [=](int8_t mode) { return mode != ANTENNA_MODE_PER_MODEL; });
 }

@@ -90,8 +90,10 @@ static inline void check_struct()
 
 #if defined(PCBXLITES)
   CHKSIZE(RadioData, 945);
-#elif defined(RADIO_ST16) || defined(PCBPA01) || defined(RADIO_TX15) || defined(RADIO_T15PRO)|| defined(RADIO_V12P)
+#elif defined(RADIO_ST16) || defined(PCBPA01) || defined(RADIO_TX15) || defined(RADIO_T15PRO)
   CHKSIZE(RadioData, 1159);
+#elif defined(RADIO_V12P)
+  CHKSIZE(RadioData, 1160);
 #elif defined(COLORLCD)
   CHKSIZE(RadioData, 1039);
 #elif defined(RADIO_GX12)

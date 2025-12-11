@@ -33,6 +33,8 @@
 #include "storage/modelslist.h"
 #include "etx_lv_theme.h"
 
+#include "definitions.h"
+
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
 #include "pxx1_settings.h"
 #endif
@@ -183,7 +185,6 @@ class ModuleWindow : public Window
       // copy pointer to frame len edit object to channel range
       chRange->setPpmFrameLenEditObject(obj->getPpmFrameLenEditObject());
     }
-
     // Generic module parameters
 
     // Bind and Range buttons
@@ -198,6 +199,16 @@ class ModuleWindow : public Window
                       ETX_STATE_UNIQUE_ID_WARN);
         updateIDStaticText(moduleIdx);
       }
+  #if defined(INTERNAL_EXTERNAL_ANT)
+  // Ant Select
+    auto line1 = newLine(grid);
+    new StaticText(line1, rect_t{}, "启用外置天线");
+    new ToggleSwitch(line1, rect_t{}, GET_SET_DEFAULT(g_eeGeneral.RFANTSELECT));
+    
+    if(g_eeGeneral.RFANTSELECT==0)INTMODULE_ANTSEL_INT();
+    else 
+      INTMODULE_ANTSEL_EXT();
+  #endif
 
       auto line = newLine(grid);
       new StaticText(line, rect_t{}, STR_RECEIVER);
@@ -325,7 +336,7 @@ class ModuleWindow : public Window
     }
   #if defined(PXX2)
     else if (isModuleRFAccess(moduleIdx)) {
-
+  
       // Register and Range buttons
       auto line = newLine(grid);
       new StaticText(line, rect_t{}, STR_MODULE);

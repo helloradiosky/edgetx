@@ -141,6 +141,7 @@ endif()
 
 if(CROSSFIRE)
   add_gui_src(module/crossfire_settings.cpp)
+  add_gui_src(module/pxx1_settings.cpp)
 endif()
 
 if(AFHDS2)

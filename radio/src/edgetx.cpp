@@ -340,6 +340,9 @@ void generalDefault()
   g_eeGeneral.stickDeadZone = DEFAULT_STICK_DEADZONE;
 #endif
 
+#if defined(INTERNAL_EXTERNAL_ANT)
+  g_eeGeneral.RFANTSELECT = 0;    //1= Int 0=Ext
+#endif
   // vBatWarn is voltage in 100mV, vBatMin is in 100mV but with -9V offset,
   // vBatMax has a -12V offset
   g_eeGeneral.vBatWarn = BATTERY_WARN;
@@ -1497,6 +1500,11 @@ void edgeTxInit()
 
   currentBacklightBright = requiredBacklightBright = g_eeGeneral.getBrightness();
 
+#if defined(INTERNAL_EXTERNAL_ANT)
+  if(g_eeGeneral.RFANTSELECT==0)INTMODULE_ANTSEL_INT();
+  else 
+    INTMODULE_ANTSEL_EXT();
+#endif
 
   referenceSystemAudioFiles();
   audioQueue.start();
