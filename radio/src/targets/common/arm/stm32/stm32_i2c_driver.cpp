@@ -32,7 +32,11 @@
 #endif
 #include "debug.h"
 
+#if defined(RADIO_V15)
+#define MAX_I2C_DEVICES 4
+#else
 #define MAX_I2C_DEVICES 2
+#endif
 
 struct stm32_i2c_device {
   I2C_HandleTypeDef handle;

@@ -1787,6 +1787,15 @@ uint32_t pwrCheck()
     if (!inactivityShutdown)
       inactivityTimerReset(ActivitySource::Keys);
 
+#if defined(RADIO_V15)
+    if (!inactivityShutdown) {
+      // SYS+MDL are also used as power combo on V15. Prevent their menu BREAK
+      // events from being emitted while shutdown key sequence is in progress.
+      killEvents(KEY_SYS);
+      killEvents(KEY_MODEL);
+    }
+#endif
+
     if (TELEMETRY_STREAMING()) {
       message = STR_MODEL_STILL_POWERED;
     }
@@ -2058,6 +2067,26 @@ void getMixSrcRange(const int source, int16_t & valMin, int16_t & valMax, LcdFla
     if (flags)
       *flags |= PREC1;
   }
+#if defined(MODULE_BATTERY_SENSOR)
+  else if (asrc == MIXSRC_TX_BAT_DIG_VOT) {
+    valMax = 3000;
+    valMin = 0;
+    if (flags)
+      *flags |= PREC1;
+  }
+  else if (asrc == MIXSRC_TX_BAT_CURRENT) {
+    valMax = 30000;
+    valMin = -valMax;
+    if (flags)
+      *flags |= PREC1;
+  }
+  else if (asrc == MIXSRC_TX_BAT_POWER) {
+    valMax = 30000;
+    valMin = -valMax;
+    if (flags)
+      *flags |= PREC2;
+  }
+#endif
 #if defined(LUMINOSITY_SENSOR)
   else if (asrc == MIXSRC_LIGHT) {
     valMax = 100;

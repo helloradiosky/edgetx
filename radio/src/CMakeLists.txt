@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB_TYPES X9LITE X9LITES X7 XLITE XLITES X9D X9D+ X9E X10 X12S PL18 T15PRO ST16 PA01 TX15 TX16SMK3 T22)
+set(PCB_TYPES X9LITE X9LITES X7 XLITE XLITES X9D X9D+ X9E X10 X12S PL18 T15PRO ST16 PA01 TX15 TX16SMK3 T22 V15)
 set(RADIO_LANGUAGES CN CZ DA DE EN ES FI FR HE HU IT JP KO NL PL PT RU SE SK TW UA)
 set(TTS_LANGUAGES CN CZ DA DE EN ES FI FR HE HU IT JP KO NL PL PT RU SE SK TW UA)
 
@@ -93,6 +93,8 @@ elseif(PCB STREQUAL PL18)
   include(targets/pl18/CMakeLists.txt)
 elseif(PCB STREQUAL T15PRO)
   include(targets/t15pro/CMakeLists.txt)
+elseif(PCB STREQUAL V15)
+  include(targets/v15/CMakeLists.txt)
 elseif(PCB STREQUAL ST16)
   include(targets/st16/CMakeLists.txt)
 elseif(PCB STREQUAL PA01)
@@ -144,6 +146,13 @@ endif()
 if(CPU_FAMILY STREQUAL STM32)
   include(targets/common/arm/stm32/CMakeLists.txt)
   include(boards/generic_stm32/CMakeLists.txt)
+  if(PCB STREQUAL V15)
+    # V15 board.cpp provides sixPosUpdateFromAdc()
+    set_source_files_properties(
+      ${RADIO_SRC_DIR}/boards/generic_stm32/rgb_6pos.cpp
+      TARGET_DIRECTORY board_lib
+      PROPERTIES HEADER_FILE_ONLY TRUE)
+  endif()
 endif()
 
 if(ARCH STREQUAL ARM)

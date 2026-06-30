@@ -793,6 +793,17 @@ char *getSourceString(char (&destRef)[L], mixsrc_t idx, bool defaultOnly)
       case MIXSRC_TX_VOLTAGE:
         src_str = STR_SRC_BATT;
         break;
+#if defined(MODULE_BATTERY_SENSOR)
+      case MIXSRC_TX_BAT_DIG_VOT:
+        src_str = "BatV";
+        break;
+      case MIXSRC_TX_BAT_CURRENT:
+        src_str = "BatI";
+        break;
+      case MIXSRC_TX_BAT_POWER:
+        src_str = "BatP";
+        break;
+#endif
       case MIXSRC_TX_TIME:
         src_str = STR_SRC_TIME;
         break;
@@ -959,6 +970,21 @@ char *getSourceCustomValueString(char (&dest)[L], mixsrc_t source, int32_t val,
     formatNumberAsString(dest, len, val, flags | PREC1);
     return dest;
   }
+#if defined(MODULE_BATTERY_SENSOR)
+  else if (source == MIXSRC_TX_BAT_DIG_VOT) {
+    getValueWithUnit(dest, len, val, UNIT_VOLTS, flags | PREC1);
+    return dest;
+  }
+  else if (source == MIXSRC_TX_BAT_CURRENT) {
+    getValueWithUnit(dest, len, val, UNIT_AMPS, flags | PREC1);
+    return dest;
+  }
+  else if (source == MIXSRC_TX_BAT_POWER) {
+    int32_t wattsDeci = (val >= 0) ? (val + 5) / 10 : (val - 5) / 10;
+    getValueWithUnit(dest, len, wattsDeci, UNIT_WATTS, flags | PREC1);
+    return dest;
+  }
+#endif
 #if defined(INTERNAL_GPS)
   else if (source == MIXSRC_TX_GPS) {
     if (gpsData.fix) {

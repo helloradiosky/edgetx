@@ -26,6 +26,9 @@
 #include "input_mapping.h"
 #include "mixes.h"
 
+#if defined(MODULE_BATTERY_SENSOR)
+#include "boards/helloradio-h750/batsenser.h"
+#endif
 #include "hal/adc_driver.h"
 #include "hal/trainer_driver.h"
 #include "hal/switch_driver.h"
@@ -506,6 +509,18 @@ getvalue_t _getValue(mixsrc_t i, bool* valid)
 
   else if (i == MIXSRC_TX_VOLTAGE) {
     return g_vbat100mV;
+#if defined(MODULE_BATTERY_SENSOR)
+  } else if (i == MIXSRC_TX_BAT_DIG_VOT) {
+    return (v15BatterySystemVoltage() + 5) / 100;
+  } else if (i == MIXSRC_TX_BAT_CURRENT) {
+    return v15BatterySystemCurrent() / 100;
+  } else if (i == MIXSRC_TX_BAT_POWER) {
+    int64_t powerUv =
+        static_cast<int64_t>(v15BatterySystemVoltage()) *
+        static_cast<int64_t>(v15BatterySystemCurrent());
+    return (powerUv >= 0) ? (powerUv + 5000) / 10000
+                          : -(powerUv - 5000) / 10000;
+#endif
   } else if (i < MIXSRC_FIRST_TIMER) {
     // TX_TIME + SPARES
 #if defined(RTCLOCK)

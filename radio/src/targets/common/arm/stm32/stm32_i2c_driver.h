@@ -27,8 +27,12 @@
 
 #include <stdint.h>
 
-// Maxmimum 2 I2C bus instances
+// Maximum I2C bus instances
+#if defined(RADIO_V15)
+enum { I2C_Bus_1 = 0, I2C_Bus_2, I2C_Bus_3, I2C_Bus_4 };
+#else
 enum { I2C_Bus_1 = 0, I2C_Bus_2 };
+#endif
 
 typedef struct {
   I2C_TypeDef* I2Cx;

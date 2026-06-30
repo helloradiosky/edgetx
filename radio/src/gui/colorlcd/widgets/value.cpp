@@ -84,9 +84,15 @@ class ValueWidget : public Widget
 
     // get source from options[0]
     mixsrc_t field = widgetData->options[0].value.unsignedValue;
+#if defined(MODULE_BATTERY_SENSOR)
+    field = getConfiguredField(widgetData);
+#endif
 
     // if value changed
     auto newValue = getValue(field);
+#if defined(MODULE_BATTERY_SENSOR)
+    newValue = getDisplayValue(field, newValue);
+#endif
     if (lastValue != newValue) {
       lastValue = newValue;
       changed = true;
@@ -145,6 +151,16 @@ class ValueWidget : public Widget
         TimerOptions timerOptions;
         timerOptions.options = SHOW_TIMER;
         valueTxt = getTimerString(abs(timerState.val), timerOptions);
+#if defined(MODULE_BATTERY_SENSOR)
+      } else if (field == MIXSRC_TX_BAT_DIG_VOT) {
+        valueTxt = getValueWithUnit(newValue, UNIT_VOLTS, valueFlags | PREC1);
+      } else if (field == MIXSRC_TX_BAT_CURRENT) {
+        valueTxt = getValueWithUnit(newValue, UNIT_AMPS, valueFlags | PREC1);
+      } else if (field == MIXSRC_TX_BAT_POWER) {
+        int32_t wattsDeci = (newValue >= 0) ? (newValue + 5) / 10
+                                            : (newValue - 5) / 10;
+        valueTxt = getValueWithUnit(wattsDeci, UNIT_WATTS, valueFlags | PREC1);
+#endif
       } else if (field >= MIXSRC_FIRST_TELEM) {
         std::string getSensorCustomValue(uint8_t sensor, int32_t value,
                                          LcdFlags flags);
@@ -171,6 +187,56 @@ class ValueWidget : public Widget
  protected:
   int32_t lastValue = -10000;
   bool lastTelemState = false;
+#if defined(MODULE_BATTERY_SENSOR)
+  bool batVFilterInit = false;
+  bool batIFilterInit = false;
+  int32_t batVFilteredQ8 = 0;
+  int32_t batIFilteredQ8 = 0;
+
+  mixsrc_t getConfiguredField(WidgetPersistentData* widgetData)
+  {
+    mixsrc_t field = widgetData->options[0].value.unsignedValue;
+    const char* widgetName = getFactory()->getName();
+    mixsrc_t forcedField = field;
+    if (strcmp(widgetName, "BatV") == 0) {
+      forcedField = MIXSRC_TX_BAT_DIG_VOT;
+    } else if (strcmp(widgetName, "BatI") == 0) {
+      forcedField = MIXSRC_TX_BAT_CURRENT;
+    } else if (strcmp(widgetName, "BatP") == 0) {
+      forcedField = MIXSRC_TX_BAT_POWER;
+    }
+    if (forcedField != field) {
+      widgetData->options[0].value.unsignedValue = forcedField;
+      field = forcedField;
+    }
+    return field;
+  }
+
+  int32_t getDisplayValue(mixsrc_t field, int32_t rawValue)
+  {
+    if (field == MIXSRC_TX_BAT_DIG_VOT) {
+      int32_t rawQ8 = rawValue << 8;
+      if (!batVFilterInit) {
+        batVFilteredQ8 = rawQ8;
+        batVFilterInit = true;
+      } else {
+        batVFilteredQ8 += (rawQ8 - batVFilteredQ8) / 4;
+      }
+      return (batVFilteredQ8 + ((batVFilteredQ8 >= 0) ? 128 : -128)) >> 8;
+    }
+    if (field == MIXSRC_TX_BAT_CURRENT) {
+      int32_t rawQ8 = rawValue << 8;
+      if (!batIFilterInit) {
+        batIFilteredQ8 = rawQ8;
+        batIFilterInit = true;
+      } else {
+        batIFilteredQ8 += (rawQ8 - batIFilteredQ8) / 4;
+      }
+      return (batIFilteredQ8 + ((batIFilteredQ8 >= 0) ? 128 : -128)) >> 8;
+    }
+    return rawValue;
+  }
+#endif
   lv_style_t labelStyle;
   lv_style_t valueStyle;
   lv_obj_t* label;
@@ -192,6 +258,9 @@ class ValueWidget : public Widget
 
     // get source from options[0]
     mixsrc_t field = widgetData->options[0].value.unsignedValue;
+#if defined(MODULE_BATTERY_SENSOR)
+    field = getConfiguredField(widgetData);
+#endif
 
     // get color from options[1]
     etx_txt_color_from_flags(label, widgetData->options[1].value.unsignedValue);
@@ -292,3 +361,36 @@ const WidgetOption ValueWidget::options[] = {
 
 BaseWidgetFactory<ValueWidget> ValueWidget("Value", ValueWidget::options,
                                            STR_WIDGET_VALUE);
+
+#if defined(MODULE_BATTERY_SENSOR)
+const WidgetOption ValueWidgetBatDigVotOptions[] = {
+    {STR_SOURCE, WidgetOption::Source, MIXSRC_TX_BAT_DIG_VOT},
+    {STR_COLOR, WidgetOption::Color, COLOR2FLAGS(COLOR_THEME_PRIMARY2_INDEX)},
+    {STR_SHADOW, WidgetOption::Bool, false},
+    {STR_ALIGN_LABEL, WidgetOption::Align, ALIGN_LEFT},
+    {STR_ALIGN_VALUE, WidgetOption::Align, ALIGN_LEFT},
+    {nullptr, WidgetOption::Bool}};
+
+const WidgetOption ValueWidgetBatCurrentOptions[] = {
+    {STR_SOURCE, WidgetOption::Source, MIXSRC_TX_BAT_CURRENT},
+    {STR_COLOR, WidgetOption::Color, COLOR2FLAGS(COLOR_THEME_PRIMARY2_INDEX)},
+    {STR_SHADOW, WidgetOption::Bool, false},
+    {STR_ALIGN_LABEL, WidgetOption::Align, ALIGN_LEFT},
+    {STR_ALIGN_VALUE, WidgetOption::Align, ALIGN_LEFT},
+    {nullptr, WidgetOption::Bool}};
+
+const WidgetOption ValueWidgetBatPowerOptions[] = {
+    {STR_SOURCE, WidgetOption::Source, MIXSRC_TX_BAT_POWER},
+    {STR_COLOR, WidgetOption::Color, COLOR2FLAGS(COLOR_THEME_PRIMARY2_INDEX)},
+    {STR_SHADOW, WidgetOption::Bool, false},
+    {STR_ALIGN_LABEL, WidgetOption::Align, ALIGN_LEFT},
+    {STR_ALIGN_VALUE, WidgetOption::Align, ALIGN_LEFT},
+    {nullptr, WidgetOption::Bool}};
+
+BaseWidgetFactory<class ValueWidget> BatVWidgetFactory(
+    "BatV", ValueWidgetBatDigVotOptions, "BatV");
+BaseWidgetFactory<class ValueWidget> BatIWidgetFactory(
+    "BatI", ValueWidgetBatCurrentOptions, "BatI");
+BaseWidgetFactory<class ValueWidget> BatPWidgetFactory(
+    "BatP", ValueWidgetBatPowerOptions, "BatP");
+#endif

@@ -21,24 +21,13 @@
 
 #pragma once
 
-#include <stdint.h>
+#include "hal/flash_driver.h"
 
-#define ROTENC_LOWSPEED   1
-#define ROTENC_MIDSPEED   5
-#define ROTENC_HIGHSPEED 50
+extern const etx_flash_driver_t extflash_driver;
+extern const void* extflash_dfu_media;
 
-#if defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_T15) || defined(RADIO_T15PRO)  || defined(RADIO_T22) || defined(RADIO_BUMBLEBEE) || defined(RADIO_V15)
-#define ROTARY_ENCODER_GRANULARITY 4
-#else
-#define ROTARY_ENCODER_GRANULARITY 2
-#endif
+// init external FLASH hardware
+int32_t ExtFLASH_Init();
 
-typedef int32_t rotenc_t;
-
-void rotaryEncoderInit();
-
-// return impulses / granularity
-rotenc_t rotaryEncoderGetValue();
-
-int8_t rotaryEncoderGetAccel();
-void rotaryEncoderResetAccel();
+// init only runtime structures
+void ExtFLASH_InitRuntime();

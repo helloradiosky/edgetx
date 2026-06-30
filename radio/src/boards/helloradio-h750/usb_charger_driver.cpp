@@ -19,26 +19,24 @@
  * GNU General Public License for more details.
  */
 
-#pragma once
+#include "hal/gpio.h"
+#include "stm32_gpio.h"
 
-#include <stdint.h>
+#include "board.h"
+#include "hal/usb_driver.h"
 
-#define ROTENC_LOWSPEED   1
-#define ROTENC_MIDSPEED   5
-#define ROTENC_HIGHSPEED 50
+void usbChargerInit()
+{
+  gpio_init(UCHARGER_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW); //charge status
 
-#if defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_T15) || defined(RADIO_T15PRO)  || defined(RADIO_T22) || defined(RADIO_BUMBLEBEE) || defined(RADIO_V15)
-#define ROTARY_ENCODER_GRANULARITY 4
-#else
-#define ROTARY_ENCODER_GRANULARITY 2
+#if defined(UCHARGER_EN)
+  gpio_init(UCHARGER_EN, GPIO_OUT, GPIO_PIN_SPEED_LOW);
+  //gpio_set(UCHARGER_EN);
+  gpio_clear(UCHARGER_EN);  //cherge EN  0=ENANLE 1=DISABLE
 #endif
+}
 
-typedef int32_t rotenc_t;
-
-void rotaryEncoderInit();
-
-// return impulses / granularity
-rotenc_t rotaryEncoderGetValue();
-
-int8_t rotaryEncoderGetAccel();
-void rotaryEncoderResetAccel();
+bool usbChargerLed()
+{
+  return (gpio_read(UCHARGER_GPIO));
+}

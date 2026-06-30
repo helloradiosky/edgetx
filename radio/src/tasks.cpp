@@ -35,6 +35,9 @@
 
 #if defined(COLORLCD)
 #include "startup_shutdown.h"
+#if defined(RADIO_V15) && defined(MODULE_BATTERY_SENSOR) && defined(USB_CHARGER)
+#include "boards/helloradio-h750/charge_ui.h"
+#endif
 #endif
 
 task_handle_t menusTaskId;
@@ -97,6 +100,9 @@ static void menusTask()
 
   drawSleepBitmap();
   edgeTxClose();
+#if defined(RADIO_V15) && defined(MODULE_BATTERY_SENSOR) && defined(USB_CHARGER)
+  v15ShutdownWaitIfCharging();
+#endif
   boardOff();
 }
 

@@ -27,6 +27,10 @@
 
 #include "edgetx.h"
 #include "lua/lua_states.h"
+#if defined(MODULE_BATTERY_SENSOR)
+#include "boards/helloradio-h750/batsenser.h"
+#include "boards/helloradio-h750/charge_ui.h"
+#endif
 
 #if defined(COLORLCD)
 #include "view_main.h"
@@ -534,6 +538,10 @@ void perMain()
 #endif
 
   checkTrainerSettings();
+#if defined(MODULE_BATTERY_SENSOR)
+  hr_exesenserTask();
+  v15BatterySensorTask();
+#endif
   periodicTick();
   DEBUG_TIMER_STOP(debugTimerPerMain1);
 
@@ -601,6 +609,14 @@ void perMain()
 #if defined(GUI)
   DEBUG_TIMER_START(debugTimerGuiMain);
 #if defined(COLORLCD)
+
+#if defined(MODULE_BATTERY_SENSOR)
+  v15BatteryUiTask();
+#if defined(USB_CHARGER)
+  v15ChargeUiTask();
+#endif
+#endif
+
   guiMain(0);
 #else
   guiMain(evt);
