@@ -222,3 +222,8 @@ endif()
 
 # Make malloc() thread-safe
 add_definitions(-DTHREADSAFE_MALLOC)
+
+# V15 board.cpp provides sixPosUpdateFromAdc(); skip generic rgb_6pos.cpp
+set_source_files_properties(
+  ${RADIO_SRC_DIR}/boards/generic_stm32/rgb_6pos.cpp
+  PROPERTIES HEADER_FILE_ONLY TRUE)
