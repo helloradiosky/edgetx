@@ -225,6 +225,13 @@ __retposadc__:
 
   return (4096/5)*(sixPosState);
 }
+
+void sixPosUpdateFromAdc()
+{
+  uint16_t* values = getAnalogValues();
+  values[SIXPOS_SWITCH_INDEX] =
+      getSixPosAnalogValue(values[SIXPOS_SWITCH_INDEX]);
+}
 #endif
 
 static void led_strip_off()
