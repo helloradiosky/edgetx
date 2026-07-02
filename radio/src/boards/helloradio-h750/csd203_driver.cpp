@@ -41,7 +41,6 @@ bool csd203RecoverI2cBus(const char *reason)
     TRACE("V15 CSD203: I2C_Bus_1 recover failed");
     return false;
   }
-
   g_i2cBusReady = true;
   g_csd203Ready = false;
   ++g_i2cRecoverCount;
