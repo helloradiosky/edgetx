@@ -144,6 +144,12 @@ void checkExternalAntenna();
 void onAntennaSelection(const char* result);
 #endif
 
+#if defined(EXTERNAL_ANTENNA) && defined(INTMODULE_ANTSEL_GPIO) && defined(COLORLCD)
+void setAntennaModeWithConfirm(int8_t newMode, uint8_t storageId,
+                               std::function<void(int8_t)> setter);
+void checkExternalAntenna();
+#endif
+
 #if defined(PXX2)
 inline bool isRacingModeAllowed()
 {

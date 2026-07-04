@@ -91,6 +91,7 @@ void bootloaderInitApp()
     start_firmware = !boardBLStartCondition(); 
     if (start_firmware) {
       // Start main application
+      abnormalRebootResetCmd();
       boardBLPreJump();
       jumpTo(APP_START_ADDRESS);
     }

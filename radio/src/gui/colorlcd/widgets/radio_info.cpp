@@ -77,7 +77,7 @@ class RadioInfoWidget : public TopBarWidget
     batteryChargeIcon->hide();
 #endif
 
-#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+#if defined(EXTERNAL_ANTENNA) && (defined(INTERNAL_MODULE_PXX1) || defined(INTMODULE_ANTSEL_GPIO))
     extAntenna = new StaticIcon(this, W_RSSI_X - PAD_SMALL, 1,
                                 ICON_TOPMENU_ANTENNA,
                                 COLOR_THEME_PRIMARY2_INDEX);
@@ -156,9 +156,12 @@ class RadioInfoWidget : public TopBarWidget
     batteryChargeIcon->show(usbChargerLed());
 #endif
 
-#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-    extAntenna->show(isModuleXJT(INTERNAL_MODULE) &&
-                     isExternalAntennaEnabled());
+#if defined(EXTERNAL_ANTENNA) && (defined(INTERNAL_MODULE_PXX1) || defined(INTMODULE_ANTSEL_GPIO))
+    bool showExtAntenna = isExternalAntennaEnabled();
+#if defined(INTERNAL_MODULE_PXX1)
+    showExtAntenna = showExtAntenna && isModuleXJT(INTERNAL_MODULE);
+#endif
+    extAntenna->show(showExtAntenna);
 #endif
 
     // Battery level
@@ -226,7 +229,7 @@ class RadioInfoWidget : public TopBarWidget
 #if defined(USB_CHARGER)
   StaticIcon* batteryChargeIcon;
 #endif
-#if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
+#if defined(EXTERNAL_ANTENNA) && (defined(INTERNAL_MODULE_PXX1) || defined(INTMODULE_ANTSEL_GPIO))
   StaticIcon* extAntenna;
 #endif
 };

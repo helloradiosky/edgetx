@@ -21,7 +21,7 @@
 
 #include "hal.h"
 
-#if defined(SIXPOS_SWITCH_INDEX) && !defined(SIMU)
+#if defined(SIXPOS_SWITCH_INDEX) && !defined(SIMU) && !(defined(RADIO_V12) && defined(FUNCTION_SWITCHES))
 
 #include "hal/adc_driver.h"
 #include "rgb_leds.h"
