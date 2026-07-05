@@ -69,6 +69,38 @@ InternalModuleWindow::InternalModuleWindow(Window *parent, FlexGridLayout& grid)
   updateAntennaLine();
 #endif
 
+#if defined(EXTERNAL_ANTENNA) && defined(INTMODULE_ANTSEL_GPIO)
+  ant_box = parent->newLine(grid);
+  ant_box->padLeft(PAD_SMALL);
+  new StaticText(ant_box, rect_t{}, STR_ANTENNA);
+  auto antennaChoice = new Choice(
+      ant_box, rect_t{}, STR_ANTENNA_MODES, ANTENNA_MODE_INTERNAL,
+      ANTENNA_MODE_EXTERNAL,
+      [=]() -> int32_t {
+        int8_t mode = g_eeGeneral.antennaMode;
+        if (mode == ANTENNA_MODE_INTERNAL || mode == ANTENNA_MODE_EXTERNAL)
+          return mode;
+        if (mode == ANTENNA_MODE_PER_MODEL) {
+          int8_t modelMode = g_model.moduleData[INTERNAL_MODULE].antennaMode;
+          return modelMode == ANTENNA_MODE_EXTERNAL ? ANTENNA_MODE_EXTERNAL
+                                                    : ANTENNA_MODE_INTERNAL;
+        }
+        return ANTENNA_MODE_INTERNAL;
+      },
+      [=](int antenna) {
+        setAntennaModeWithConfirm(antenna, EE_GENERAL, [=](int8_t mode) {
+          g_eeGeneral.antennaMode = mode;
+          if (mode == ANTENNA_MODE_INTERNAL || mode == ANTENNA_MODE_EXTERNAL) {
+            g_model.moduleData[INTERNAL_MODULE].antennaMode = mode;
+            storageDirty(EE_MODEL);
+          }
+        });
+      });
+  antennaChoice->setAvailableHandler([](int8_t mode) {
+    return mode == ANTENNA_MODE_INTERNAL || mode == ANTENNA_MODE_EXTERNAL;
+  });
+#endif
+
 #if defined(CROSSFIRE)
   br_box = parent->newLine(grid);
   br_box->padLeft(PAD_SMALL);
@@ -111,5 +143,7 @@ void InternalModuleWindow::updateAntennaLine()
 {
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
   ant_box->show(isInternalModuleAvailable(MODULE_TYPE_XJT_PXX1));
+#elif defined(EXTERNAL_ANTENNA) && defined(INTMODULE_ANTSEL_GPIO)
+  ant_box->show(true);
 #endif
 }

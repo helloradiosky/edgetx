@@ -30,7 +30,11 @@ bool isExternalAntennaEnabled()
     case ANTENNA_MODE_EXTERNAL:
       return true;
     case ANTENNA_MODE_PER_MODEL:
+#if defined(INTMODULE_ANTSEL_GPIO)
+      switch (g_model.moduleData[INTERNAL_MODULE].antennaMode) {
+#else
       switch (g_model.moduleData[INTERNAL_MODULE].pxx.antennaMode) {
+#endif
         case ANTENNA_MODE_EXTERNAL:
         case ANTENNA_MODE_ASK:
           return globalData.externalAntennaEnabled;

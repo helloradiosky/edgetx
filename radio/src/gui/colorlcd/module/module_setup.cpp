@@ -38,6 +38,10 @@
 #include "pxx1_settings.h"
 #endif
 
+#if defined(EXTERNAL_ANTENNA) && defined(INTMODULE_ANTSEL_GPIO)
+#include "ext_antenna_settings.h"
+#endif
+
 #if defined(PXX2)
 #include "access_settings.h"
 #endif
@@ -170,6 +174,12 @@ class ModuleWindow : public Window
   #if defined(DSMP)
     else if (isModuleDSMP(moduleIdx)) {
       modOpts = new DSMPSettings(this, grid, moduleIdx);
+    }
+  #endif
+
+  #if defined(EXTERNAL_ANTENNA) && defined(INTMODULE_ANTSEL_GPIO)
+    if (moduleIdx == INTERNAL_MODULE) {
+      new ExtAntennaSettings(this, grid, moduleIdx);
     }
   #endif
 

@@ -168,6 +168,10 @@ if(INTERNAL_MODULE_PXX1)
   add_gui_src(module/pxx1_settings.cpp)
 endif()
 
+if(EXTERNAL_ANTENNA)
+  add_gui_src(module/ext_antenna_settings.cpp)
+endif()
+
 if(PXX2)
   add_gui_src(module/access_settings.cpp)
 endif()
