@@ -21,24 +21,17 @@
 
 #pragma once
 
-#include <stdint.h>
+#include "window.h"
+#include "module_setup.h"
 
-#define ROTENC_LOWSPEED   1
-#define ROTENC_MIDSPEED   5
-#define ROTENC_HIGHSPEED 50
+struct ModuleData;
 
-#if defined(RADIO_FAMILY_T20) || defined(RADIO_T14) || defined(RADIO_T12MAX) || defined(RADIO_T15) || defined(RADIO_T15PRO)  || defined(RADIO_T22) || defined(RADIO_BUMBLEBEE) || defined(RADIO_V12)
-#define ROTARY_ENCODER_GRANULARITY 4
-#else
-#define ROTARY_ENCODER_GRANULARITY 2
-#endif
+class ExtAntennaSettings : public Window, public ModuleOptions
+{
+  ModuleData* md;
 
-typedef int32_t rotenc_t;
+  void update() override {}
 
-void rotaryEncoderInit();
-
-// return impulses / granularity
-rotenc_t rotaryEncoderGetValue();
-
-int8_t rotaryEncoderGetAccel();
-void rotaryEncoderResetAccel();
+public:
+  ExtAntennaSettings(Window* parent, const FlexGridLayout& g, uint8_t moduleIdx);
+};

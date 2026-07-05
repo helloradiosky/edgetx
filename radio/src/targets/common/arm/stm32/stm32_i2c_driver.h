@@ -27,8 +27,8 @@
 
 #include <stdint.h>
 
-// Maxmimum 2 I2C bus instances
-enum { I2C_Bus_1 = 0, I2C_Bus_2 };
+// Up to 4 I2C bus instances (V12 uses I2C_B4 for touch/IMU)
+enum { I2C_Bus_1 = 0, I2C_Bus_2, I2C_Bus_3, I2C_Bus_4 };
 
 typedef struct {
   I2C_TypeDef* I2Cx;

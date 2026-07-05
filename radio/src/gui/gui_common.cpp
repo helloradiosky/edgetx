@@ -812,6 +812,69 @@ void checkExternalAntenna()
 }
 #endif
 
+#if defined(EXTERNAL_ANTENNA) && defined(INTMODULE_ANTSEL_GPIO)
+
+void checkExternalAntenna()
+{
+  int8_t modelAntennaMode = g_model.moduleData[INTERNAL_MODULE].antennaMode;
+
+  if (g_eeGeneral.antennaMode == ANTENNA_MODE_EXTERNAL) {
+    globalData.externalAntennaEnabled = true;
+    INTMODULE_ANTSEL_EXT();
+    LED_ERROR_BEGIN();
+    RAISE_ALERT(STR_ANTENNACONFIRM1, STR_ANTENNACONFIRM2, STR_PRESS_ANY_KEY_TO_SKIP, AU_WARNING1);
+  } else if (g_eeGeneral.antennaMode == ANTENNA_MODE_PER_MODEL &&
+             modelAntennaMode == ANTENNA_MODE_EXTERNAL) {
+    if (!globalData.externalAntennaEnabled) {
+#if defined(COLORLCD)
+      if (confirmationDialog(STR_ANTENNACONFIRM1, STR_ANTENNACONFIRM2)) {
+        globalData.externalAntennaEnabled = true;
+      }
+#endif
+    }
+  } else if (g_eeGeneral.antennaMode == ANTENNA_MODE_ASK ||
+             (g_eeGeneral.antennaMode == ANTENNA_MODE_PER_MODEL &&
+              modelAntennaMode == ANTENNA_MODE_ASK)) {
+    globalData.externalAntennaEnabled = false;
+  } else {
+    globalData.externalAntennaEnabled = false;
+  }
+
+  if (g_eeGeneral.antennaMode != ANTENNA_MODE_EXTERNAL) {
+    if (globalData.externalAntennaEnabled) {
+      INTMODULE_ANTSEL_EXT();
+    } else {
+      INTMODULE_ANTSEL_INT();
+    }
+  }
+}
+
+#if defined(COLORLCD)
+void setAntennaModeWithConfirm(int8_t newMode, uint8_t storageId,
+                               std::function<void(int8_t)> setter)
+{
+  int8_t modelAntennaMode = g_model.moduleData[INTERNAL_MODULE].antennaMode;
+  bool willEnableExternal =
+      newMode == ANTENNA_MODE_EXTERNAL ||
+      (newMode == ANTENNA_MODE_PER_MODEL && modelAntennaMode == ANTENNA_MODE_EXTERNAL);
+
+  if (!isExternalAntennaEnabled() && willEnableExternal) {
+    if (confirmationDialog(STR_ANTENNACONFIRM1, STR_ANTENNACONFIRM2)) {
+      setter(newMode);
+      storageDirty(storageId);
+      globalData.externalAntennaEnabled = true;
+      checkExternalAntenna();
+    }
+  } else {
+    setter(newMode);
+    storageDirty(storageId);
+    checkExternalAntenna();
+  }
+}
+#endif
+
+#endif
+
 #if defined(PXX2)
 bool isPxx2IsrmChannelsCountAllowed(int channels)
 {
