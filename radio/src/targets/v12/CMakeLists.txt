@@ -32,7 +32,6 @@ set(FUNCTION_SWITCHES_WITH_RGB YES)
 
 # IMU support (not populated in final)
 set(IMU OFF)
-
 # for size report script
 set(CPU_TYPE_FULL STM32H750xB)
 set(TARGET_LINKER_DIR stm32h750_sdram)
