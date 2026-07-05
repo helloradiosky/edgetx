@@ -23,9 +23,6 @@
 #include "stm32_gpio.h"
 #include "stm32_i2c_driver.h"
 #include "stm32_hal.h"
-#if defined(RADIO_V12)
-#include "stm32_ws2812.h"
-#endif
 #include "stm32_spi.h"
 
 #include "flash_driver.h"
@@ -68,10 +65,6 @@
 
 // common ADC driver
 extern const etx_hal_adc_driver_t _adc_driver;
-
-#if defined(RADIO_V12)
-extern const stm32_pulse_timer_t _led_timer;
-#endif
 
 #if defined(SIXPOS_SWITCH_INDEX)
 
@@ -195,17 +188,10 @@ SwitchHwPos boardSwitchGetPosition(uint8_t idx)
 
 static void led_strip_off()
 {
-#if defined(RADIO_V12)
-  for (uint8_t i = 0; i < LED_STRIP_LENGTH; i++) {
-    ws2812_set_color(i, 0, 0, 0);
-  }
-  ws2812_update(&_led_timer);
-#else
   for (uint8_t i = 0; i < LED_STRIP_LENGTH; i++) {
     rgbSetLedColor(i, 0, 0, 0);
   }
   rgbLedColorApply();
-#endif
 }
 
 void INTERNAL_MODULE_ON()

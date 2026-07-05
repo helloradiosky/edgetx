@@ -270,10 +270,5 @@ void usbChargerInit();
 bool usbChargerLed();
 #endif
 
-#if defined(RADIO_V12)
-struct stm32_pulse_timer_t;
-extern const stm32_pulse_timer_t _led_timer;
-#endif
-
 #endif // _BOARD_H_
 

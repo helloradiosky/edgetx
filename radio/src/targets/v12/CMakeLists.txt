@@ -127,7 +127,6 @@ set(TARGET_SRC_DIR targets/${TARGET_DIR})
 
 set(BOARD_COMMON_SRC
   ${BOARD_SRC_DIR}/board.cpp
-  ${BOARD_SRC_DIR}/v12_rgb_leds.cpp
   ${BOARD_SRC_DIR}/key_driver.cpp
   ${BOARD_SRC_DIR}/lcd_driver.cpp
   ${BOARD_SRC_DIR}/backlight_driver.cpp
@@ -151,7 +150,7 @@ add_library(board_bl OBJECT EXCLUDE_FROM_ALL
   ${RADIO_SRC_DIR}/gui/colorlcd/boot_menu.cpp
   targets/common/arm/stm32/stm32_qspi.cpp
   targets/common/arm/stm32/stm32_pulse_driver.cpp
-  targets/common/arm/stm32/stm32_ws2812.cpp
+  targets/common/arm/stm32/stm32_rgbleds.cpp
 )
 add_dependencies(board_bl minimal_board_lib)
 set(BOOTLOADER_SRC ${BOOTLOADER_SRC} $<TARGET_OBJECTS:board_bl>)
@@ -168,10 +167,10 @@ add_library(board OBJECT EXCLUDE_FROM_ALL
   targets/common/arm/stm32/mixer_scheduler_driver.cpp
   targets/common/arm/stm32/module_timer_driver.cpp
   targets/common/arm/stm32/stm32_pulse_driver.cpp
+  targets/common/arm/stm32/stm32_rgbleds.cpp
   targets/common/arm/stm32/stm32_softserial_driver.cpp
   targets/common/arm/stm32/stm32_qspi.cpp
   targets/common/arm/stm32/stm32_switch_driver.cpp
-  targets/common/arm/stm32/stm32_ws2812.cpp
   targets/common/arm/stm32/trainer_driver.cpp
 )
 add_dependencies(board board_lib)
@@ -202,22 +201,19 @@ endif()
 # Make malloc() thread-safe
 add_definitions(-DTHREADSAFE_MALLOC)
 
-# V12: board.cpp provides sixPosUpdateFromAdc(); v12_rgb_leds.cpp replaces rgb_leds.cpp
-function(_v12_omit_board_lib_files)
+# V12: board.cpp provides sixPosUpdateFromAdc(); omit generic rgb_6pos.cpp
+function(_v12_omit_rgb_6pos)
   get_filename_component(_v12_radio_src "${CMAKE_CURRENT_LIST_DIR}/../.." ABSOLUTE)
   set(_v12_rgb_6pos "${_v12_radio_src}/boards/generic_stm32/rgb_6pos.cpp")
-  set(_v12_rgb_leds "${_v12_radio_src}/boards/generic_stm32/rgb_leds.cpp")
 
   if(TARGET board_lib)
     get_target_property(_board_lib_src board_lib SOURCES)
     if(_board_lib_src)
       list(FILTER _board_lib_src EXCLUDE REGEX "rgb_6pos\\.cpp$")
-      list(FILTER _board_lib_src EXCLUDE REGEX "rgb_leds\\.cpp$")
       set_target_properties(board_lib PROPERTIES SOURCES "${_board_lib_src}")
     endif()
   endif()
 
   set_source_files_properties("${_v12_rgb_6pos}" PROPERTIES HEADER_FILE_ONLY TRUE)
-  set_source_files_properties("${_v12_rgb_leds}" PROPERTIES HEADER_FILE_ONLY TRUE)
 endfunction()
-cmake_language(DEFER CALL _v12_omit_board_lib_files)
+cmake_language(DEFER CALL _v12_omit_rgb_6pos)
