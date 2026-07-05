@@ -90,6 +90,66 @@ static uint8_t _pos_to_state(uint8_t pos)
 }
 static _adckey_switches_expander _adckey_switches = { FS_ALL_BITS };
 
+#if !defined(BOOT)
+#include "edgetx.h"
+#include "switches.h"
+#include "storage/storage.h"
+#include "os/task.h"
+
+extern uint16_t fsPreviousState;
+
+static void v12EnsureFunctionSwitchConfig()
+{
+  static bool done = false;
+  if (done) return;
+  done = true;
+
+  bool dirty = false;
+  for (uint8_t i = 0; i < switchGetMaxSwitches(); i++) {
+    if (!switchIsCustomSwitch(i)) continue;
+
+    SwitchConfig cfsType = g_model.cfsType(i);
+    if (cfsType == SWITCH_NONE) {
+      g_model.cfsSetType(i, SWITCH_2POS);
+      g_model.cfsSetStart(i, FS_START_PREVIOUS);
+      dirty = true;
+      continue;
+    }
+
+    // TOGGLE always resets to OFF on boot; use 2POS+Previous for persistent state.
+    if (cfsType == SWITCH_GLOBAL && g_model.getSwitchType(i) == SWITCH_TOGGLE) {
+      g_model.cfsSetType(i, SWITCH_2POS);
+      g_model.cfsSetStart(i, FS_START_PREVIOUS);
+      dirty = true;
+      continue;
+    }
+
+    if (g_model.getSwitchStart(i) != FS_START_PREVIOUS &&
+        g_model.getSwitchType(i) != SWITCH_TOGGLE) {
+      g_model.setSwitchStart(i, FS_START_PREVIOUS);
+      dirty = true;
+    }
+  }
+
+  if (dirty) storageDirty(EE_MODEL);
+}
+
+static void v12SyncFsPreviousOnce()
+{
+  static bool synced = false;
+  if (synced) return;
+  synced = true;
+
+  fsPreviousState = 0;
+  for (uint8_t i = 0; i < switchGetMaxSwitches(); i++) {
+    if (switchIsCustomSwitch(i) && g_model.getSwitchType(i) != SWITCH_NONE) {
+      if (getFSPhysicalState(i))
+        fsPreviousState |= (1 << i);
+    }
+  }
+}
+#endif // !BOOT
+
 void sixPosUpdateFromAdc()
 {
   uint16_t* values = getAnalogValues();
@@ -118,6 +178,13 @@ void sixPosUpdateFromAdc()
   }
 
   values[SIXPOS_SWITCH_INDEX] = (4096 / 5) * sixPosState;
+
+#if !defined(BOOT)
+  if (scheduler_is_running()) {
+    v12EnsureFunctionSwitchConfig();
+    v12SyncFsPreviousOnce();
+  }
+#endif
 }
 
 static SwitchHwPos _get_switch_pos(uint8_t idx)
