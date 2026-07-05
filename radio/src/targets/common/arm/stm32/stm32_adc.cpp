@@ -284,8 +284,13 @@ static void adc_setup_scan_mode(ADC_TypeDef* ADCx, uint8_t nconv)
 #if defined(STM32H7RS) || defined(STM32H7)
   LL_ADC_ClearFlag_ADRDY(ADCx);
   LL_ADC_Enable(ADCx);
+  uint32_t adrdy_timeout = 1000000;
   while(!LL_ADC_IsActiveFlag_ADRDY(ADCx)) {
     if (!LL_ADC_IsEnabled(ADCx)) LL_ADC_Enable(ADCx);
+    if (--adrdy_timeout == 0) {
+      LL_ADC_Disable(ADCx);
+      return;
+    }
   }
 #else
   LL_ADC_Enable(ADCx);  
