@@ -150,7 +150,7 @@ SWITCH_CONFIG = {
         # right side
         "SC": {"default": "3POS",   "display": [1, 0]},
         "SD": {"default": "3POS",   "display": [1, 1]},
-        "SF": {"default": "TOGGLE", "display": [1, 2]},
+        "SF": {"default": "TOGGLE", "display": [1, 2]}
     },
     "v14": {
         # left side
@@ -160,9 +160,8 @@ SWITCH_CONFIG = {
         # right side
         "SC": {"default": "3POS",   "display": [1, 0]},
         "SD": {"default": "TOGGLE", "display": [1, 1]},
-        "SF": {"default": "TOGGLE", "display": [1, 2]},
+        "SF": {"default": "TOGGLE", "display": [1, 2]}
     },
-<<<<<<< HEAD
     "v14lcd": {
         # left side
         "SA": {"default": "TOGGLE", "display": [0, 0]},
@@ -171,8 +170,8 @@ SWITCH_CONFIG = {
         # right side
         "SC": {"default": "3POS",   "display": [1, 0]},
         "SD": {"default": "TOGGLE", "display": [1, 1]},
-        "SF": {"default": "TOGGLE", "display": [1, 2]},
-=======
+        "SF": {"default": "TOGGLE", "display": [1, 2]}
+    },
     "v15": { 
         "SA": {"default": "3POS"},
         "SB": {"default": "3POS"},
@@ -186,8 +185,7 @@ SWITCH_CONFIG = {
         "SI": {"default": "2POS"},
         "SJ": {"default": "2POS"},
         "SK": {"default": "2POS"},
-        "SL": {"default": "2POS"},
->>>>>>> 4d8d9b19c7 (V15 6S UI OK)
+        "SL": {"default": "2POS"}
     },
     "v16": {
         "SA": {"default": "3POS"},

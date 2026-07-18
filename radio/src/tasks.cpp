@@ -98,13 +98,10 @@ static void menusTask()
   toplcdOff();
 #endif
 
-<<<<<<< HEAD
 #if !defined(PWR_BUTTON_MANAGED)
-=======
 #if defined(COLORLCD)
   cancelShutdownAnimation();
 #endif
->>>>>>> 4d8d9b19c7 (V15 6S UI OK)
   drawSleepBitmap();
 #endif
   edgeTxClose();

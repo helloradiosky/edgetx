@@ -1710,19 +1710,16 @@ int pwrDelayToYaml(int delay)
 
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
-<<<<<<< HEAD
 #if defined(PWR_BUTTON_MANAGED)
   return 0;
 #else
   if (pwrForcePressed())
     return 0;
-=======
   // Instant off when both power button are pressed
-  if (pwrForcePressed()) {
+  //if (pwrForcePressed()) {
     //return 0;
-  }
+  //}
 
->>>>>>> 4d8d9b19c7 (V15 6S UI OK)
   return pwrDelayTime(g_eeGeneral.pwrOffSpeed);
 #endif
 }

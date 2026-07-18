@@ -59,11 +59,12 @@ POT_CONFIG = {
         "P2": {"default": "POT_CENTER"},
         "P3": {"default": "MULTIPOS"},
     },
-<<<<<<< HEAD
     "v14lcd": {
-=======
+        "P1": {"default": "POT_CENTER"},
+        "P2": {"default": "POT_CENTER"},
+        "P3": {"default": "MULTIPOS"},
+    },
     "v15": {
->>>>>>> 4d8d9b19c7 (V15 6S UI OK)
         "P1": {"default": "POT_CENTER"},
         "P2": {"default": "POT_CENTER"},
         "P3": {"default": "MULTIPOS"},
