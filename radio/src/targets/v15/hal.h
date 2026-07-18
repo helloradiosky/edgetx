@@ -305,6 +305,9 @@ USART6: EXTMODULE_USART
 #define AUDIO_TIMER                    TIM6
 #define AUDIO_DMA                      DMA2
 
+#define AUDIO_UNMUTE_DELAY            150  // ms
+#define AUDIO_MUTE_DELAY              500  // ms
+
 // Haptic
 #define HAPTIC_PWM
 #define HAPTIC_GPIO                     GPIO_PIN(GPIOE, 6) // TIM15_CH2

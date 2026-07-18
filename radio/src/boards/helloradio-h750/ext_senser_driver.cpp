@@ -33,6 +33,7 @@
 #include "cli.h"
 #include "aux3_chat.h"
 #include "chat_ui.h"
+#include "myeeprom.h"
 #endif
 
 #include <string.h>
@@ -456,6 +457,12 @@ void hr_exesenserTask()
 {
 #if defined(AUDIO_SELECT_GPIO) && defined(EXP_ESP32C3_PAEN)
   static bool aiRouteEnabled = false;
+#if !defined(BOOT) && defined(AUDIO_MUTE_GPIO)
+  // Temporarily suppress EdgeTX auto-mute while AI owns the amp (do not
+  // touch common audio_dac_driver.cpp). Value is restored in RAM only.
+  static bool s_muteOverride = false;
+  static uint8_t s_savedMuteEnable = 0;
+#endif
   const bool hasAiVoice = gpio_read(EXP_ESP32C3_PAEN);
   bool systemAudioActive = false;
 
@@ -476,10 +483,39 @@ void hr_exesenserTask()
     aiRouteEnabled = enableAiRoute;
     if (aiRouteEnabled) {
       gpio_clear(AUDIO_SELECT_GPIO);  // 0 -> AI route
+#if !defined(BOOT) && defined(AUDIO_MUTE_GPIO)
+      if (!s_muteOverride) {
+        s_savedMuteEnable = g_eeGeneral.audioMuteEnable;
+        g_eeGeneral.audioMuteEnable = 0;  // stop audioMute() from cutting AI
+        s_muteOverride = true;
+      }
+#if defined(INVERTED_MUTE_PIN)
+      gpio_set(AUDIO_MUTE_GPIO);  // unmute amp
+#else
+      gpio_clear(AUDIO_MUTE_GPIO);
+#endif
+#endif
     } else {
       gpio_set(AUDIO_SELECT_GPIO);    // 1 -> EdgeTX route
+#if !defined(BOOT) && defined(AUDIO_MUTE_GPIO)
+      if (s_muteOverride) {
+        g_eeGeneral.audioMuteEnable = s_savedMuteEnable;
+        s_muteOverride = false;
+      }
+#endif
     }
   }
+#if !defined(BOOT) && defined(AUDIO_MUTE_GPIO)
+  else if (aiRouteEnabled) {
+    // Keep amp unmuted for the whole AI utterance; DAC idle path may have
+    // muted before we cleared audioMuteEnable.
+#if defined(INVERTED_MUTE_PIN)
+    gpio_set(AUDIO_MUTE_GPIO);
+#else
+    gpio_clear(AUDIO_MUTE_GPIO);
+#endif
+  }
+#endif
 #endif
 
 #if defined(EXP_ESP32C3_BOOTCMD_GPIO)
