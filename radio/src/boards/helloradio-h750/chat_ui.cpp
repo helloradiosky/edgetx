@@ -754,24 +754,34 @@ static uint8_t s_wifiScanWaitConsecutiveCount = 0;
 
 void v15ChatUiTask(void)
 {
-  // AI boot mode uses AUX3 as a raw USB bridge for module upgrade.
-  // Skip chat UART polling to avoid consuming passthrough bytes.
-  if (v15AiModeGet() == 3) {
-    return;
-  }
-
   if (s_chatPanel && s_chatPanel->deleted()) {
     s_chatPanel = nullptr;
   }
 
-  // AI Off (mode 0): remove floating XiaoZhi icon. Panel was created whenever
-  // MainWindow existed, so it could stay visible after turning AI off.
-  if (v15AiModeGet() == 0) {
+  const uint8_t aiMode = v15AiModeGet();
+
+  // Pairing/Boot own the AUX3 UART (terminal logs / USB bridge). Do not create
+  // the floating chat panel or consume UART bytes in those modes.
+  if (aiMode >= 2) {
     if (s_chatPanel) {
-      delete s_chatPanel;
+      s_chatPanel->deleteLater();
       s_chatPanel = nullptr;
     }
-  } else if (!s_chatPanel && MainWindow::instance()) {
+    return;
+  }
+
+  // AI Off: remove floating icon safely. Never hard-delete a Window that is
+  // still linked under MainWindow — that leaves a dangling child pointer and
+  // can HardFault into EMERGENCY MODE (watchdog reboot).
+  if (aiMode == 0) {
+    if (s_chatPanel) {
+      s_chatPanel->deleteLater();
+      s_chatPanel = nullptr;
+    }
+    return;
+  }
+
+  if (!s_chatPanel && MainWindow::instance()) {
     s_chatPanel = new XiaozhiChatPanel();
   }
 

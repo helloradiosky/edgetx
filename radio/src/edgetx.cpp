@@ -1713,12 +1713,14 @@ inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 #if defined(PWR_BUTTON_MANAGED)
   return 0;
 #else
+  // On radios with a dedicated power key + optional extra key, holding both
+  // forces an instant shutdown. V15 uses SYS+MDL as the *normal* power combo
+  // (pwrPressed() == pwrForcePressed()), so applying that shortcut would make
+  // the configured delay always 0 and skip the shutdown animation.
+#if defined(PWR_EXTRA_SWITCH_GPIO) && !defined(RADIO_V15)
   if (pwrForcePressed())
     return 0;
-  // Instant off when both power button are pressed
-  //if (pwrForcePressed()) {
-    //return 0;
-  //}
+#endif
 
   return pwrDelayTime(g_eeGeneral.pwrOffSpeed);
 #endif

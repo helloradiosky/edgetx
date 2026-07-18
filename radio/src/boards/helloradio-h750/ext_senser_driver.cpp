@@ -143,8 +143,13 @@ static void processAux3RxToLogs()
     return;
   }
 
+  // Cap work per task tick so a UART flood (ESP boot spam / no CR) cannot
+  // stall the menus task long enough to trip the watchdog.
+  static constexpr uint32_t MAX_BYTES_PER_TICK = 256;
+  uint32_t processed = 0;
   uint8_t byte = 0;
-  while (v15ChatUartReadByte(&byte)) {
+  while (processed < MAX_BYTES_PER_TICK && v15ChatUartReadByte(&byte)) {
+    ++processed;
     if (byte == '\r') {
       if (parseState == CollectPayload && s_uartLineLen > 0) {
         s_uartLine[s_uartLineLen] = '\0';
@@ -157,7 +162,7 @@ static void processAux3RxToLogs()
       parseState = WaitLevel;
       s_uartLineLen = 0;
       s_uartLine[0] = '\0';
-      break;
+      continue;
     }
 
     if (byte == '\n') {
@@ -585,14 +590,17 @@ void v15AiModeApply(uint8_t mode)
   s_logTail = 0;
 
   if (mode == V15_AI_MODE_OFF) {
+    applyCmdOff();
     applyPowerOff();
   }
   else if (mode == V15_AI_MODE_ON) {
+    applyCmdOff();
     applyPowerOn();
   }
   else {
     if (mode == V15_AI_MODE_PAIRING) {
       applyPowerOff();
+      applyCmdOff();
       s_pairingStage = PAIR_STAGE_WAIT_POWER_ON;
       s_stageDeadline = get_tmr10ms() + 100;  // 1s
       if (v15ChatUartIsReady()) {
@@ -602,7 +610,7 @@ void v15AiModeApply(uint8_t mode)
     else {
       applyPowerOff();
       gpio_write(EXP_ESP32C3_BOOTCMD_GPIO, 1);
-      pushAiLog("AI cmd key off");
+      pushAiLog("AI cmd key on");
       s_pairingStage = PAIR_STAGE_WAIT_BOOT_POWER_ON;
       s_stageDeadline = get_tmr10ms() + 100;  // 1s
       if (v15ChatUartIsReady()) {

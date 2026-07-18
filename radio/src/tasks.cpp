@@ -100,7 +100,7 @@ static void menusTask()
 
 #if !defined(PWR_BUTTON_MANAGED)
 #if defined(COLORLCD)
-  cancelShutdownAnimation();
+  //cancelShutdownAnimation();
 #endif
   drawSleepBitmap();
 #endif

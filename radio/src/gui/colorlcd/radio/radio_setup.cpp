@@ -725,11 +725,21 @@ class ManageModelsSetupPage : public SubPage
 #if defined(MODULE_XIAOZHI_CHAT)
 namespace {
 
+class V15AiTerminalWindow;
+
+static V15AiTerminalWindow* s_aiTerminalWindow = nullptr;
+
 class V15AiTerminalWindow : public ModalWindow
 {
  public:
   V15AiTerminalWindow() : ModalWindow(false)
   {
+    if (s_aiTerminalWindow && s_aiTerminalWindow != this &&
+        !s_aiTerminalWindow->deleted()) {
+      s_aiTerminalWindow->deleteLater();
+    }
+    s_aiTerminalWindow = this;
+
     auto panel = new Window(this, rect_t{0, 0, LCD_W * 8 / 10, LCD_H * 6 / 10});
     panel->setWindowFlag(OPAQUE);
     panel->padAll(PAD_SMALL);
@@ -763,6 +773,14 @@ class V15AiTerminalWindow : public ModalWindow
                              "AI pairing started...", COLOR_THEME_PRIMARY2_INDEX, LEFT);
     tailAnchor = new StaticText(logBox, rect_t{0, 0, LV_PCT(100), LV_SIZE_CONTENT}, " ",
                   COLOR_THEME_PRIMARY2_INDEX, LEFT);
+  }
+
+  void deleteLater(bool detach = true, bool trash = true) override
+  {
+    if (s_aiTerminalWindow == this) {
+      s_aiTerminalWindow = nullptr;
+    }
+    ModalWindow::deleteLater(detach, trash);
   }
 
   void checkEvents() override
@@ -814,7 +832,18 @@ class V15AiTerminalWindow : public ModalWindow
 
 static void openV15AiTerminalWindow()
 {
+  if (s_aiTerminalWindow && !s_aiTerminalWindow->deleted()) {
+    return;
+  }
   new V15AiTerminalWindow();
+}
+
+static void closeV15AiTerminalWindow()
+{
+  if (s_aiTerminalWindow && !s_aiTerminalWindow->deleted()) {
+    s_aiTerminalWindow->deleteLater();
+  }
+  s_aiTerminalWindow = nullptr;
 }
 
 }  // namespace
@@ -1015,6 +1044,8 @@ static SetupLineDef setupLines[] = {
                                  v15AiModeApply(newValue);
                                  if (newValue >= 2) {
                                    openV15AiTerminalWindow();
+                                 } else {
+                                   closeV15AiTerminalWindow();
                                  }
                                });
       choice->setTextHandler([](uint8_t value) {
