@@ -315,6 +315,10 @@ add_library(board OBJECT EXCLUDE_FROM_ALL
 )
 set(FIRMWARE_SRC ${FIRMWARE_SRC} $<TARGET_OBJECTS:board>)
 
+if(PCBREV STREQUAL V16)
+  target_sources(board PRIVATE drivers/sc7u22.cpp)
+endif()
+
 if(BLUETOOTH)
   target_sources(board PRIVATE targets/common/arm/stm32/bluetooth_driver.cpp)
 endif()

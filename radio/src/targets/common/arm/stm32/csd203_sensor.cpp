@@ -189,10 +189,19 @@ bool CSD203ExtInitFlag = false;
 bool IICReadStatusFlag = false;
 
 static uint16_t csd203extvbus = 0;
+static int16_t csd203_main_current_ma = 0;
+static int16_t csd203_in_current_ma = 0;
+static int16_t csd203_ext_current_ma = 0;
 
 static CSD_CONFIG CSD203_MainSensorCFG;
 static CSD_CONFIG CSD203_InSensorCFG;
 static CSD_CONFIG CSD203_ExtSensorCFG;
+
+// CurrentLSB config uses 10 == 1 mA LSB (see CSD_CONFIG_CurrentLsb1mA)
+static int16_t csd203CurrentToMa(uint16_t raw, uint16_t currentLsb)
+{
+  return (int16_t)(((int32_t)(int16_t)raw * (int32_t)currentLsb) / 10);
+}
 
 bool I2C_CSD203_WriteRegister(uint8_t I2C_ADDR, uint8_t reg, uint8_t *buf,
                               uint8_t len)
@@ -408,6 +417,21 @@ uint16_t getBatteryVoltage()
   return getCSD203BatteryVoltage() / 10;
 }
 
+int16_t getCSD203MainCurrent(void)
+{
+  return csd203_main_current_ma;
+}
+
+int16_t getCSD203ChargeCurrent(void)
+{
+  return csd203_in_current_ma;
+}
+
+int16_t getCSD203ExtCurrent(void)
+{
+  return csd203_ext_current_ma;
+}
+
 void readCSD203(void)
 {  // 5ms
   static uint16_t GetSenSorStep = 0;
@@ -418,13 +442,19 @@ void readCSD203(void)
 
   IICReadStatusFlag = true;
   if (GetSenSorStep == 0 && CSD203MainInitFlag == true) {
-    CSD203_ReadCurrent(&CSD203_MainSensorCFG);
+    csd203_main_current_ma = csd203CurrentToMa(
+        CSD203_ReadCurrent(&CSD203_MainSensorCFG),
+        CSD203_MainSensorCFG.CurrentLSB);
     CSD203_ReadVbus(&CSD203_MainSensorCFG);
   } else if (GetSenSorStep == 1 && CSD203InInitFlag == true) {
-    CSD203_ReadCurrent(&CSD203_InSensorCFG);
+    csd203_in_current_ma = csd203CurrentToMa(
+        CSD203_ReadCurrent(&CSD203_InSensorCFG),
+        CSD203_InSensorCFG.CurrentLSB);
     CSD203_ReadVbus(&CSD203_InSensorCFG);
   } else if (GetSenSorStep == 2 && CSD203ExtInitFlag == true) {
-    CSD203_ReadCurrent(&CSD203_ExtSensorCFG);
+    csd203_ext_current_ma = csd203CurrentToMa(
+        CSD203_ReadCurrent(&CSD203_ExtSensorCFG),
+        CSD203_ExtSensorCFG.CurrentLSB);
     csd203extvbus = (CSD203_ReadVbus(&CSD203_ExtSensorCFG) * 1.25);
     // TRACE("Vbat=%d\r",csd203extvbus);
   }

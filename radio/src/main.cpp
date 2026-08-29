@@ -28,6 +28,14 @@
 #include "edgetx.h"
 #include "lua/lua_states.h"
 
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && !defined(SIMU)
+#include "targets/taranis/v14_charge_ui.h"
+#endif
+
+#if defined(VOICE_CONTROL_SENSOR) && !defined(COLORLCD) && !defined(SIMU)
+#include "drivers/CI1302_voice_integration.h"
+#endif
+
 #if defined(COLORLCD)
 #include "LvglWrapper.h"
 #include "view_main.h"
@@ -519,7 +527,13 @@ void guiMain(event_t evt)
     }
   }
 
-  if (refreshNeeded) lcdRefresh();
+  if (refreshNeeded) {
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && !defined(SIMU)
+    // Charge overlay owns the LCD; pushing the main view would tear/overlap.
+    if (!v14ChargeUiActive())
+#endif
+      lcdRefresh();
+  }
 
   if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
     writeScreenshot();
@@ -565,7 +579,6 @@ void perMain()
 #endif
 
   checkKeysLock();
-
 
 #if defined(RTC_BACKUP_RAM)
   if (UNEXPECTED_SHUTDOWN()) {
@@ -613,7 +626,15 @@ void perMain()
 #endif
 
 #if !defined(COLORLCD)
+#if defined(VOICE_CONTROL_SENSOR) && !defined(SIMU)
+  CI1302_voiceGuiProcessPending();
+#endif
   event_t evt = getEvent();
+#endif
+
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && !defined(SIMU)
+  v14ChargeUiHandleEvent(evt);
+  v14ChargeUiPoll();
 #endif
 
 #if defined(KEYS_GPIO_REG_BIND) && defined(BIND_KEY)
@@ -638,7 +659,15 @@ void perMain()
     gvarDisplayTimer = 0;
   }
 #else
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && !defined(SIMU)
+  // Keep Lua / menus running; overlay is drawn on top and eats keys.
+  guiMain(v14ChargeUiActive() ? (event_t)0 : evt);
+  if (v14ChargeUiActive()) {
+    v14ChargeUiDraw();
+  }
+#else
   guiMain(evt);
+#endif
 #endif
   DEBUG_TIMER_STOP(debugTimerGuiMain);
 #endif

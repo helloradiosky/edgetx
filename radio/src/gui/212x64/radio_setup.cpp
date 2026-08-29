@@ -28,6 +28,7 @@
 #include "edgetx.h"
 #include "tasks/mixer_task.h"
 #include "input_mapping.h"
+#include "CI1302.h"
 
 const unsigned char sticks[]  = {
 #include "sticks.lbm"
@@ -97,6 +98,9 @@ enum MenuRadioSetupItems {
   CASE_GPS(ITEM_RADIO_SETUP_GPSFORMAT)
   CASE_PXX1(ITEM_RADIO_SETUP_COUNTRYCODE)
   ITEM_RADIO_SETUP_VOICE_LANGUAGE,
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && defined(AUX_SERIAL_PWR_GPIO)
+  ITEM_RADIO_SETUP_VOICE_POWER,
+#endif
 #if defined(ALL_LANGS)
   ITEM_RADIO_SETUP_TEXT_LANGUAGE,
 #endif
@@ -235,6 +239,9 @@ void menuRadioSetup(event_t event)
      CASE_GPS(0)
     CASE_PXX1(0) // country code
     0, // voice language
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && defined(AUX_SERIAL_PWR_GPIO)
+    0, // voice power
+#endif
 #if defined(ALL_LANGS)
     0, // text language
 #endif
@@ -689,6 +696,18 @@ void menuRadioSetup(event_t event)
           }
         }
         break;
+
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && defined(AUX_SERIAL_PWR_GPIO)
+      case ITEM_RADIO_SETUP_VOICE_POWER:
+        lcdDrawTextAlignedLeft(y, STR_VOICE_POWER);
+        {
+          const bool pwr = voiceModulePowerUiEnabled();
+          const bool next = editCheckBox(pwr, RADIO_SETUP_2ND_COLUMN, y, nullptr, attr, event);
+          if (attr && checkIncDec_Ret && next != pwr)
+            voiceModuleSetPower(next);
+        }
+        break;
+#endif
 
 #if defined(ALL_LANGS)
       case ITEM_RADIO_SETUP_TEXT_LANGUAGE:

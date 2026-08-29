@@ -73,6 +73,10 @@ void boardBLInit()
 
 #if !defined(BOOT)
   #include "edgetx.h"
+  #include "serial.h"
+#if defined(VOICE_CONTROL_SENSOR)
+  #include "CI1302.h"
+#endif
   #if defined(PXX1)
     #include "pulses/pxx1.h"
   #endif
@@ -84,6 +88,11 @@ void boardBLInit()
 
 #if defined(CSD203_SENSOR)
   #include "csd203_sensor.h"
+#endif
+
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && !defined(BOOT)
+  #include "v14_charge_ui.h"
+  #include "delays_driver.h"
 #endif
 
 HardwareOptions hardwareOptions;
@@ -109,17 +118,32 @@ void SDLEDpwrInit()
 }
 #endif
 
-#if defined(IMU) && defined(IMU_I2C_BUS) && defined(IMU_I2C_BUS)
+#if defined(IMU) && defined(IMU_I2C_BUS)
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+#include "drivers/icm42627.h"
+#include "drivers/sc7u22.h"
+#else
 #include "drivers/lsm6ds.h"
+#endif
 #include "stm32_i2c_driver.h"
 
 #define HAS_IMU
 
 static void gyroInit()
 {
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  // Probe ICM-42627 (AD0 0x69/0x68) then SC7U22 (SA0 0x18/0x19), same pattern as TX16SMK3
+  const etx_imu_t candidates[] = {
+    { &imu_icm42627_driver, IMU_I2C_BUS, IMU_I2C_ADDRESS },
+    { &imu_icm42627_driver, IMU_I2C_BUS, (uint16_t)(IMU_I2C_ADDRESS ^ 0x01) },
+    { &imu_sc7u22_driver, IMU_I2C_BUS, SC7U22_I2C_BASE_ADDR },
+    { &imu_sc7u22_driver, IMU_I2C_BUS, (uint16_t)(SC7U22_I2C_BASE_ADDR + 1) },
+  };
+#else
   const etx_imu_t candidates[] = {
     { &imu_lsm6ds_driver, IMU_I2C_BUS, IMU_I2C_ADDRESS },
   };
+#endif
   gyroStart(imuDetect(candidates, DIM(candidates)));
 }
 #endif
@@ -280,6 +304,20 @@ void boardInit()
 #if defined(HAS_IMU)
   gyroInit();
 #endif
+
+  // Early AUX bring-up (same as hrs_v14): Voice module needs power + USART RX
+  // before storage finishes. initSerialPorts() may override from EEPROM; then
+  // voiceControlInit() (after storageReadAll) re-forces DEBUG + power.
+#if defined(AUX_SERIAL) && defined(VOICE_SENSOR)
+#if defined(AUX_SERIAL_PWR_GPIO)
+  gpio_init(AUX_SERIAL_PWR_GPIO, GPIO_OUT, GPIO_PIN_SPEED_LOW);
+  gpio_set(AUX_SERIAL_PWR_GPIO);
+#endif
+#if defined(DEBUG)
+  serialSetMode(SP_AUX1, UART_MODE_DEBUG);
+  serialInit(SP_AUX1, UART_MODE_DEBUG);
+#endif
+#endif
 }
 #endif
 
@@ -292,6 +330,18 @@ void boardOff()
 
 #if defined(STATUS_LEDS) && !defined(BOOT)
   ledOff();
+#endif
+
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD)) && !defined(BOOT) && !defined(SIMU)
+  // Refresh CSD203 then show charge UI if dedicated charge STAT is active
+  for (int i = 0; i < 12; i++) {
+    WDG_RESET();
+    readCSD203();
+    delay_ms(10);
+  }
+  if (v14ChargePresent()) {
+    v14ChargeUiRunUntilExit(true);
+  }
 #endif
 
   BACKLIGHT_DISABLE();

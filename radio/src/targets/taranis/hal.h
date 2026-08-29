@@ -2416,6 +2416,9 @@
   #define AUX_SERIAL_DMA_RX                 DMA1
   #define AUX_SERIAL_DMA_RX_STREAM          LL_DMA_STREAM_1
   #define AUX_SERIAL_DMA_RX_CHANNEL         LL_DMA_CHANNEL_4
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  #define AUX_SERIAL_PWR_GPIO               GPIO_PIN(GPIOD, 14) // PD.14 (voice / AUX power)
+#endif
 #endif
 
 // Telemetry
@@ -2776,6 +2779,12 @@
 
   #define IMU_I2C_BUS                   I2C_Bus_2
   #define IMU_I2C_ADDRESS               0x6B
+#endif
+
+// V14 / V14LCD: ICM-42627 shares I2C1 with CSD203 (hrs_v14 hardware)
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  #define IMU_I2C_BUS                   I2C_Bus_1
+  #define IMU_I2C_ADDRESS               0x69
 #endif
 
 #if defined(RADIO_GX12)

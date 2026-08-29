@@ -24,6 +24,12 @@
 #include "io/frsky_firmware_update.h"
 #include "io/multi_firmware_update.h"
 #include "io/bootloader_flash.h"
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+#include "io/esp32_firmware_update.h"
+#endif
+#if defined(VOICE_SENSOR)
+#include "io/ci1302_firmware_update.h"
+#endif
 #include "lib_file.h"
 #include "hal/storage.h"
 
@@ -67,6 +73,34 @@ void getSelectionFullPath(char * lfn)
   strcat(lfn, "/");
   strcat(lfn, reusableBuffer.sdManager.lines[menuVerticalPosition - HEADER_LINE - menuVerticalOffset]);
 }
+
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+static char s_espFlashPath[FF_MAX_LFN + 1];
+static uint8_t s_espFlashKind;  // 0 = ELRS TX, 1 = backpack
+
+void onEspInternalFlashConfirm(const char * result)
+{
+  if (result != STR_OK) return;
+  if (s_espFlashKind == 1) {
+    Esp32BackpackFirmwareUpdate device;
+    device.flashFirmware(s_espFlashPath, drawProgressScreen);
+  } else {
+    Esp32ElrsFirmwareUpdate device;
+    device.flashFirmware(s_espFlashPath, drawProgressScreen);
+  }
+}
+#endif
+
+#if defined(VOICE_SENSOR)
+static char s_ci1302FlashPath[FF_MAX_LFN + 1];
+
+void onCi1302FlashConfirm(const char * result)
+{
+  if (result != STR_OK) return;
+  Ci1302FirmwareUpdate device;
+  device.flashFirmware(s_ci1302FlashPath, drawProgressScreen);
+}
+#endif
 
 #if defined(PXX2)
 
@@ -223,6 +257,24 @@ void onSdManagerMenu(const char * result)
     device.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
+#endif
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  else if (result == STR_FLASH_INTERNAL_ELRS) {
+    getSelectionFullPath(s_espFlashPath);
+    s_espFlashKind = 0;
+    POPUP_CONFIRMATION(STR_FLASH_ELRS_RISK, onEspInternalFlashConfirm);
+  }
+  else if (result == STR_FLASH_INTERNAL_BACKPACK) {
+    getSelectionFullPath(s_espFlashPath);
+    s_espFlashKind = 1;
+    POPUP_CONFIRMATION(STR_FLASH_BACKPACK_RISK, onEspInternalFlashConfirm);
+  }
+#endif
+#if defined(VOICE_SENSOR)
+  else if (result == STR_FLASH_CI1302) {
+    getSelectionFullPath(s_ci1302FlashPath);
+    POPUP_CONFIRMATION(STR_FLASH_CI1302_RISK, onCi1302FlashConfirm);
+  }
 #endif
 #if defined(BLUETOOTH)
   else if (result == STR_FLASH_BLUETOOTH_MODULE) {
@@ -389,6 +441,18 @@ void menuRadioSdManager(event_t _event)
 #endif
 #if defined(PCBTARANIS)
           if (!strcasecmp(ext, FIRMWARE_EXT)) {
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+            if (isInternalElrsBackpackFirmware(line, lfn)) {
+              POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_BACKPACK);
+            } else if (isInternalElrsAppFirmware(line, lfn)) {
+              POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_ELRS);
+            }
+#endif
+#if defined(VOICE_SENSOR)
+            if (isCi1302VoiceFirmware(line, lfn)) {
+              POPUP_MENU_ADD_ITEM(STR_FLASH_CI1302);
+            }
+#endif
             if (isBootloader(lfn)) {
               POPUP_MENU_ADD_ITEM(STR_FLASH_BOOTLOADER);
             }

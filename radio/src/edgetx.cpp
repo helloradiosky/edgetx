@@ -46,6 +46,11 @@
 #include "input_mapping.h"
 #include "trainer.h"
 
+#if defined(VOICE_CONTROL_SENSOR)
+#include "drivers/CI1302_voice_integration.h"
+#include "CI1302.h"
+#endif
+
 #include "tasks.h"
 #include "tasks/mixer_task.h"
 #include "os/async.h"
@@ -234,6 +239,9 @@ void per10ms()
 
 #if defined(CSD203_SENSOR) && !defined(SIMU)
   readCSD203();
+#endif
+#if defined(VOICE_CONTROL_SENSOR) && !defined(SIMU)
+  CI1302_voiceIntegrationPer10ms();
 #endif
 
   telemetryInterrupt10ms();
@@ -1098,6 +1106,10 @@ void flightReset(uint8_t check)
   START_SILENCE_PERIOD();
 
   RESET_THR_TRACE();
+#if defined(VOICE_CONTROL_SENSOR)
+  CI1302_voiceIntegrationOnFlightReset();
+#endif
+
 
   logicalSwitchesReset();
 
@@ -1535,6 +1547,10 @@ void edgeTxInit()
 #endif
 
   initSerialPorts();
+
+#if defined(VOICE_CONTROL_SENSOR)
+  voiceControlInit();
+#endif
 
 #if defined(AUDIO)
   currentSpeakerVolume = requiredSpeakerVolume =

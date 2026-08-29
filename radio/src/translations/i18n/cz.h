@@ -940,6 +940,12 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. modulu", "Flash externího modulu")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash ext. Multi", "Flash externího modulu Multi")
 #define TR_FLASH_EXTERNAL_ELRS         TR("Flash ext. ELRS", "Flash externího modulu ELRS")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Chyba zápisu FW", "Chyba zápisu firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Úspěšný zápis FW"
 #define TR_WRITING                     "Zapisuji..."
@@ -989,6 +995,7 @@
 #define TR_USB_CHARGE                 "Nabíjení za chodu"
 #define TR_JACK_MODE                   "Režim Jack"
 #define TR_VOICE_LANGUAGE              "Jazyk hlasu"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE               "Text language"
 #define TR_UNITS_SYSTEM                "Jednotky"
 #define TR_UNITS_PPM                   "PPM jednotky"

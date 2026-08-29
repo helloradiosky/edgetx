@@ -943,6 +943,12 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("更新外置模块", "更新外置模块固件")
 #define TR_FLASH_EXTERNAL_MULTI        TR("更新外置多协议", "更新外置多协议模块固件")
 #define TR_FLASH_EXTERNAL_ELRS         TR("更新外置ELRS", "更新外置ELRS模块固件")
+#define TR_FLASH_INTERNAL_ELRS         TR("刷写内置ELRS", "刷写内置ELRS")
+#define TR_FLASH_ELRS_RISK             "错误文件可能损坏" LCDW_128_LINEBREAK "内置ELRS,勿关机?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("刷写内置背包", "刷写背包")
+#define TR_FLASH_BACKPACK_RISK         "错误文件可能损坏" LCDW_128_LINEBREAK "背包,请勿关机?"
+#define TR_FLASH_CI1302                TR("刷写语音", "刷写语音")
+#define TR_FLASH_CI1302_RISK           "刷语音有风险?"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("更新失败", "固件更新失败")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "固件更新成功"
 #define TR_WRITING                     "正在写入..."
@@ -992,6 +998,7 @@
 #define TR_USB_CHARGE                 "开机时充电"
 #define TR_JACK_MODE                   "教练插口模式"
 #define TR_VOICE_LANGUAGE              "播报语言"
+#define TR_VOICE_POWER                 "语音供电"
 #define TR_TEXT_LANGUAGE               "Text language"
 #define TR_UNITS_SYSTEM                "单位"
 #define TR_UNITS_PPM                   "PPM 单位"

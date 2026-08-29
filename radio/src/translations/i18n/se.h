@@ -946,6 +946,12 @@
 #define TR_FLASH_EXTERNAL_MODULE        "Flasha extern modul"
 #define TR_FLASH_EXTERNAL_MULTI         TR("Flasha ext. Multi", "Flasha extern Multi")
 #define TR_FLASH_EXTERNAL_ELRS          TR("Flasha ext. ELRS", "Flasha extern ELRS")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 
 #define TR_FIRMWARE_UPDATE_ERROR        TR("FW uppdat.fel","Firmware uppdateringsfel")
 #define TR_FIRMWARE_UPDATE_SUCCESS      "Flashning OK"
@@ -996,6 +1002,7 @@
 #define TR_USB_CHARGE                 "Ladda när radion är på"
 #define TR_JACK_MODE                    "Uttagsläge"
 #define TR_VOICE_LANGUAGE               "Röstspråk"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE                "Textspråk"
 #define TR_UNITS_SYSTEM                 "Enheter"
 #define TR_UNITS_PPM                    "PPM-enheter"

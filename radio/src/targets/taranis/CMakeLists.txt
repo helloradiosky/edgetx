@@ -405,6 +405,9 @@ elseif(PCB STREQUAL X7)
     set(USB_CHARGER YES)
     add_definitions(-DRADIO_V14)
     add_definitions(-DSTM32_SUPPORT_32BIT_TIMERS)
+    add_definitions(-DVOICE_SENSOR)
+    add_definitions(-DVOICE_CONTROL_SENSOR)
+    set(IMU YES)
     set(PXX2 ON)
     set(ENABLE_SERIAL_PASSTHROUGH ON CACHE BOOL "Enable serial passthrough")
     set(CSD203_SENSOR ON)
@@ -422,6 +425,9 @@ elseif(PCB STREQUAL X7)
     set(USB_CHARGER YES)
     add_definitions(-DRADIO_V14LCD)
     add_definitions(-DSTM32_SUPPORT_32BIT_TIMERS)
+    add_definitions(-DVOICE_SENSOR)
+    add_definitions(-DVOICE_CONTROL_SENSOR)
+    set(IMU YES)
     set(PXX2 ON)
     set(ENABLE_SERIAL_PASSTHROUGH ON CACHE BOOL "Enable serial passthrough")
     set(CSD203_SENSOR ON)
@@ -665,7 +671,14 @@ if(USB_CHARGER)
 endif()
 
 if(IMU)
-  target_sources(board PRIVATE drivers/lsm6ds.cpp)
+  if(PCBREV STREQUAL V14 OR PCBREV STREQUAL V14LCD)
+    target_sources(board PRIVATE
+      drivers/icm42627.cpp
+      drivers/sc7u22.cpp
+    )
+  else()
+    target_sources(board PRIVATE drivers/lsm6ds.cpp)
+  endif()
 endif()
 
 if(AUTOUPDATE)
@@ -698,6 +711,16 @@ set(SRC ${SRC}
   io/frsky_firmware_update.cpp
   io/multi_firmware_update.cpp
 )
+
+if(PCBREV STREQUAL V14 OR PCBREV STREQUAL V14LCD)
+  set(SRC ${SRC}
+    io/esp32_firmware_update.cpp
+    io/ci1302_firmware_update.cpp
+    io/ci1302_zlib.cpp
+    CI1302.cpp
+    targets/taranis/v14_charge_ui.cpp
+  )
+endif()
 
 set(GUI_SRC ${GUI_SRC}
   model_input_edit.cpp
