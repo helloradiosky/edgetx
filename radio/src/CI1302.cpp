@@ -961,6 +961,30 @@ void voiceModuleSetPower(bool on)
   storageDirty(EE_GENERAL);
 }
 
+void voiceSerialApplyHardwareMode(uint8_t port_nr, int mode)
+{
+  serialSetMode(port_nr, mode);
+
+  if (port_nr != SP_AUX1) {
+    serialInit(port_nr, mode);
+    storageDirty(EE_GENERAL);
+    return;
+  }
+
+  if (mode == UART_MODE_NONE) {
+    serialSetPower(SP_AUX1, false);
+    VoiceRunStatus = false;
+    voiceControlPowerOff();
+    serialInit(SP_AUX1, UART_MODE_NONE);
+  } else {
+    serialSetPower(SP_AUX1, true);
+    serialInit(SP_AUX1, mode);
+    if (mode == UART_MODE_DEBUG)
+      voiceControlInit();
+  }
+  storageDirty(EE_GENERAL);
+}
+
 #endif
 
 extern "C" void voiceSerialPutstr(uint8_t* data, uint32_t len)

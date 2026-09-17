@@ -37,6 +37,10 @@
   #include "telemetry/crossfire.h"
 #endif
 
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  #include "CI1302.h"
+#endif
+
 #if LCD_W >= 212
   #define HW_SETTINGS_COLUMN1            12*FW
   #define HW_SETTINGS_COLUMN2            (20*FW - 3)
@@ -801,8 +805,12 @@ void menuRadioHardware(event_t event)
                               event, 0, _isSerialModeAvailable[port_nr]);
 
             if (attr && checkIncDec_Ret) {
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+              voiceSerialApplyHardwareMode(port_nr, mode);
+#else
               serialSetMode(port_nr, mode);
               serialInit(port_nr, mode);
+#endif
             }
           }
         }

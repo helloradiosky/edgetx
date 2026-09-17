@@ -35,6 +35,8 @@ void voiceControlInit(void);
 #if defined(RADIO_V14) || defined(RADIO_V14LCD)
 bool voiceModulePowerUiEnabled();
 void voiceModuleSetPower(bool on);
+/** Hardware serial page: Voice port mode drives AUX_SERIAL_PWR (PD.14). */
+void voiceSerialApplyHardwareMode(uint8_t port_nr, int mode);
 #endif
 
 #ifdef __cplusplus
