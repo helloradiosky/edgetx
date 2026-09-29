@@ -373,6 +373,10 @@ void pulsesSetModuleDeInitCb(module_deinit_cb_t cb)
   _on_module_deinit = cb;
 }
 
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD) || defined(RADIO_V15) || defined(RADIO_V16)) && defined(HARDWARE_INTERNAL_MODULE) && !defined(SIMU)
+void elrsArmBootPowerCycle();
+#endif
+
 static void _init_module(uint8_t module, const etx_proto_driver_t* drv)
 {
   auto mod = &(_module_drivers[module]);
@@ -394,6 +398,13 @@ static void _init_module(uint8_t module, const etx_proto_driver_t* drv)
   // power ON
   modulePortSetPower(module, true);
   TRACE("Module #%d init succeeded", module);
+
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD) || defined(RADIO_V15) || defined(RADIO_V16)) && defined(HARDWARE_INTERNAL_MODULE) && !defined(SIMU)
+  // First power-on this boot. The helper then turns the rail off and back on
+  // once, the same sequence as the settings toggle that recovers a stuck ELRS.
+  if (module == INTERNAL_MODULE)
+    elrsArmBootPowerCycle();
+#endif
 }
 
 static void _deinit_module(uint8_t module)
@@ -515,6 +526,54 @@ void pulsesStopModule(uint8_t module)
   proto = PROTOCOL_CHANNELS_NONE;
 }
 
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD) || defined(RADIO_V15) || defined(RADIO_V16)) && defined(HARDWARE_INTERNAL_MODULE) && !defined(SIMU)
+// 0 = not yet armed, 1 = held off, 2 = finished
+static uint8_t _elrs_boot_cycle;
+static uint16_t _elrs_boot_off_10ms;
+
+void elrsArmBootPowerCycle()
+{
+  if (_elrs_boot_cycle != 0)
+    return;
+  if (getModuleType(INTERNAL_MODULE) == MODULE_TYPE_NONE)
+    return;
+  _elrs_boot_cycle = 1;
+  _elrs_boot_off_10ms = 0;
+}
+
+// After the first ON: power off, wait 200ms (same drain time as restartModule),
+// then let the normal enable path turn it on again.
+static bool _elrs_hold_internal_off(uint8_t module)
+{
+  if (module != INTERNAL_MODULE || _elrs_boot_cycle != 1)
+    return false;
+
+  if (!_module_drivers[module].drv) {
+    if (_elrs_boot_off_10ms == 0) {
+      _elrs_boot_off_10ms = get_tmr10ms();
+      if (_elrs_boot_off_10ms == 0)
+        _elrs_boot_off_10ms = 1;
+    }
+    uint16_t elapsed = (uint16_t)(get_tmr10ms() - _elrs_boot_off_10ms);
+    if (elapsed >= 50) {
+      _elrs_boot_cycle = 2;
+      return false;
+    }
+    return true;
+  }
+
+  if (_telemetryIsPolling)
+    return true;
+
+  _deinit_module(module);
+  moduleState[module].protocol = PROTOCOL_CHANNELS_NONE;
+  _elrs_boot_off_10ms = get_tmr10ms();
+  if (_elrs_boot_off_10ms == 0)
+    _elrs_boot_off_10ms = 1;
+  return true;
+}
+#endif
+
 static bool _handle_async_restart(uint8_t module)
 {
   auto& state = moduleState[module];
@@ -534,6 +593,11 @@ static bool _handle_async_restart(uint8_t module)
 void pulsesSendNextFrame(uint8_t module)
 {
   if (module >= MAX_MODULES) return;
+
+#if (defined(RADIO_V14) || defined(RADIO_V14LCD) || defined(RADIO_V15) || defined(RADIO_V16)) && defined(HARDWARE_INTERNAL_MODULE) && !defined(SIMU)
+  if (_elrs_hold_internal_off(module))
+    return;
+#endif
 
   uint8_t protocol = getRequiredProtocol(module);
 
