@@ -23,14 +23,26 @@
 #include "stm32_gpio.h"
 
 #include "board.h"
+#if !defined(RADIO_V14) && !defined(RADIO_V14LCD)
 #include "hal/usb_driver.h"
+#endif
 
 void usbChargerInit()
 {
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  // Dedicated charge jack STAT: active-low while charging (open-drain).
+  // Independent of data-port usbPlugged().
   gpio_init(USB_CHARGER_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW);
+#else
+  gpio_init(USB_CHARGER_GPIO, GPIO_IN_PU, GPIO_PIN_SPEED_LOW);
+#endif
 }
 
 bool usbChargerLed()
 {
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  return !gpio_read(USB_CHARGER_GPIO);
+#else
   return (!gpio_read(USB_CHARGER_GPIO) && usbPlugged());
+#endif
 }

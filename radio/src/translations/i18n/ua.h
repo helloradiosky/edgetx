@@ -944,6 +944,12 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Прошити зовн. модуль", "Прошити зовнішній модуль")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Прошити зовн. Multi", "Прошити зовнішній Multi")
 #define TR_FLASH_EXTERNAL_ELRS         TR("Прошити зовн. ELRS", "Прошити зовнішній ELRS")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Помилка оновлення FW", "Помилка оновлення Firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Прошивка успішна"
 #define TR_WRITING                     "Запис..."
@@ -993,6 +999,7 @@
 #define TR_USB_CHARGE                 "Заряджати коли увімкнено"
 #define TR_JACK_MODE                   "Режим коннектора"
 #define TR_VOICE_LANGUAGE              "Мова голосу"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE               "Text language"
 #define TR_UNITS_SYSTEM                "Одиниці"
 #define TR_UNITS_PPM                   "PPM одиниці"

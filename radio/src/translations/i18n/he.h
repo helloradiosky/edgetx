@@ -946,6 +946,12 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "Flash external module")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
 #define TR_FLASH_EXTERNAL_ELRS         TR("Flash Ext. ELRS", "Flash External ELRS")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("FW update error", "Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "! הפלאש עבר בהצלחה"
 #define TR_WRITING                     "...ממתין"
@@ -995,6 +1001,7 @@
 #define TR_USB_CHARGE                 "טעינה כאשר השלט פועל"
 #define TR_JACK_MODE                   "Jack mode"
 #define TR_VOICE_LANGUAGE              "שפת שמע"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE               "שפת הטקסט"
 #define TR_UNITS_SYSTEM                "יחידות"
 #define TR_UNITS_PPM                   "PPM Units"

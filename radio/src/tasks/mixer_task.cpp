@@ -40,6 +40,10 @@
   #include "flysky_gimbal_driver.h"
 #endif
 
+#if defined(VOICE_CONTROL_SENSOR)
+  #include "CI1302.h"
+#endif
+
 task_handle_t mixerTaskId;
 TASK_DEFINE_STACK(mixerStack, MIXER_STACK_SIZE);
 
@@ -127,6 +131,13 @@ constexpr uint8_t MIXER_MAX_PERIOD = MAX_REFRESH_RATE / 1000 /*ms*/;
 
 void execMixerFrequentActions()
 {
+#if defined(VOICE_CONTROL_SENSOR) && !defined(SIMU)
+  // Poll Voice UART at mixer rate (hrs_v14): per10ms alone is too coarse
+  // for VOICE_FRAME_DELAY_US framing / wake-up.
+  processVoiceInput();
+  processUpdataInput();
+#endif
+
 #if defined(IMU)
   gyroWakeup();
 #endif

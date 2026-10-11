@@ -947,6 +947,12 @@
 #define TR_FLASH_EXTERNAL_MODULE        TR("Prog. modulo est.", "Programma modulo esterno")
 #define TR_FLASH_EXTERNAL_MULTI         TR("Prog. MULTI est.", "Programma MULTI esterno")
 #define TR_FLASH_EXTERNAL_ELRS          TR("Scrivi ELRS Est.", "Scrivi ELRS Esterno")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 #define TR_FIRMWARE_UPDATE_ERROR        TR( "Errore agg. FW","Errore aggiornamento firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS      "Flash riuscito"
 #define TR_WRITING                      "Scrittura..."
@@ -996,6 +1002,7 @@
 #define TR_USB_CHARGE                 "Carica con radio accesa"
 #define TR_JACK_MODE                    "Modo JACK"
 #define TR_VOICE_LANGUAGE               "Lingua vocale"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE               "Lingua testo"
 #define TR_UNITS_SYSTEM                 "Unità"
 #define TR_UNITS_PPM                    "Unità PPM"

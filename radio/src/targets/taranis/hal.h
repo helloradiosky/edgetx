@@ -2416,6 +2416,9 @@
   #define AUX_SERIAL_DMA_RX                 DMA1
   #define AUX_SERIAL_DMA_RX_STREAM          LL_DMA_STREAM_1
   #define AUX_SERIAL_DMA_RX_CHANNEL         LL_DMA_CHANNEL_4
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  #define AUX_SERIAL_PWR_GPIO               GPIO_PIN(GPIOD, 14) // PD.14 (voice / AUX power)
+#endif
 #endif
 
 // Telemetry
@@ -2781,6 +2784,12 @@
   #define IMU_I2C_ADDRESS               0x6B
 #endif
 
+// V14 / V14LCD: ICM-42627 shares I2C1 with CSD203 (hrs_v14 hardware)
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  #define IMU_I2C_BUS                   I2C_Bus_1
+  #define IMU_I2C_ADDRESS               0x69
+#endif
+
 #if defined(RADIO_GX12)
   #define I2C_B2                        I2C2
   #define I2C_B2_SCL_GPIO               GPIO_PIN(GPIOB, 10) // PB.10
@@ -2849,6 +2858,11 @@
   #else
     #define AUDIO_UNMUTE_DELAY          150  // ms
   #endif
+#elif defined(RADIO_V14) || defined(RADIO_V14LCD)
+  // Audio_EN -> AD8002D SD (high = shutdown), pulled down: amp is on until driven
+  #define AUDIO_MUTE_GPIO               GPIO_PIN(GPIOE, 12) // PE.12
+  #define AUDIO_MUTE_DELAY              500  // ms
+  #define AUDIO_UNMUTE_DELAY            150  // ms
 #endif
 
 // Haptic

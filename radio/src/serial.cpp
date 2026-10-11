@@ -76,6 +76,64 @@ void dbgSerialSetSendCb(void* ctx, void (*cb)(void*, uint8_t))
   dbg_serial_putc = cb;
 }
 
+#if defined(VOICE_SENSOR)
+static void (*voice_serial_putc)(void*, uint8_t) = nullptr;
+static void* voice_serial_ctx = nullptr;
+static int (*voice_serial_getc)(void*, uint8_t*) = nullptr;
+static void* voice_serial_crx = nullptr;
+
+static int (*dbg_serial_getc)(void*, uint8_t*) = nullptr;
+static void* dbg_serial_crx = nullptr;
+
+void voiceSerialSetSendCb(void* ctx, void (*cb)(void*, uint8_t))
+{
+  voice_serial_putc = nullptr;
+  voice_serial_ctx = ctx;
+  voice_serial_putc = cb;
+}
+
+void voiceSerialGetSendCb(void* crx, int (*cb)(void*, uint8_t*))
+{
+  voice_serial_getc = nullptr;
+  voice_serial_crx = crx;
+  voice_serial_getc = cb;
+}
+
+void dbgSerialGetSendCb(void* crx, int (*cb)(void*, uint8_t*))
+{
+  dbg_serial_getc = nullptr;
+  dbg_serial_crx = crx;
+  dbg_serial_getc = cb;
+}
+
+extern "C" void voiceSerialPutc(char c)
+{
+  auto _putc = voice_serial_putc;
+  auto _ctx = voice_serial_ctx;
+  if (_putc) _putc(_ctx, c);
+}
+
+extern "C" int voiceGetByte(uint8_t* byte)
+{
+  auto _getByte = voice_serial_getc;
+  auto _crx = voice_serial_crx;
+  if (_getByte) {
+    return _getByte(_crx, byte);
+  }
+  return 0;
+}
+
+extern "C" int dbgGetByte(uint8_t* byte)
+{
+  auto _getByte = dbg_serial_getc;
+  auto _crx = dbg_serial_crx;
+  if (_getByte) {
+    return _getByte(_crx, byte);
+  }
+  return 0;
+}
+#endif
+
 #if defined(DEBUG_SEGGER_RTT)
 
 extern "C" void dbgSerialPutc(char c)
@@ -198,6 +256,14 @@ static void serialSetCallBacks(int mode, void* ctx, const etx_serial_port_t* por
   (void)getByte;
   (void)setRxCb;
 
+#if defined(VOICE_SENSOR)
+  if (port && port->name && strcmp(port->name, "Voice") == 0) {
+    voiceSerialSetSendCb(ctx, sendByte);
+    voiceSerialGetSendCb(ctx, getByte);
+    return;
+  }
+#endif
+
   switch(mode) {
 #if defined(DEBUG)
   case UART_MODE_DEBUG:
@@ -291,6 +357,9 @@ static void serialSetupPort(int mode, etx_serial_init& params)
   case UART_MODE_DEBUG:
   case UART_MODE_CLI:
     params.baudrate = DEBUG_BAUDRATE;
+#if defined(VOICE_SENSOR)
+    params.direction = ETX_Dir_TX_RX;
+#endif
     break;
 #endif
 

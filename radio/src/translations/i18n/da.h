@@ -948,6 +948,12 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Inst. ext. module", "Installer ekstern modul")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Inst. ext. multi", "Installer ekstern multi")
 #define TR_FLASH_EXTERNAL_ELRS         TR("Inst. ext. ELRS", "Installer ekstern ELRS")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("FW opdatering fejl", "Firmware opdaterings fejl")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Installation successful"
 #define TR_WRITING                     "Skriver..."
@@ -997,6 +1003,7 @@
 #define TR_USB_CHARGE                 "Oplad med radio tændt"
 #define TR_JACK_MODE                   "Jack tilstand"
 #define TR_VOICE_LANGUAGE              "Stemme sprog"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE               "Text language"
 #define TR_UNITS_SYSTEM                "Enheder"
 #define TR_UNITS_PPM                   "PPM enheder"

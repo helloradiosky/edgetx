@@ -77,3 +77,17 @@ void dbgSerialSetSendCb(void* ctx, void (*cb)(void*, uint8_t));
 // Query debug callback
 void (*dbgSerialGetSendCb())(void*, uint8_t);
 void* dbgSerialGetSendCbCtx();
+
+#if defined(VOICE_SENSOR)
+void voiceSerialSetSendCb(void* ctx, void (*cb)(void*, uint8_t));
+void voiceSerialGetSendCb(void* crx, int (*cb)(void*, uint8_t*));
+#ifdef __cplusplus
+extern "C" {
+#endif
+void voiceSerialPutc(char c);
+int voiceGetByte(uint8_t* byte);
+int dbgGetByte(uint8_t* byte);
+#ifdef __cplusplus
+}
+#endif
+#endif

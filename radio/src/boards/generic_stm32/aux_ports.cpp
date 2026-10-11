@@ -30,7 +30,9 @@
 #include "dataconstants.h"
 
 #define AUX_SERIAL_TX_BUFFER 512
-#if defined(SDRAM)
+#if defined(VOICE_SENSOR)
+  #define AUX_SERIAL_RX_BUFFER 512
+#elif defined(SDRAM)
   #define AUX_SERIAL_RX_BUFFER 512
 #else
   #define AUX_SERIAL_RX_BUFFER 32
@@ -79,7 +81,11 @@ void set_aux_pwr(uint8_t on)
 #endif
 
 const etx_serial_port_t auxSerialPort = {
+#if defined(RADIO_V14) || defined(RADIO_V14LCD)
+  .name = "Voice",
+#else
   .name = "AUX1",
+#endif
   .uart = &STM32SerialDriver,
   .hw_def = REF_STM32_SERIAL_PORT(Aux),
   .set_pwr = AUX_PWR_FCT

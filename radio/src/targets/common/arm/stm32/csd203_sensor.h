@@ -21,6 +21,13 @@
 
 #pragma once
 
+#include <stdint.h>
+
 void IICcsd203init(void);
 void initCSD203(void);
 void readCSD203(void);
+
+// Cached CSD203 currents in mA (signed; direction depends on shunt wiring)
+int16_t getCSD203MainCurrent(void);
+int16_t getCSD203ChargeCurrent(void);  // In sensor (USB / charge path)
+int16_t getCSD203ExtCurrent(void);

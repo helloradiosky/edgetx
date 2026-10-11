@@ -945,6 +945,12 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Зап внеш модуль", "Зап внеш модуль")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Зап внеш MULTI", "Зап внеш MULTI")
 #define TR_FLASH_EXTERNAL_ELRS         TR("Зап внеш ELRS", "Зап внеш ELRS")
+#define TR_FLASH_INTERNAL_ELRS         TR("Flash Int. ELRS", "Flash Internal ELRS")
+#define TR_FLASH_ELRS_RISK             "Brick risk: ELRS!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_INTERNAL_BACKPACK     TR("Flash backpack", "Flash Internal Backpack")
+#define TR_FLASH_BACKPACK_RISK         "Brick risk: pack!" LCDW_128_LINEBREAK "Do not power off?"
+#define TR_FLASH_CI1302                TR("Flash voice", "Flash CI1302 voice")
+#define TR_FLASH_CI1302_RISK           "May brick voice?"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Ошибка обнов ПО", "Ошибка обнов ПО")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "ОБНОВЛЕНО"
 #define TR_WRITING                     "Запись..."
@@ -994,6 +1000,7 @@
 #define TR_USB_CHARGE                 "Зарядка при вкл. пульте"
 #define TR_JACK_MODE                   "Режим разъема"
 #define TR_VOICE_LANGUAGE              "Язык озвучки"
+#define TR_VOICE_POWER                 "Voice power"
 #define TR_TEXT_LANGUAGE               "Text language"
 #define TR_UNITS_SYSTEM                "Единицы"
 #define TR_UNITS_PPM                   "PPM Един"
