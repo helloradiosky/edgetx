@@ -101,7 +101,9 @@ if (ENABLE_BOOTLOADER_DEBUG)
   # target_compile_definitions(stm32_drivers_w_dbg_bl PRIVATE -DDEBUG)
 endif()
 
-target_include_directories(bootloader
+# Own hal_keys.inc must be found before radio/src/hal_keys.inc. The firmware
+# copy waits on bootloader.elf, so the bootloader including it is a cycle.
+target_include_directories(bootloader BEFORE
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
 )
 

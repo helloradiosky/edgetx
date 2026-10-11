@@ -74,6 +74,17 @@ function(GenerateDatacopy source output)
     ${CMAKE_CURRENT_SOURCE_DIR}/${source}
     -DBACKUP ${GEN_DATACOPY_ARGS} ${SYSROOT_ARG})
 
+  # Clang's inttypes.h uses include_next. Without the ARM newlib headers
+  # next to the cross compiler, libclang stops on datastructs_private.h.
+  if(CMAKE_CXX_COMPILER)
+    get_filename_component(_cxx_bin "${CMAKE_CXX_COMPILER}" DIRECTORY)
+    get_filename_component(_cxx_prefix "${_cxx_bin}" DIRECTORY)
+    set(_newlib_inc "${_cxx_prefix}/arm-none-eabi/include")
+    if(EXISTS "${_newlib_inc}/inttypes.h")
+      list(APPEND GEN_DATACOPY_ARGS "-isystem${_newlib_inc}")
+    endif()
+  endif()
+
   set(GEN_DATACOPY_CMD
     ${PYTHON_EXECUTABLE} ${GEN_DATACOPY} ${GEN_DATACOPY_ARGS})
 
